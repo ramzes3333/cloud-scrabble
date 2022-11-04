@@ -1,0 +1,10 @@
+{
+  "/board-manager": {
+    "target": "http://localhost:8080/",
+    "secure": false
+  },
+  "/tile-manager": {
+    "target": "http://localhost:8082/",
+    "secure": false
+  }
+}

@@ -1,0 +1,12 @@
+<div class="board-container mat-elevation-z1">
+  <ng-container *ngFor="let field of board?.fields; let i = index" >
+    <app-field
+      [x]="field.x"
+      [y]="field.y"
+      [bonus]="field.bonus"
+      [letter]="field.letter?.letter"
+      [points]="field.letter?.points"></app-field>
+    <br *ngIf="(i+1)%15==0"/>
+  </ng-container>
+</div>
+<app-rack></app-rack>

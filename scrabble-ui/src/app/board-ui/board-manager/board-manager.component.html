@@ -1,0 +1,15 @@
+<table mat-table [dataSource]="boards" class="boards-table mat-elevation-z1">
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef> ID. </th>
+    <td mat-cell *matCellDef="let element" (click)="getBoard(element.id)"> {{element.id}} </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+<mat-toolbar>
+  <mat-toolbar-row>
+    <button mat-raised-button [disabled]="createDisabled" (click)="createBoard()" [disabled]="false">Create board</button>
+    <span class="example-spacer"></span>
+  </mat-toolbar-row>
+</mat-toolbar>

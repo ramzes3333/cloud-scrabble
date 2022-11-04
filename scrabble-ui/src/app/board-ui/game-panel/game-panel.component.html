@@ -1,0 +1,8 @@
+<div>
+  <div>
+      <button *ngIf="isNotStarted()" mat-raised-button (click)="startGame()">Start game!</button>
+  </div>
+  <div>
+    <button *ngIf="isStarted()" mat-raised-button (click)="confirmMove()" class="confirm-button">Confirm move!</button>
+  </div>
+</div>

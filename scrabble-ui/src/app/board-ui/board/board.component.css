@@ -1,0 +1,15 @@
+:host {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.board-container {
+  padding: 10px;
+  margin: 2px;
+  text-align: center;
+  background-color: white;
+
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}

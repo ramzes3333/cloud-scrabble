@@ -1,0 +1,107 @@
+.board-field-container {
+  position: relative;
+  margin: 2px;
+  width: 45px;
+  height: 45px;
+  display: inline-block;
+  vertical-align: top;
+
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+
+.board-field-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  border: 1px solid chocolate;
+  width: 40px;
+  height: 40px;
+  line-height: 13px;
+  border-radius: 5px;
+  padding: 2px;
+  font-size: 9px;
+  vertical-align: top;
+  text-align: center;
+  color: grey;
+  background-color: #ffffee;
+}
+
+.board-field-background:hover {
+  background-color: aliceblue;
+}
+
+.board-field-letter {
+  position:relative;
+  display: inline-block;
+  border: 1px solid chocolate;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  border-radius: 5px;
+  padding: 2px;
+  font-size: 24px;
+  vertical-align: top;
+  text-align: center;
+  color: grey;
+  background-color: beige;
+  z-index: 1;
+}
+
+.board-field-letter:hover {
+  background-color: aliceblue;
+  cursor: pointer;
+}
+
+.board-field-tws:hover {
+  background-color: #ff8e64;
+}
+
+.board-field-dws:hover {
+  background-color: #ffcdbc;
+}
+
+.board-field-tls:hover {
+  background-color: #5edcd4;
+}
+
+.board-field-dls:hover {
+  background-color: #f2ffff;
+}
+
+.board-field-tws {
+  background-color: orangered;
+  color: azure;
+}
+
+.board-field-dws {
+  background-color: darksalmon;
+  color: azure;
+}
+
+.board-field-tls {
+  background-color: lightseagreen;
+  color: azure;
+}
+
+.board-field-dls {
+  background-color: lightcyan;
+  color: dimgray;
+}
+
+
+/* Animate items as they're being sorted. */
+.cdk-drop-list-dragging .cdk-drag {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* Animate an item that has been dropped. */
+.cdk-drag-animating {
+  transition: transform 300ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}

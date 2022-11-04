@@ -1,0 +1,10 @@
+:host {
+  display: inline-block;
+  vertical-align: top;
+  width: 400px;
+  margin-right: 50px;
+}
+
+.boards-table {
+  width: 100%;
+}
