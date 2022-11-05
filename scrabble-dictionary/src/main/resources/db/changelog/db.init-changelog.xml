@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+    <changeSet id="1667661911012-1" author="andrew (generated)">
+        <createSequence incrementBy="1" sequenceName="hibernate_sequence" startValue="1"/>
+    </changeSet>
+    <changeSet id="1667661911012-2" author="andrew (generated)">
+        <createTable tableName="dictionary">
+            <column name="id" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_dictionary"/>
+            </column>
+            <column name="language" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="default_dictionary" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1667661911012-3" author="andrew (generated)">
+        <createTable tableName="dictionary_entry">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_dictionary_entry"/>
+            </column>
+            <column name="value" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dictionary_id" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1667661911012-4" author="andrew (generated)">
+        <addUniqueConstraint columnNames="language" constraintName="uc_dictionary_language" tableName="dictionary"/>
+    </changeSet>
+    <changeSet id="1667661911012-5" author="andrew (generated)">
+        <addUniqueConstraint columnNames="dictionary_id, value" constraintName="uc_dictionaryentry"
+                             tableName="dictionary_entry"/>
+    </changeSet>
+    <changeSet id="1667661911012-6" author="andrew (generated)">
+        <createIndex indexName="idx_dictionaryentry" tableName="dictionary_entry">
+            <column name="dictionary_id"/>
+            <column name="value"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="1667661911012-7" author="andrew (generated)">
+        <addForeignKeyConstraint baseColumnNames="dictionary_id" baseTableName="dictionary_entry"
+                                 constraintName="FK_DICTIONARY_ENTRY_ON_DICTIONARY" referencedColumnNames="id"
+                                 referencedTableName="dictionary"/>
+    </changeSet>
+
+</databaseChangeLog>
