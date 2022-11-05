@@ -1,6 +1,7 @@
 package com.aryzko.scrabble.scrabbledictionary.adapters.db;
 
 import com.aryzko.scrabble.scrabbledictionary.adapters.db.model.DictionaryDb;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -13,13 +14,17 @@ public interface SpringDataDictionaryRepository extends JpaRepository<Dictionary
     @Query("select d from DictionaryDb d where d.defaultDictionary = true")
     Optional<DictionaryDb> findDefaultDictionary();
 
+    @Cacheable("findInDefaultDictionary")
     @Query("""
             select (count(d) > 0) from DictionaryDb d inner join d.entries entries
-            where d.defaultDictionary = true and upper(entries.value) = upper(?1)""")
+            where d.defaultDictionary = true and entries.value = lower(?1)
+            """)
     boolean findInDefaultDictionary(String value);
 
+    @Cacheable("findInDictionary")
     @Query("""
             select (count(d) > 0) from DictionaryDb d inner join d.entries entries
-            where upper(d.language) = upper(?1) and upper(entries.value) = upper(?2)""")
+            where d.language = lower(?1) and entries.value = lower(?2)
+            """)
     boolean findInDictionary(String language, String value);
 }
