@@ -5,7 +5,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.hibernate.boot.model.relational.Loggable;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PerformanceLogAspect {
 
-    private String messageFormat = "Executed {} in {} ms. Data: names({}), values({})";
+    private final String messageFormat = "Executed {} in {} ms. Data: names({}), values({})";
 
     @Around("@annotation(performanceLog)")
     public Object logExecutionTime(final ProceedingJoinPoint joinPoint, final PerformanceLog performanceLog) throws Throwable {

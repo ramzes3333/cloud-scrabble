@@ -5,9 +5,6 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.Collection;
 
-/**
- * A DTO for the {@link com.aryzko.scrabble.scrabbledictionary.adapters.db.model.DictionaryDb} entity
- */
 @Data
 public class Dictionary implements Serializable {
     private final Integer id;

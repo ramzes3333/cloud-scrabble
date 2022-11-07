@@ -2,11 +2,13 @@ package com.aryzko.scrabble.scrabbleboardmanager.domain.service;
 
 import com.aryzko.scrabble.scrabbleboardmanager.domain.Board;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.repository.BoardRepository;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.validator.BoardValidationResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -31,6 +33,13 @@ public class BoardService {
     }
 
     public Board updateBoard(Board board) {
-        return boardRepository.update(board);
+        Board boardFromDb = getBoard(board.getId());
+        boardFromDb.setFields(board.getFields());
+        boardFromDb.setRacks(board.getRacks());
+        return boardRepository.update(boardFromDb);
+    }
+
+    public BoardValidationResult validate(Board board) {
+        return null;
     }
 }

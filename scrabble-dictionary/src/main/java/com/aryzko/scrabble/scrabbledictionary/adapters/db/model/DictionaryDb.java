@@ -32,6 +32,6 @@ public class DictionaryDb {
     @Column(name = "default_dictionary", nullable = false)
     private boolean defaultDictionary;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "dictionary")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "dictionary")
     private Collection<DictionaryEntryDb> entries = new java.util.ArrayList<>();
 }

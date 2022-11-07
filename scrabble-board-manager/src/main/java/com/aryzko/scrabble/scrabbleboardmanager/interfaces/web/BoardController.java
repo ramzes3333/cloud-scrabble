@@ -1,9 +1,11 @@
-package com.aryzko.scrabble.scrabbleboardmanager.infrastracture.web;
+package com.aryzko.scrabble.scrabbleboardmanager.interfaces.web;
 
 import com.aryzko.scrabble.scrabbleboardmanager.application.mapper.BoardMapper;
 import com.aryzko.scrabble.scrabbleboardmanager.application.request.BoardRequest;
 import com.aryzko.scrabble.scrabbleboardmanager.application.response.BoardResponse;
+import com.aryzko.scrabble.scrabbleboardmanager.application.response.BoardValidationResultResponse;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.service.BoardService;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.validator.BoardValidationResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,5 +48,10 @@ public class BoardController {
         return boardService.getBoards().stream()
                         .map(boardMapper::boardToBoardResponse)
                         .collect(Collectors.toList());
+    }
+
+    @GetMapping("validate")
+    public BoardValidationResultResponse validate(@RequestBody @Valid BoardRequest board) {
+        return null;//return boardService.validate(boardMapper.boardRequestToBoard(board));
     }
 }

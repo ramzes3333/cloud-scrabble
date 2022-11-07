@@ -9,6 +9,7 @@ public class BoardResponse {
     private String id;
     private List<Field> fields;
     private List<Rack> racks;
+    private BoardParameters boardParameters;
 }
 
 
