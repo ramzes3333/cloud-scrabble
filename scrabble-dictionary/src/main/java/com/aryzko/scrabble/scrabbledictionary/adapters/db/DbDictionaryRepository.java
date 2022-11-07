@@ -39,7 +39,10 @@ public class DbDictionaryRepository implements DictionaryRepository {
 
     @Override
     public List<String> lookupInDefaultDictionary(List<String> values) {
-        return dictionaryEntryRepository.findInDefaultDictionary(values).stream()
+        return dictionaryEntryRepository.findInDefaultDictionary(
+                        values.stream()
+                                .map(String::toLowerCase)
+                                .collect(Collectors.toList())).stream()
                 .map(DictionaryEntryDb::getValue)
                 .collect(Collectors.toList());
     }

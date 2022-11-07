@@ -1,11 +1,11 @@
 package com.aryzko.scrabble.scrabbleboardmanager.interfaces.web;
 
 import com.aryzko.scrabble.scrabbleboardmanager.application.mapper.BoardMapper;
+import com.aryzko.scrabble.scrabbleboardmanager.application.mapper.BoardValidationMapper;
 import com.aryzko.scrabble.scrabbleboardmanager.application.request.BoardRequest;
 import com.aryzko.scrabble.scrabbleboardmanager.application.response.BoardResponse;
 import com.aryzko.scrabble.scrabbleboardmanager.application.response.BoardValidationResultResponse;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.service.BoardService;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.validator.BoardValidationResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 @RestController
 @RequestMapping(value = "/api/boards")
 @RequiredArgsConstructor
@@ -27,31 +29,33 @@ public class BoardController {
 
     private final BoardService boardService;
     private final BoardMapper boardMapper;
+    private final BoardValidationMapper boardValidationMapper;
 
     @PostMapping
     public BoardResponse createBoard() {
-        return boardMapper.boardToBoardResponse(boardService.createEmptyBoard());
+        return boardMapper.toBoardResponse(boardService.createEmptyBoard());
     }
 
     @PutMapping
     public BoardResponse updateBoard(@RequestBody @Valid BoardRequest board) {
-        return boardMapper.boardToBoardResponse(boardService.updateBoard(boardMapper.boardRequestToBoard(board)));
+        return boardMapper.toBoardResponse(boardService.updateBoard(boardMapper.toBoard(board)));
     }
 
     @GetMapping("{uuid}")
     public BoardResponse getBoard(@PathVariable String uuid) {
-        return boardMapper.boardToBoardResponse(boardService.getBoard(UUID.fromString(uuid)));
+        return boardMapper.toBoardResponse(boardService.getBoard(UUID.fromString(uuid)));
     }
 
     @GetMapping
     public List<BoardResponse> getBoards() {
         return boardService.getBoards().stream()
-                        .map(boardMapper::boardToBoardResponse)
+                        .map(boardMapper::toBoardResponse)
                         .collect(Collectors.toList());
     }
 
-    @GetMapping("validate")
+    @PostMapping(value = "validate")
     public BoardValidationResultResponse validate(@RequestBody @Valid BoardRequest board) {
-        return null;//return boardService.validate(boardMapper.boardRequestToBoard(board));
+        return boardValidationMapper.toBoardValidationResultResponse(
+                boardService.validate(boardMapper.toBoard(board)));
     }
 }

@@ -3,6 +3,7 @@ package com.aryzko.scrabble.scrabbleboardmanager.domain.service;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.Board;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.repository.BoardRepository;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.validator.BoardValidationResult;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.validator.BoardValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final BoardCreator boardCreator;
+    private final BoardValidator boardValidator;
 
     public Board createEmptyBoard() {
         return boardRepository.create(boardCreator.prepareEmptyBoard());
@@ -40,6 +42,8 @@ public class BoardService {
     }
 
     public BoardValidationResult validate(Board board) {
-        return null;
+        Board boardFromDb = getBoard(board.getId());
+        board.setBoardParameters(boardFromDb.getBoardParameters());
+        return boardValidator.validate(board);
     }
 }

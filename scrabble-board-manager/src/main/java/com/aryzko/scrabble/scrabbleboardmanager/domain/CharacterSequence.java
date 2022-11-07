@@ -6,6 +6,7 @@ import lombok.Value;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Optional.ofNullable;
@@ -18,6 +19,8 @@ public class CharacterSequence {
     public String getCharacterSequenceAsString() {
         return ofNullable(characters).orElse(Collections.emptyList()).stream()
                 .map(CharacterWithPosition::getCharacter)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .map(String::valueOf)
                 .collect(Collectors.joining());
     }

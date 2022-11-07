@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -26,7 +27,7 @@ public class BoardInspector {
     }
 
     private List<CharacterSequence> getAllBoardLines(final Board board) {
-        Map<Position, Character> fieldMap = board.getCharacterMap();
+        Map<Position, Optional<Character>> fieldMap = board.getCharacterMap();
 
         List<CharacterSequence> lines = new ArrayList<>();
         lines.addAll(getLines(
@@ -42,7 +43,7 @@ public class BoardInspector {
         return lines;
     }
 
-    private List<CharacterSequence> getLines(Map<Position, Character> fieldMap,
+    private List<CharacterSequence> getLines(Map<Position, Optional<Character>> fieldMap,
                                   Integer horizontalSize, Integer verticalSize,
                                   BiFunction<Integer, Integer, Position> getPosition) {
         List<CharacterSequence> lines = new ArrayList<>();
@@ -50,7 +51,7 @@ public class BoardInspector {
         for (int x = 0; x < horizontalSize; x++) {
             CharacterSequence.CharacterSequenceBuilder lineBuilder = CharacterSequence.builder();
             for (int y = 0; y < verticalSize; y++) {
-                Character character = ofNullable(fieldMap.get(getPosition.apply(x, y)))
+                Optional<Character> character = ofNullable(fieldMap.get(getPosition.apply(x, y)))
                         .orElseThrow(() -> new IllegalStateException("There is no field on board"));
 
                 lineBuilder.character(CharacterWithPosition.builder().character(character).x(x).y(y).build());
@@ -65,7 +66,7 @@ public class BoardInspector {
 
         CharacterSequence.CharacterSequenceBuilder characterSequenceBuilder = CharacterSequence.builder();
         for(CharacterWithPosition ch : line.getCharacters()) {
-            if(!ch.getCharacter().equals(EMPTY_CHAR)) {
+            if(ch.getCharacter().isPresent()) {
                 characterSequenceBuilder.character(ch);
             } else {
                 addWordToStreamIfLengthIsGreaterThanOne(streamBuilder, characterSequenceBuilder);

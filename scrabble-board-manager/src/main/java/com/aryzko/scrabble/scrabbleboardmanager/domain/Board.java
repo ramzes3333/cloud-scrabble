@@ -8,8 +8,11 @@ import lombok.Setter;
 import javax.persistence.Id;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static java.util.Optional.ofNullable;
 
 @Getter
 @Setter
@@ -23,13 +26,14 @@ public class Board {
 
     private BoardParameters boardParameters;
 
-    public Map<Position, Character> getCharacterMap() {
+    public Map<Position, Optional<Character>> getCharacterMap() {
         return fields.stream()
                 .collect(Collectors.toMap(
                         field -> Position.builder()
                                 .x(field.getX())
                                 .y(field.getY())
                                 .build(),
-                        field -> field.getLetter().getLetter()));
+                        field -> ofNullable(field.getLetter())
+                                .map(Letter::getLetter)));
     }
 }

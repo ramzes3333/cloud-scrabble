@@ -3,8 +3,10 @@ package com.aryzko.scrabble.scrabbleboardmanager.domain;
 import lombok.Value;
 import lombok.experimental.SuperBuilder;
 
+import java.util.Optional;
+
 @Value
 @SuperBuilder
 public class CharacterWithPosition extends Position {
-    private Character character;
+    private Optional<Character> character;
 }
