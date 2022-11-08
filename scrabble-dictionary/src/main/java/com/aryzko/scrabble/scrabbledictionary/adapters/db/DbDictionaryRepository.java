@@ -8,8 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
@@ -28,22 +26,22 @@ public class DbDictionaryRepository implements DictionaryRepository {
     }
 
     @Override
-    public boolean lookupInDefaultDictionary(String value) {
-        return dictionaryEntryRepository.findInDefaultDictionary(value);
+    public boolean lookupInDefaultDictionary(String entry) {
+        return dictionaryEntryRepository.findInDefaultDictionary(entry);
     }
 
     @Override
-    public boolean lookup(String language, String value) {
-        return dictionaryEntryRepository.findInDictionary(language, value);
+    public boolean lookup(String language, String entry) {
+        return dictionaryEntryRepository.findInDictionary(language, entry);
     }
 
     @Override
-    public List<String> lookupInDefaultDictionary(List<String> values) {
+    public List<String> lookupInDefaultDictionary(List<String> entries) {
         return dictionaryEntryRepository.findInDefaultDictionary(
-                        values.stream()
+                        entries.stream()
                                 .map(String::toLowerCase)
                                 .collect(Collectors.toList())).stream()
-                .map(DictionaryEntryDb::getValue)
+                .map(DictionaryEntryDb::getEntry)
                 .collect(Collectors.toList());
     }
 }

@@ -8,9 +8,9 @@ import java.util.Map;
 public interface DictionaryRepository {
     Dictionary getDefault();
 
-    boolean lookupInDefaultDictionary(String value);
+    boolean lookupInDefaultDictionary(String entry);
 
-    List<String> lookupInDefaultDictionary(List<String> values);
+    List<String> lookupInDefaultDictionary(List<String> entries);
 
-    boolean lookup(String language, String value);
+    boolean lookup(String language, String entry);
 }

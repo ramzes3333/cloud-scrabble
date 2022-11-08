@@ -22,20 +22,20 @@ public class DictionaryController {
     private final DictionaryService dictionaryService;
 
     @PerformanceLog
-    @GetMapping("{language}/lookup/{value}")
-    public Boolean lookup(@PathVariable @NotBlank String language, @PathVariable @NotBlank String value) {
-        return dictionaryService.lookup(language, value);
+    @GetMapping("{language}/lookup/{entry}")
+    public Boolean lookup(@PathVariable @NotBlank String language, @PathVariable @NotBlank String entry) {
+        return dictionaryService.lookup(language, entry);
     }
 
     @PerformanceLog
-    @GetMapping("lookup/{value}")
-    public Boolean lookupValue(@PathVariable @NotBlank String value) {
-        return dictionaryService.lookup(value);
+    @GetMapping("lookup/{entry}")
+    public Boolean lookupEntry(@PathVariable @NotBlank String entry) {
+        return dictionaryService.lookup(entry);
     }
 
     @PerformanceLog
     @GetMapping("lookup")
-    public Map<String, Boolean> lookupValues(@RequestParam List<String> values) {
-        return dictionaryService.lookup(values);
+    public Map<String, Boolean> lookupEntries(@RequestParam List<String> entries) {
+        return dictionaryService.lookup(entries);
     }
 }

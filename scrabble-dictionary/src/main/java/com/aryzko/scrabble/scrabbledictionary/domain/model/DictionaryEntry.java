@@ -7,5 +7,5 @@ import java.io.Serializable;
 @Data
 public class DictionaryEntry implements Serializable {
     private final Long id;
-    private final String value;
+    private final String entry;
 }

@@ -18,9 +18,9 @@ import javax.persistence.UniqueConstraint;
 @Setter
 @Entity
 @Table(name = "dictionary_entry", indexes = {
-        @Index(name = "idx_dictionaryentry", columnList = "dictionary_id, value")
+        @Index(name = "idx_dictionaryentry", columnList = "dictionary_id, entry")
 }, uniqueConstraints = {
-        @UniqueConstraint(name = "uc_dictionaryentry", columnNames = {"dictionary_id", "value"})
+        @UniqueConstraint(name = "uc_dictionaryentry", columnNames = {"dictionary_id", "entry"})
 })
 public class DictionaryEntryDb {
     @Id
@@ -28,8 +28,8 @@ public class DictionaryEntryDb {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "value", nullable = false)
-    private String value;
+    @Column(name = "entry", nullable = false)
+    private String entry;
 
     @ManyToOne
     @JoinColumn(name = "dictionary_id")

@@ -25,23 +25,23 @@ public class DictionaryService {
     }
 
     @Transactional(readOnly = true)
-    public boolean lookup(String value) {
-        return dictionaryRepository.lookupInDefaultDictionary(value);
+    public boolean lookup(String entry) {
+        return dictionaryRepository.lookupInDefaultDictionary(entry);
     }
 
     @Transactional(readOnly = true)
-    public boolean lookup(String language, String value) {
-        return dictionaryRepository.lookup(language, value);
+    public boolean lookup(String language, String entry) {
+        return dictionaryRepository.lookup(language, entry);
     }
 
     @Transactional(readOnly = true)
-    public Map<String, Boolean> lookup(List<String> values) {
-        List<String> valuesInDictionary = dictionaryRepository.lookupInDefaultDictionary(values);
+    public Map<String, Boolean> lookup(List<String> entries) {
+        List<String> entriesInDictionary = dictionaryRepository.lookupInDefaultDictionary(entries);
 
-        return values.stream()
+        return entries.stream()
                 .collect(Collectors.toMap(
                         Function.identity(),
-                        s -> valuesInDictionary.contains(s.toLowerCase())
+                        s -> entriesInDictionary.contains(s.toLowerCase())
                 ));
     }
 }
