@@ -10,6 +10,6 @@ import java.util.Map;
 @FeignClient("dictionary-service")
 public interface DictionaryClient {
 
-    @GetMapping("/dictionary/api/dictionary/lookup")
-    Map<String, Boolean> lookupValues(@RequestParam List<String> values);
+    @GetMapping("/api/dictionary/lookup")
+    Map<String, Boolean> lookupEntries(@RequestParam("entries") List<String> entries);
 }

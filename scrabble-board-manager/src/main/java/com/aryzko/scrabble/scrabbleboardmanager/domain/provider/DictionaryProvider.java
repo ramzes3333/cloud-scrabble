@@ -5,5 +5,5 @@ import java.util.Map;
 
 public interface DictionaryProvider {
 
-    Map<String, Boolean> lookupValues(List<String> values);
+    Map<String, Boolean> lookupEntries(List<String> values);
 }

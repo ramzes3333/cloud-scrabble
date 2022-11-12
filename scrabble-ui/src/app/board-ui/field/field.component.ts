@@ -31,10 +31,21 @@ export class FieldComponent implements OnInit {
           this.letter, this.points
         )))
     }
-    this.gameService.updateBoardEvent.subscribe(gameUpdateType => {
-      if(gameUpdateType == GameUpdateType.MOVE_CONFIRMED) {
-        if(this.movableFields.length > 0) {
+    this.gameService.updateBoardEvent.subscribe(gameUpdate => {
+      if (gameUpdate.gameUpdateType == GameUpdateType.MOVE_CONFIRMED) {
+        if (this.movableFields.length > 0) {
           this.movableFields[0].locked = true;
+          this.movableFields[0].invalid = false;
+        }
+      } else if (gameUpdate.gameUpdateType == GameUpdateType.MOVE_PERFORMED) {
+        if (this.movableFields.length > 0) {
+          this.movableFields[0].invalid = false;
+        }
+      } else if (gameUpdate.gameUpdateType == GameUpdateType.INVALID_MOVE) {
+        if (this.movableFields.length > 0 &&
+          this.movableFields[0].x == gameUpdate.x &&
+          this.movableFields[0].y == gameUpdate.y) {
+          this.movableFields[0].invalid = true;
         }
       }
     });
@@ -96,6 +107,14 @@ export class FieldComponent implements OnInit {
       return 'board-field-tls';
     } else if (this.bonus === Bonus[Bonus.None]) {
       return '';
+    } else {
+      return '';
+    }
+  }
+
+  getLetterColor(): string {
+    if (this.movableFields.length > 0 && this.movableFields[0].invalid) {
+      return 'invalid';
     } else {
       return '';
     }

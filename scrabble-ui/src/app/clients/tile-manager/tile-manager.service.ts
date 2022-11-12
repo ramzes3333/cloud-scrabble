@@ -12,7 +12,7 @@ export class TileManagerService {
   constructor(private http: HttpClient) { }
 
   getTiles(uuid: string, numberOfItems: number): Observable<Letter[]> {
-    return this.http.post<Letter[]>(`tile-manager/api/boards/${uuid}/tiles/${numberOfItems}`,
+    return this.http.post<Letter[]>(`tile-manager-service/api/boards/${uuid}/tiles/${numberOfItems}`,
       {},
       {
         observe: 'response'

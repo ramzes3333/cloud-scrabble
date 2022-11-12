@@ -21,7 +21,7 @@ public class BoardValidator {
     public BoardValidationResult validate(Board board) {
         List<CharacterSequence> words = boardInspector.getWordsFromBoard(board);
 
-        Map<String, Boolean> validationStatus = dictionaryProvider.lookupValues(words.stream()
+        Map<String, Boolean> validationStatus = dictionaryProvider.lookupEntries(words.stream()
                 .map(CharacterSequence::getCharacterSequenceAsString)
                 .collect(Collectors.toList()));
 

@@ -50,6 +50,11 @@
   z-index: 1;
 }
 
+.board-field-letter.invalid {
+  background-color: red;
+  color: white;
+}
+
 .board-field-letter:hover {
   background-color: aliceblue;
   cursor: pointer;

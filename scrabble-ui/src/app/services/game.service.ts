@@ -14,13 +14,14 @@ const maximumRackSize = 7;
 export class GameService {
 
   public fillRackEvent = new EventEmitter<BoardLetter[]>();
-  public updateBoardEvent = new EventEmitter<GameUpdateType>();
+  public updateBoardEvent = new EventEmitter<GameUpdate>();
 
   private boardUUID?: string;
   private board?: Board;
   private started: boolean = false;
 
-  constructor(private boardManager: BoardManagerService, private tileManager: TileManagerService) { }
+  constructor(private boardManager: BoardManagerService, private tileManager: TileManagerService) {
+  }
 
   init(boardUUID: string) {
     this.boardUUID = boardUUID;
@@ -28,7 +29,7 @@ export class GameService {
   }
 
   startGame() {
-    if(this.boardUUID !== undefined) {
+    if (this.boardUUID !== undefined) {
       this.boardManager.getBoard(this.boardUUID).subscribe(board => {
         this.board = board;
         this.started = true;
@@ -46,24 +47,46 @@ export class GameService {
       console.log(move.field.x + ' ' + move.field.y + ' ' + move.field.letter!.letter + ' ' + move.field.letter!.points);
       this.updateField(move.fromX, move.fromY, move.field.x, move.field.y, move.field.letter!.letter, move.field.letter!.points);
       this.updateRack(move.fromX, move.fromY, move.field.x, move.field.y, move.field.letter!.letter, move.field.letter!.points);
-      this.updateBoardEvent.emit(GameUpdateType.MOVE_PERFORMED);
+      this.updateBoardEvent.emit(new GameUpdate(GameUpdateType.MOVE_PERFORMED, null, null));
     }
   }
 
   confirmMove() {
-    if(this.board) {
-      this.boardManager.updateBoard(this.board).subscribe();
-      this.fillRack(this.board);
-      this.updateBoardEvent.emit(GameUpdateType.MOVE_CONFIRMED);
+    if (this.board) {
+      this.lockBoard();
+      this.boardManager.validateBoard(this.board).subscribe(validationResult => {
+        if (this.board) {
+          if (validationResult.errors.length == 0) {
+            this.boardManager.updateBoard(this.board).subscribe();
+            this.fillRack(this.board);
+            this.updateBoardEvent.emit(new GameUpdate(GameUpdateType.MOVE_CONFIRMED, null, null));
+          } else {
+            for(const incorrectWord of validationResult.errors) {
+              for(const ch of incorrectWord.incorrectWord.characters) {
+                this.updateBoardEvent.emit(new GameUpdate(GameUpdateType.INVALID_MOVE, ch.x, ch.y));
+              }
+            }
+          }
+        }
+        this.unlockBoard();
+      });
     }
+  }
+
+  private lockBoard() {
+
+  }
+
+  private unlockBoard() {
+
   }
 
   private updateField(fromX: number, fromY: number | null, toX: number, toY: number | null, letter: string, points: number) {
     for (const field of this.board!.fields) {
-      if(fromY !== null && field.x == fromX && field.y == fromY) {
+      if (fromY !== null && field.x == fromX && field.y == fromY) {
         field.letter = undefined;
       }
-      if(toY !== null && field.x == toX && field.y == toY) {
+      if (toY !== null && field.x == toX && field.y == toY) {
         field.letter = new BoardLetter(letter, points);
       }
     }
@@ -73,7 +96,7 @@ export class GameService {
     let rackSize: number = board.racks.length > 0 ? board.racks[0].letters?.length! : 0;
     if (rackSize != maximumRackSize) {
       this.tileManager.getTiles(this.boardUUID!, maximumRackSize - rackSize).subscribe(value => {
-        if(board.racks?.[0] == undefined) {
+        if (board.racks?.[0] == undefined) {
           let rack = new Rack();
           rack.letters = [];
           board.racks[0] = rack;
@@ -100,5 +123,19 @@ export class GameService {
 
 export enum GameUpdateType {
   MOVE_PERFORMED,
-  MOVE_CONFIRMED
+  MOVE_CONFIRMED,
+  INVALID_MOVE
+}
+
+export class GameUpdate {
+  public gameUpdateType: GameUpdateType;
+
+  public x: number | null;
+  public y: number | null;
+
+  constructor(gameUpdateType: GameUpdateType, x: number | null, y: number | null) {
+    this.gameUpdateType = gameUpdateType;
+    this.x = x;
+    this.y = y;
+  }
 }

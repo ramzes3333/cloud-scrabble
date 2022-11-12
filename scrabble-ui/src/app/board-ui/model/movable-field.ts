@@ -6,6 +6,7 @@ export class MovableField {
   public letter: Letter;
 
   public locked: boolean = false;
+  public invalid: boolean = false;
 
   constructor(locked: boolean, x: number, y: number | null, letter: Letter) {
     this.locked = locked;

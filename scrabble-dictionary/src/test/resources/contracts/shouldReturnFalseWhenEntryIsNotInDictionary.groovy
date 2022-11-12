@@ -6,10 +6,13 @@ Contract.make {
     description "should return true when value is in dictionary"
     request {
         method GET()
-        url(value(consumer(regex('/api/dictionary/lookup/polski'))))
+        url(value(consumer(regex('/api/dictionary/lookup/[a-zA-Z]{2}'))))
     }
     response {
-        body("true")
         status 200
+        headers {
+            contentType(applicationJson())
+        }
+        body("false")
     }
 }

@@ -51,10 +51,15 @@ public class BoardInspector {
         for (int x = 0; x < horizontalSize; x++) {
             CharacterSequence.CharacterSequenceBuilder lineBuilder = CharacterSequence.builder();
             for (int y = 0; y < verticalSize; y++) {
-                Optional<Character> character = ofNullable(fieldMap.get(getPosition.apply(x, y)))
+                Position position = getPosition.apply(x, y);
+                Optional<Character> character = ofNullable(fieldMap.get(position))
                         .orElseThrow(() -> new IllegalStateException("There is no field on board"));
 
-                lineBuilder.character(CharacterWithPosition.builder().character(character).x(x).y(y).build());
+                lineBuilder.character(CharacterWithPosition.builder()
+                        .character(character)
+                        .x(position.getX())
+                        .y(position.getY())
+                        .build());
             }
             lines.add(lineBuilder.build());
         }
