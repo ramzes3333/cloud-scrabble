@@ -1,16 +1,10 @@
 export class BoardValidationResult {
-  public errors: BoardValidationError[];
+  public incorrectWords: CharacterSequence[];
+  public orphans: CharacterWithPosition[];
 
-  constructor(errors: BoardValidationError[]) {
-    this.errors = errors;
-  }
-}
-
-class BoardValidationError {
-  public incorrectWord: CharacterSequence;
-
-  constructor(incorrectWord: CharacterSequence) {
-    this.incorrectWord = incorrectWord;
+  constructor(incorrectWords: CharacterSequence[], orphans: CharacterWithPosition[]) {
+    this.incorrectWords = incorrectWords;
+    this.orphans = orphans;
   }
 }
 

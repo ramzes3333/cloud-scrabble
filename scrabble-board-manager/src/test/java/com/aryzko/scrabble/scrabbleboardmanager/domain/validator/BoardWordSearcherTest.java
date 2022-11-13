@@ -1,4 +1,4 @@
-package com.aryzko.scrabble.scrabbleboardmanager.domain.service;
+package com.aryzko.scrabble.scrabbleboardmanager.domain.validator;
 
 import com.aryzko.scrabble.scrabbleboardmanager.domain.Board;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.BoardParameters;
@@ -15,13 +15,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Optional.of;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
-class BoardInspectorTest {
+class BoardWordSearcherTest {
 
     public static final int BOARD_SIZE = 5;
-    private BoardInspector boardInspector = new BoardInspector();
+    private BoardWordSearcher boardWordSearcher = new BoardWordSearcher();
 
     @BeforeEach
     void setUp() {
@@ -33,7 +35,7 @@ class BoardInspectorTest {
         Board board = prepareBoard();
 
         //when
-        List<CharacterSequence> words = boardInspector.getWordsFromBoard(board);
+        List<CharacterSequence> words = boardWordSearcher.getWordsFromBoard(board);
 
         //then
         assertNotNull(words);

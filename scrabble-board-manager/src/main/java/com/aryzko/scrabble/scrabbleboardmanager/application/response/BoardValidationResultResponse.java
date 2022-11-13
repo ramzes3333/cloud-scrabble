@@ -9,12 +9,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardValidationResultResponse {
 
-    private final List<BoardValidationError> errors;
+    private final List<CharacterSequence> incorrectWords;
+    private final List<CharacterWithPosition> orphans;
 
-    public record BoardValidationError(CharacterSequence incorrectWord) {
-        public record CharacterSequence(List<CharacterWithPosition> characters) {
-            public record CharacterWithPosition(Integer x, Integer y, Character character) {
-            }
-        }
+    public record CharacterSequence(List<CharacterWithPosition> characters) {
+
+    }
+
+    public record CharacterWithPosition(Integer x, Integer y, Character character) {
     }
 }

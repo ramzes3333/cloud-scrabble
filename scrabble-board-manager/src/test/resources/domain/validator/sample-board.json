@@ -235,11 +235,7 @@
     },
     {
       "x": 9,
-      "y": 3,
-      "letter": {
-        "letter": "D",
-        "points": 2
-      }
+      "y": 3
     },
     {
       "x": 10,
@@ -298,28 +294,16 @@
     },
     {
       "x": 8,
-      "y": 4,
-      "letter": {
-        "letter": "R",
-        "points": 1
-      }
+      "y": 4
     },
     {
       "x": 9,
-      "y": 4,
-      "letter": {
-        "letter": "E",
-        "points": 1
-      }
+      "y": 4
     },
     {
       "x": 10,
       "y": 4,
-      "bonus": "DoubleWordScore",
-      "letter": {
-        "letter": "J",
-        "points": 3
-      }
+      "bonus": "DoubleWordScore"
     },
     {
       "x": 11,
@@ -352,52 +336,28 @@
     },
     {
       "x": 3,
-      "y": 5,
-      "letter": {
-        "letter": "Z",
-        "points": 1
-      }
+      "y": 5
     },
     {
       "x": 4,
-      "y": 5,
-      "letter": {
-        "letter": " ",
-        "points": 0
-      }
+      "y": 5
     },
     {
       "x": 5,
       "y": 5,
-      "bonus": "TripleLetterScore",
-      "letter": {
-        "letter": "W",
-        "points": 1
-      }
+      "bonus": "TripleLetterScore"
     },
     {
       "x": 6,
-      "y": 5,
-      "letter": {
-        "letter": "I",
-        "points": 1
-      }
+      "y": 5
     },
     {
       "x": 7,
-      "y": 5,
-      "letter": {
-        "letter": "Ł",
-        "points": 3
-      }
+      "y": 5
     },
     {
       "x": 8,
-      "y": 5,
-      "letter": {
-        "letter": "A",
-        "points": 1
-      }
+      "y": 5
     },
     {
       "x": 9,
@@ -406,11 +366,7 @@
     },
     {
       "x": 10,
-      "y": 5,
-      "letter": {
-        "letter": "E",
-        "points": 1
-      }
+      "y": 5
     },
     {
       "x": 11,
@@ -444,11 +400,7 @@
     },
     {
       "x": 3,
-      "y": 6,
-      "letter": {
-        "letter": "E",
-        "points": 1
-      }
+      "y": 6
     },
     {
       "x": 4,
@@ -456,11 +408,7 @@
     },
     {
       "x": 5,
-      "y": 6,
-      "letter": {
-        "letter": "A",
-        "points": 1
-      }
+      "y": 6
     },
     {
       "x": 6,
@@ -474,11 +422,7 @@
     {
       "x": 8,
       "y": 6,
-      "bonus": "DoubleLetterScore",
-      "letter": {
-        "letter": "B",
-        "points": 3
-      }
+      "bonus": "DoubleLetterScore"
     },
     {
       "x": 9,
@@ -486,11 +430,7 @@
     },
     {
       "x": 10,
-      "y": 6,
-      "letter": {
-        "letter": "Ż",
-        "points": 5
-      }
+      "y": 6
     },
     {
       "x": 11,
@@ -525,11 +465,7 @@
     {
       "x": 3,
       "y": 7,
-      "bonus": "DoubleLetterScore",
-      "letter": {
-        "letter": "W",
-        "points": 1
-      }
+      "bonus": "DoubleLetterScore"
     },
     {
       "x": 4,
@@ -537,11 +473,7 @@
     },
     {
       "x": 5,
-      "y": 7,
-      "letter": {
-        "letter": "S",
-        "points": 1
-      }
+      "y": 7
     },
     {
       "x": 6,
@@ -558,282 +490,278 @@
     {
       "x": 8,
       "y": 7,
-      "letter": {
-        "letter": "U",
-        "points": 3
-      }
-    },
-    {
-      "x": 9,
-      "y": 7
-    },
-    {
-      "x": 10,
-      "y": 7,
-      "letter": {
-        "letter": "A",
-        "points": 1
-      }
-    },
-    {
-      "x": 11,
-      "y": 7,
-      "bonus": "DoubleLetterScore"
-    },
-    {
-      "x": 12,
-      "y": 7
-    },
-    {
-      "x": 13,
-      "y": 7
-    },
-    {
-      "x": 14,
-      "y": 7,
-      "bonus": "TripleWordScore"
-    },
-    {
-      "x": 0,
-      "y": 8
-    },
-    {
-      "x": 1,
-      "y": 8
-    },
-    {
-      "x": 2,
-      "y": 8,
-      "bonus": "DoubleLetterScore"
-    },
-    {
-      "x": 3,
-      "y": 8
-    },
-    {
-      "x": 4,
-      "y": 8,
-      "letter": {
-        "letter": "N",
-        "points": 1
-      }
-    },
-    {
-      "x": 5,
-      "y": 8,
-      "letter": {
-        "letter": "I",
-        "points": 1
-      }
-    },
-    {
-      "x": 6,
-      "y": 8,
-      "bonus": "DoubleLetterScore",
-      "letter": {
-        "letter": "T",
-        "points": 2
-      }
-    },
-    {
-      "x": 7,
-      "y": 8
-    },
-    {
-      "x": 8,
-      "y": 8,
-      "bonus": "DoubleLetterScore",
-      "letter": {
-        "letter": "Ś",
-        "points": 5
-      }
-    },
-    {
-      "x": 9,
-      "y": 8
-    },
-    {
-      "x": 10,
-      "y": 8
-    },
-    {
-      "x": 11,
-      "y": 8
-    },
-    {
-      "x": 12,
-      "y": 8,
-      "bonus": "DoubleLetterScore"
-    },
-    {
-      "x": 13,
-      "y": 8
-    },
-    {
-      "x": 14,
-      "y": 8
-    },
-    {
-      "x": 0,
-      "y": 9
-    },
-    {
-      "x": 1,
-      "y": 9,
-      "bonus": "TripleLetterScore"
-    },
-    {
-      "x": 2,
-      "y": 9
-    },
-    {
-      "x": 3,
-      "y": 9
-    },
-    {
-      "x": 4,
-      "y": 9,
-      "letter": {
-        "letter": "I",
-        "points": 1
-      }
-    },
-    {
-      "x": 5,
-      "y": 9,
-      "bonus": "TripleLetterScore"
-    },
-    {
-      "x": 6,
-      "y": 9
-    },
-    {
-      "x": 7,
-      "y": 9
-    },
-    {
-      "x": 8,
-      "y": 9
-    },
-    {
-      "x": 9,
-      "y": 9,
-      "bonus": "TripleLetterScore"
-    },
-    {
-      "x": 10,
-      "y": 9
-    },
-    {
-      "x": 11,
-      "y": 9
-    },
-    {
-      "x": 12,
-      "y": 9
-    },
-    {
-      "x": 13,
-      "y": 9,
-      "bonus": "TripleLetterScore"
-    },
-    {
-      "x": 14,
-      "y": 9
-    },
-    {
-      "x": 0,
-      "y": 10
-    },
-    {
-      "x": 1,
-      "y": 10
-    },
-    {
-      "x": 2,
-      "y": 10
-    },
-    {
-      "x": 3,
-      "y": 10
-    },
-    {
-      "x": 4,
-      "y": 10,
-      "bonus": "DoubleWordScore",
-      "letter": {
-        "letter": "T",
-        "points": 2
-      }
-    },
-    {
-      "x": 5,
-      "y": 10
-    },
-    {
-      "x": 6,
-      "y": 10
-    },
-    {
-      "x": 7,
-      "y": 10
-    },
-    {
-      "x": 8,
-      "y": 10
-    },
-    {
-      "x": 9,
-      "y": 10
-    },
-    {
-      "x": 10,
-      "y": 10,
-      "bonus": "DoubleWordScore"
-    },
-    {
-      "x": 11,
-      "y": 10
-    },
-    {
-      "x": 12,
-      "y": 10
-    },
-    {
-      "x": 13,
-      "y": 10
-    },
-    {
-      "x": 14,
-      "y": 10
-    },
-    {
-      "x": 0,
-      "y": 11,
-      "bonus": "DoubleLetterScore"
-    },
-    {
-      "x": 1,
-      "y": 11
-    },
-    {
-      "x": 2,
-      "y": 11
-    },
-    {
-      "x": 3,
-      "y": 11,
-      "bonus": "DoubleWordScore"
-    },
-    {
-      "x": 4,
-      "y": 11,
       "letter": {
         "letter": "Y",
         "points": 2
       }
     },
     {
+      "x": 9,
+      "y": 7,
+      "letter": {
+        "letter": "Ć",
+        "points": 6
+      }
+    },
+    {
+      "x": 10,
+      "y": 7
+    },
+    {
+      "x": 11,
+      "y": 7,
+      "bonus": "DoubleLetterScore"
+    },
+    {
+      "x": 12,
+      "y": 7
+    },
+    {
+      "x": 13,
+      "y": 7
+    },
+    {
+      "x": 14,
+      "y": 7,
+      "bonus": "TripleWordScore"
+    },
+    {
+      "x": 0,
+      "y": 8
+    },
+    {
+      "x": 1,
+      "y": 8
+    },
+    {
+      "x": 2,
+      "y": 8,
+      "bonus": "DoubleLetterScore"
+    },
+    {
+      "x": 3,
+      "y": 8
+    },
+    {
+      "x": 4,
+      "y": 8
+    },
+    {
+      "x": 5,
+      "y": 8
+    },
+    {
+      "x": 6,
+      "y": 8,
+      "bonus": "DoubleLetterScore"
+    },
+    {
+      "x": 7,
+      "y": 8,
+      "letter": {
+        "letter": "O",
+        "points": 1
+      }
+    },
+    {
+      "x": 8,
+      "y": 8,
+      "bonus": "DoubleLetterScore"
+    },
+    {
+      "x": 9,
+      "y": 8
+    },
+    {
+      "x": 10,
+      "y": 8
+    },
+    {
+      "x": 11,
+      "y": 8
+    },
+    {
+      "x": 12,
+      "y": 8,
+      "bonus": "DoubleLetterScore"
+    },
+    {
+      "x": 13,
+      "y": 8
+    },
+    {
+      "x": 14,
+      "y": 8
+    },
+    {
+      "x": 0,
+      "y": 9
+    },
+    {
+      "x": 1,
+      "y": 9,
+      "bonus": "TripleLetterScore"
+    },
+    {
+      "x": 2,
+      "y": 9
+    },
+    {
+      "x": 3,
+      "y": 9
+    },
+    {
+      "x": 4,
+      "y": 9
+    },
+    {
+      "x": 5,
+      "y": 9,
+      "bonus": "TripleLetterScore"
+    },
+    {
+      "x": 6,
+      "y": 9
+    },
+    {
+      "x": 7,
+      "y": 9,
+      "letter": {
+        "letter": "L",
+        "points": 2
+      }
+    },
+    {
+      "x": 8,
+      "y": 9
+    },
+    {
+      "x": 9,
+      "y": 9,
+      "bonus": "TripleLetterScore"
+    },
+    {
+      "x": 10,
+      "y": 9
+    },
+    {
+      "x": 11,
+      "y": 9
+    },
+    {
+      "x": 12,
+      "y": 9
+    },
+    {
+      "x": 13,
+      "y": 9,
+      "bonus": "TripleLetterScore"
+    },
+    {
+      "x": 14,
+      "y": 9
+    },
+    {
+      "x": 0,
+      "y": 10
+    },
+    {
+      "x": 1,
+      "y": 10
+    },
+    {
+      "x": 2,
+      "y": 10
+    },
+    {
+      "x": 3,
+      "y": 10
+    },
+    {
+      "x": 4,
+      "y": 10,
+      "bonus": "DoubleWordScore"
+    },
+    {
+      "x": 5,
+      "y": 10
+    },
+    {
+      "x": 6,
+      "y": 10,
+      "letter": {
+        "letter": "P",
+        "points": 2
+      }
+    },
+    {
+      "x": 7,
+      "y": 10,
+      "letter": {
+        "letter": "I",
+        "points": 1
+      }
+    },
+    {
+      "x": 8,
+      "y": 10,
+      "letter": {
+        "letter": "K",
+        "points": 2
+      }
+    },
+    {
+      "x": 9,
+      "y": 10,
+      "letter": {
+        "letter": "A",
+        "points": 1
+      }
+    },
+    {
+      "x": 10,
+      "y": 10,
+      "bonus": "DoubleWordScore"
+    },
+    {
+      "x": 11,
+      "y": 10
+    },
+    {
+      "x": 12,
+      "y": 10
+    },
+    {
+      "x": 13,
+      "y": 10
+    },
+    {
+      "x": 14,
+      "y": 10
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "bonus": "DoubleLetterScore"
+    },
+    {
+      "x": 1,
+      "y": 11
+    },
+    {
+      "x": 2,
+      "y": 11
+    },
+    {
+      "x": 3,
+      "y": 11,
+      "bonus": "DoubleWordScore"
+    },
+    {
+      "x": 4,
+      "y": 11
+    },
+    {
       "x": 5,
       "y": 11
     },
@@ -856,12 +784,20 @@
     },
     {
       "x": 10,
-      "y": 11
+      "y": 11,
+      "letter": {
+        "letter": "N",
+        "points": 1
+      }
     },
     {
       "x": 11,
       "y": 11,
-      "bonus": "DoubleWordScore"
+      "bonus": "DoubleWordScore",
+      "letter": {
+        "letter": "A",
+        "points": 1
+      }
     },
     {
       "x": 12,
@@ -895,7 +831,11 @@
     },
     {
       "x": 4,
-      "y": 12
+      "y": 12,
+      "letter": {
+        "letter": "T",
+        "points": 2
+      }
     },
     {
       "x": 5,
@@ -1074,7 +1014,7 @@
     {
       "letters": [
         {
-          "letter": "I",
+          "letter": "E",
           "points": 1
         },
         {
@@ -1082,24 +1022,24 @@
           "points": 1
         },
         {
-          "letter": "K",
-          "points": 2
+          "letter": "Ę",
+          "points": 5
+        },
+        {
+          "letter": "E",
+          "points": 1
+        },
+        {
+          "letter": "S",
+          "points": 1
         },
         {
           "letter": "Y",
           "points": 2
         },
         {
-          "letter": "D",
-          "points": 2
-        },
-        {
-          "letter": "I",
+          "letter": "Z",
           "points": 1
-        },
-        {
-          "letter": "L",
-          "points": 2
         }
       ]
     }

@@ -55,6 +55,11 @@
   color: white;
 }
 
+.board-field-letter.invalid:hover {
+  background-color: #ffa2a2;
+  color: white;
+}
+
 .board-field-letter:hover {
   background-color: aliceblue;
   cursor: pointer;

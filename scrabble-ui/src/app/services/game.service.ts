@@ -5,6 +5,7 @@ import {Board} from "../clients/board-manager/model/board";
 import {Letter as BoardLetter} from "../clients/board-manager/model/letter";
 import {Rack} from "../clients/board-manager/model/rack";
 import {Move} from "../board-ui/model/move";
+import {BoardValidationResult} from "../clients/board-manager/model/board-validation-result";
 
 const maximumRackSize = 7;
 
@@ -56,21 +57,28 @@ export class GameService {
       this.lockBoard();
       this.boardManager.validateBoard(this.board).subscribe(validationResult => {
         if (this.board) {
-          if (validationResult.errors.length == 0) {
+          if (!this.hasErrors(validationResult)) {
             this.boardManager.updateBoard(this.board).subscribe();
             this.fillRack(this.board);
             this.updateBoardEvent.emit(new GameUpdate(GameUpdateType.MOVE_CONFIRMED, null, null));
           } else {
-            for(const incorrectWord of validationResult.errors) {
-              for(const ch of incorrectWord.incorrectWord.characters) {
-                this.updateBoardEvent.emit(new GameUpdate(GameUpdateType.INVALID_MOVE, ch.x, ch.y));
+            for(const incorrectWord of validationResult.incorrectWords) {
+              for(const ch of incorrectWord.characters) {
+                this.updateBoardEvent.emit(new GameUpdate(GameUpdateType.INVALID_WORD, ch.x, ch.y));
               }
+            }
+            for(const ch of validationResult.orphans) {
+                this.updateBoardEvent.emit(new GameUpdate(GameUpdateType.ORPHAN, ch.x, ch.y));
             }
           }
         }
         this.unlockBoard();
       });
     }
+  }
+
+  private hasErrors(validationResult: BoardValidationResult) {
+    return validationResult.incorrectWords.length > 0 || validationResult.orphans.length > 0;
   }
 
   private lockBoard() {
@@ -124,7 +132,8 @@ export class GameService {
 export enum GameUpdateType {
   MOVE_PERFORMED,
   MOVE_CONFIRMED,
-  INVALID_MOVE
+  INVALID_WORD,
+  ORPHAN
 }
 
 export class GameUpdate {

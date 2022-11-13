@@ -2,8 +2,8 @@ package com.aryzko.scrabble.scrabbleboardmanager.domain.validator;
 
 import com.aryzko.scrabble.scrabbleboardmanager.domain.Board;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.CharacterSequence;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.CharacterWithPosition;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.DictionaryProvider;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.service.BoardInspector;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -15,16 +15,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BoardValidator {
 
-    private final BoardInspector boardInspector;
+    private final BoardWordSearcher boardWordSearcher;
+    private final BoardOrphanSearcher boardOrphanSearcher;
     private final DictionaryProvider dictionaryProvider;
 
-    public BoardValidationResult validate(Board board) {
-        List<CharacterSequence> words = boardInspector.getWordsFromBoard(board);
+    public BoardValidationResult validate(final Board board) {
+        List<CharacterWithPosition> orphans = boardOrphanSearcher.searchOrphans(board);
+        List<CharacterSequence> words = boardWordSearcher.getWordsFromBoard(board);
 
         Map<String, Boolean> validationStatus = dictionaryProvider.lookupEntries(words.stream()
                 .map(CharacterSequence::getCharacterSequenceAsString)
                 .collect(Collectors.toList()));
 
-        return BoardValidationResult.of(words, validationStatus);
+        return BoardValidationResult.of(orphans, words, validationStatus);
     }
 }

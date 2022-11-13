@@ -1,5 +1,6 @@
 package com.aryzko.scrabble.scrabbleboardmanager.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,7 @@ public class Board {
 
     private BoardParameters boardParameters;
 
+    @JsonIgnore
     public Map<Position, Optional<Character>> getCharacterMap() {
         return fields.stream()
                 .collect(Collectors.toMap(

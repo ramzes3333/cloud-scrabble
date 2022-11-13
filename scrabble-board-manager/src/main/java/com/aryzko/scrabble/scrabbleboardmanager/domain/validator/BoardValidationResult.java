@@ -1,6 +1,8 @@
 package com.aryzko.scrabble.scrabbleboardmanager.domain.validator;
 
+import com.aryzko.scrabble.scrabbleboardmanager.application.response.BoardValidationResultResponse;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.CharacterSequence;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.CharacterWithPosition;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Value;
@@ -16,24 +18,24 @@ import static java.util.Optional.ofNullable;
 @Builder
 public class BoardValidationResult {
 
-    private List<BoardValidationError> errors;
+    private final List<CharacterSequence> incorrectWords;
+    private final List<CharacterWithPosition> orphans;
 
-    public static BoardValidationResult of(final List<CharacterSequence> words, final Map<String, Boolean> validationStatus) {
+    public static BoardValidationResult of(final List<CharacterWithPosition> orphans,
+                                           final List<CharacterSequence> words,
+                                           final Map<String, Boolean> validationStatus) {
+
         return BoardValidationResult.builder()
-                .errors(words.stream()
+                .incorrectWords(words.stream()
                         .filter(isWordInvalid(validationStatus))
-                        .map(BoardValidationError::of)
-                        .collect(Collectors.toList())).build();
+                        .collect(Collectors.toList()))
+                .orphans(orphans)
+                .build();
     }
 
     private static Predicate<CharacterSequence> isWordInvalid(final Map<String, Boolean> validationStatus) {
         return w -> ofNullable(validationStatus.get(w.getCharacterSequenceAsString()))
                 .orElseThrow(() -> new IllegalStateException("There is no word in validation result"))
                 .equals(Boolean.FALSE);
-    }
-
-    @Value(staticConstructor = "of")
-    public static class BoardValidationError {
-        private final CharacterSequence incorrectWord;
     }
 }

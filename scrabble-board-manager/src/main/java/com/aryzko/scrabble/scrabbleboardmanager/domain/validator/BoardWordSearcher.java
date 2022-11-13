@@ -1,4 +1,4 @@
-package com.aryzko.scrabble.scrabbleboardmanager.domain.service;
+package com.aryzko.scrabble.scrabbleboardmanager.domain.validator;
 
 import com.aryzko.scrabble.scrabbleboardmanager.domain.Board;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.CharacterSequence;
@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 import static java.util.Optional.ofNullable;
 
 @Component
-public class BoardInspector {
+public class BoardWordSearcher {
     public static final char EMPTY_CHAR = ' ';
 
     public List<CharacterSequence> getWordsFromBoard(final Board board) {

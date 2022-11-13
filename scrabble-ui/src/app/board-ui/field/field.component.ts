@@ -41,7 +41,8 @@ export class FieldComponent implements OnInit {
         if (this.movableFields.length > 0) {
           this.movableFields[0].invalid = false;
         }
-      } else if (gameUpdate.gameUpdateType == GameUpdateType.INVALID_MOVE) {
+      } else if (gameUpdate.gameUpdateType == GameUpdateType.INVALID_WORD
+        || gameUpdate.gameUpdateType == GameUpdateType.ORPHAN) {
         if (this.movableFields.length > 0 &&
           this.movableFields[0].x == gameUpdate.x &&
           this.movableFields[0].y == gameUpdate.y) {
