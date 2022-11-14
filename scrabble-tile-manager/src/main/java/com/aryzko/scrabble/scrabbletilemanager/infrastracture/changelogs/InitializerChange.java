@@ -57,7 +57,7 @@ public class InitializerChange {
         tileConfigurations.add(TileConfiguration.builder().tile(Tile.builder().letter('Ć').points(6).build()).number(1).build());
         tileConfigurations.add(TileConfiguration.builder().tile(Tile.builder().letter('Ń').points(7).build()).number(1).build());
         tileConfigurations.add(TileConfiguration.builder().tile(Tile.builder().letter('Ź').points(9).build()).number(1).build());
-        tileConfigurations.add(TileConfiguration.builder().tile(Tile.builder().letter(' ').points(0).build()).number(2).build());
+        tileConfigurations.add(TileConfiguration.builder().tile(Tile.builder().letter(' ').points(0).build()).number(200).build());
 
         TileSet defaultTileSet = TileSet.builder()
                 .tileConfigurations(tileConfigurations)

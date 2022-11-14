@@ -4,9 +4,11 @@ import com.aryzko.scrabble.scrabbletilemanager.application.mapper.TileMapper;
 import com.aryzko.scrabble.scrabbletilemanager.application.response.TileResponse;
 import com.aryzko.scrabble.scrabbletilemanager.domain.service.TileService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -26,5 +28,11 @@ public class TileController {
         return tileService.get(UUID.fromString(uuid), numberOfItems).stream()
                 .map(tileMapper::tileToTileResponse)
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("boards/{uuid}/charset")
+    public List<Character> getCharset(@PathVariable String uuid,
+                                      @RequestParam(required = false, defaultValue = "false") Boolean withoutBlank) {
+        return tileService.getCharset(UUID.fromString(uuid), withoutBlank);
     }
 }

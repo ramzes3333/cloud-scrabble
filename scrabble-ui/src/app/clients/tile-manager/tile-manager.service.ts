@@ -21,4 +21,14 @@ export class TileManagerService {
       map(response => response.body ?? [])
     );
   }
+
+  getCharset(uuid: string): Observable<string[]> {
+    return this.http.get<string[]>(`tile-manager-service/api/boards/${uuid}/charset?withoutBlank=true`,
+      {
+        observe: 'response'
+      }
+    ).pipe(
+      map(response => response.body ?? [])
+    );
+  }
 }

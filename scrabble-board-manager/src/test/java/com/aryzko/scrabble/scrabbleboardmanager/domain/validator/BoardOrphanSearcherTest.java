@@ -34,9 +34,9 @@ class BoardOrphanSearcherTest {
     }
 
     @Test
-    void getWords() throws IOException {
+    void searchOrphans_withoutLonelyCentralTile_returnsOrphans() throws IOException {
         //given
-        Board board = prepareBoard();
+        Board board = prepareBoard("sample-board.json");
 
         //when
         List<CharacterWithPosition> orphans = boardOrphanSearcher.searchOrphans(board);
@@ -49,8 +49,23 @@ class BoardOrphanSearcherTest {
         assertTrue(orphans.contains(CharacterWithPosition.builder().character(of('A')).x(10).y(11).build()));
     }
 
-    private Board prepareBoard() throws IOException {
+    @Test
+    void searchOrphans_lonelyCentralTile_returnAsOrphan() throws IOException {
+        //given
+        Board board = prepareBoard("lonely-central-tile.json");
+
+        //when
+        List<CharacterWithPosition> orphans = boardOrphanSearcher.searchOrphans(board);
+
+        //then
+        assertNotNull(orphans);
+        assertEquals(2, orphans.size());
+        assertTrue(orphans.contains(CharacterWithPosition.builder().character(of('T')).x(0).y(0).build()));
+        assertTrue(orphans.contains(CharacterWithPosition.builder().character(of('L')).x(2).y(2).build()));
+    }
+
+    private Board prepareBoard(String filename) throws IOException {
         return objectMapper.readValue(
-                JsonUtils.loadJsonFromClasspath("/domain/validator/sample-board.json"), Board.class);
+                JsonUtils.loadJsonFromClasspath(format("/domain/validator/%s", filename)), Board.class);
     }
 }

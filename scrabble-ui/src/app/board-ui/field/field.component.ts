@@ -5,7 +5,9 @@ import {Letter} from "../model/letter";
 import {MovableField} from "../model/movable-field";
 import {Move} from "../model/move";
 import {MoveType} from "../model/move-type";
-import {GameService, GameUpdateType} from "../../services/game.service";
+import {GameService, GameUpdate, GameUpdateType} from "../../services/game.service";
+import {MatDialog} from "@angular/material/dialog";
+import {BlankDialogComponent} from "../blank-dialog/blank-dialog.component";
 
 @Component({
   selector: 'app-field',
@@ -18,49 +20,67 @@ export class FieldComponent implements OnInit {
   @Input() y!: number;
   @Input() bonus!: string;
   @Input() letter?: string;
+  @Input() letterOnBlank?: string;
   @Input() points?: number;
   movableFields!: MovableField[];
 
-  constructor(private gameService: GameService) { }
+  constructor(private gameService: GameService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.movableFields = [];
-    if (this.letter != null && this.points != null) {
-      this.movableFields.push(new MovableField(true, this.x, this.y,
-        new Letter(
-          this.letter, this.points
-        )))
-    }
     this.gameService.updateBoardEvent.subscribe(gameUpdate => {
       if (gameUpdate.gameUpdateType == GameUpdateType.MOVE_CONFIRMED) {
-        if (this.movableFields.length > 0) {
-          this.movableFields[0].locked = true;
-          this.movableFields[0].invalid = false;
-        }
+        this.moveConfirmed();
       } else if (gameUpdate.gameUpdateType == GameUpdateType.MOVE_PERFORMED) {
-        if (this.movableFields.length > 0) {
-          this.movableFields[0].invalid = false;
-        }
-      } else if (gameUpdate.gameUpdateType == GameUpdateType.INVALID_WORD
-        || gameUpdate.gameUpdateType == GameUpdateType.ORPHAN) {
-        if (this.movableFields.length > 0 &&
-          this.movableFields[0].x == gameUpdate.x &&
-          this.movableFields[0].y == gameUpdate.y) {
-          this.movableFields[0].invalid = true;
-        }
+        this.movePerformed();
+      } else if (gameUpdate.gameUpdateType == GameUpdateType.INVALID_WORD) {
+        this.moveInvalid(gameUpdate);
+      } else if (gameUpdate.gameUpdateType == GameUpdateType.ORPHAN) {
+        this.moveInvalid(gameUpdate);
       }
     });
   }
 
-  canDropLetter = (): boolean => {
-    return this.movableFields.length == 0;
+  private moveInvalid(gameUpdate: GameUpdate) {
+    if (this.movableFields.length > 0 &&
+      this.movableFields[0].x == gameUpdate.x &&
+      this.movableFields[0].y == gameUpdate.y) {
+      this.movableFields[0].invalid = true;
+    }
   }
 
-  isDragDisabled() {
-    return this.movableFields.length > 0 && this.movableFields[0].locked;
+  private movePerformed() {
+    if (this.movableFields.length > 0) {
+      this.movableFields[0].invalid = false;
+    }
+  }
+
+  private moveConfirmed() {
+    if (this.movableFields.length > 0) {
+      this.letter = this.movableFields[0].letter.letter;
+      this.points = this.movableFields[0].letter.points;
+      this.movableFields = [];
+    }
+  }
+
+  canDropLetter = (): boolean => {
+    return !this.isLetter();
   }
 
   dropped(event: CdkDragDrop<MovableField[]>) {
+    if (event.previousContainer.data[event.previousIndex].letter.letter == ' ') {
+      this.gameService.getCharset().subscribe(charset => {
+        const dialogRef = this.dialog.open(BlankDialogComponent, {
+          width: '400px',
+          data: {charset: charset},
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+          console.log('The dialog was closed');
+        });
+      });
+    }
+
     let fromX = event.previousContainer.data[event.previousIndex].x;
     let fromY = event.previousContainer.data[event.previousIndex].y;
 
@@ -83,7 +103,7 @@ export class FieldComponent implements OnInit {
       this.getMoveType(fromY),
       fromX,
       fromY,
-      new MovableField(false,
+      new MovableField(
         this.x, this.y,
         new Letter(
           event.container.data[event.currentIndex].letter.letter,
@@ -138,10 +158,13 @@ export class FieldComponent implements OnInit {
   }
 
   getLetter() {
-    return this.movableFields.length > 0 ? this.movableFields[0].letter.letter : '';
+    return this.letter != undefined
+      ? this.letter : this.movableFields.length > 0
+        ? this.movableFields[0].letter.letter : '';
   }
 
   isLetter() {
-    return this.movableFields.length > 0;
+    return (this.letter != undefined || this.letterOnBlank != undefined) && this.points != undefined
+      || this.movableFields.length > 0;
   }
 }

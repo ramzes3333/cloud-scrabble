@@ -27,6 +27,11 @@ public class BoardOrphanSearcher {
 
         check(x, y, board.getBoardParameters(), fieldMap, correctCharactersMap);
 
+        // A case of a lonely central tile
+        if(correctCharactersMap.size() == 1) {
+            correctCharactersMap.clear();
+        }
+
         return fieldMap.entrySet().stream()
                 .filter(e -> e.getValue().isPresent())
                 .filter(e -> !correctCharactersMap.containsKey(e.getKey()))

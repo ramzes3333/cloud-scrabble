@@ -43,7 +43,7 @@ export class RackComponent implements OnInit {
   private convertToMovableFields(startIndex: number, letters: Letter[]): MovableField[] {
     let movableFields: MovableField[] = [];
     for (const letter of letters) {
-      movableFields.push(new MovableField( false, startIndex++, null, this.convert(letter)));
+      movableFields.push(new MovableField(startIndex++, null, this.convert(letter)));
     }
     return movableFields;
   }
@@ -82,7 +82,7 @@ export class RackComponent implements OnInit {
       this.getMoveType(fromY),
       fromX,
       fromY,
-      new MovableField(false,
+      new MovableField(
         event.currentIndex, null,
         new Letter(
           event.container.data[event.currentIndex].letter.letter,

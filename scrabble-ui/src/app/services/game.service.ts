@@ -6,6 +6,7 @@ import {Letter as BoardLetter} from "../clients/board-manager/model/letter";
 import {Rack} from "../clients/board-manager/model/rack";
 import {Move} from "../board-ui/model/move";
 import {BoardValidationResult} from "../clients/board-manager/model/board-validation-result";
+import {EMPTY, Observable} from "rxjs";
 
 const maximumRackSize = 7;
 
@@ -29,6 +30,14 @@ export class GameService {
     this.started = false;
   }
 
+  getCharset(): Observable<string[]> {
+    if (this.boardUUID !== undefined) {
+      return this.tileManager.getCharset(this.boardUUID);
+    } else {
+      return EMPTY;
+    }
+  }
+
   startGame() {
     if (this.boardUUID !== undefined) {
       this.boardManager.getBoard(this.boardUUID).subscribe(board => {
@@ -45,7 +54,6 @@ export class GameService {
 
   move(move: Move) {
     if (this.started) {
-      console.log(move.field.x + ' ' + move.field.y + ' ' + move.field.letter!.letter + ' ' + move.field.letter!.points);
       this.updateField(move.fromX, move.fromY, move.field.x, move.field.y, move.field.letter!.letter, move.field.letter!.points);
       this.updateRack(move.fromX, move.fromY, move.field.x, move.field.y, move.field.letter!.letter, move.field.letter!.points);
       this.updateBoardEvent.emit(new GameUpdate(GameUpdateType.MOVE_PERFORMED, null, null));
