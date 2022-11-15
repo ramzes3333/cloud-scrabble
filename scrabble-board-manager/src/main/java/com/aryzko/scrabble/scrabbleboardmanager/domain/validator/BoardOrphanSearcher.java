@@ -51,10 +51,10 @@ public class BoardOrphanSearcher {
             if(y > 0) {
                 check(x, y-1, boardParameters, fieldMap, correctCharactersMap);
             }
-            if(x < boardParameters.getHorizontalSize()) {
+            if((x+1) < boardParameters.getHorizontalSize()) {
                 check(x+1, y, boardParameters, fieldMap, correctCharactersMap);
             }
-            if(y < boardParameters.getVerticalSize()) {
+            if((y+1) < boardParameters.getVerticalSize()) {
                 check(x, y+1, boardParameters, fieldMap, correctCharactersMap);
             }
         }
