@@ -2,9 +2,11 @@ package com.aryzko.scrabble.scrabbleboardmanager.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.Id;
 import java.util.List;
@@ -19,6 +21,8 @@ import static java.util.Optional.ofNullable;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
+@ToString
 public class Board {
     @Id
     private UUID id;

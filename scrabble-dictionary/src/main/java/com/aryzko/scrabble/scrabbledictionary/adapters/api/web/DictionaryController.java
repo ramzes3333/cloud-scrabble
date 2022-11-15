@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping(value = "/api/dictionary")
@@ -34,7 +35,7 @@ public class DictionaryController {
 
     @PerformanceLog
     @GetMapping("lookup")
-    public Map<String, Boolean> lookupEntries(@RequestParam List<String> entries) {
+    public Map<String, Boolean> lookupEntries(@RequestParam Set<String> entries) {
         return dictionaryService.lookup(entries);
     }
 }

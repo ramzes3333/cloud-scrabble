@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -36,7 +37,7 @@ public class DbDictionaryRepository implements DictionaryRepository {
     }
 
     @Override
-    public List<String> lookupInDefaultDictionary(List<String> entries) {
+    public List<String> lookupInDefaultDictionary(Set<String> entries) {
         return dictionaryEntryRepository.findInDefaultDictionary(
                         entries.stream()
                                 .map(String::toLowerCase)

@@ -2,7 +2,7 @@
   <p>Which letter do you want?</p>
   <ng-container *ngFor="let character of data.charset">
     <div class="board-field-container">
-      <div class="board-field-letter">{{character}}</div>
+      <div class="board-field-letter" [mat-dialog-close]="character">{{character}}</div>
     </div>
   </ng-container>
 </div>

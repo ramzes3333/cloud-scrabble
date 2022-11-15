@@ -1,9 +1,10 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {Letter} from "../../clients/board-manager/model/letter";
+import {Letter as BoardLetter} from "../../clients/board-manager/model/letter";
+import {Letter as TileLetter} from "../../clients/tile-manager/model/letter";
 import {Letter as GuiLetter} from "../model/letter";
-import {CdkDragDrop, CdkDragExit, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
+import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {ActivatedRoute} from "@angular/router";
-import {GameService, GameUpdateType} from "../../services/game.service";
+import {GameService} from "../../services/game.service";
 import {MovableField} from "../model/movable-field";
 import {Move} from "../model/move";
 import {MoveType} from "../model/move-type";
@@ -25,31 +26,39 @@ export class RackComponent implements OnInit {
     this.route.data
       .subscribe((data) => {
         if(data['board']['racks'].length > 0) {
-          this._rack = new Rack(this.convertToMovableFields(0, data['board']['racks'][0].letters));
+          this._rack = new Rack(this.convertBoardLettersToMovableFields(0, data['board']['racks'][0].letters));
         } else {
           this._rack = new Rack([]);
         }
       });
 
     this.gameService.fillRackEvent.subscribe(letters => {
-      this._rack.movableFields = this._rack.movableFields.concat(this.convertToMovableFields(this._rack.movableFields.length, letters));
+      this._rack.movableFields = this._rack.movableFields.concat(this.convertTileLettersToMovableFields(this._rack.movableFields.length, letters));
     })
 
     this.gameService.updateBoardEvent.subscribe(gameUpdateType => {
-      this.updateCoordinates();
+      this.updateRackCoordinates();
     });
   }
 
-  private convertToMovableFields(startIndex: number, letters: Letter[]): MovableField[] {
+  private convertTileLettersToMovableFields(startIndex: number, letters: TileLetter[]): MovableField[] {
     let movableFields: MovableField[] = [];
     for (const letter of letters) {
-      movableFields.push(new MovableField(startIndex++, null, this.convert(letter)));
+      movableFields.push(new MovableField(startIndex++, null, this.convert(letter.letter, letter.letter == ' ', letter.points)));
     }
     return movableFields;
   }
 
-  private convert(letter: Letter): GuiLetter {
-    return new GuiLetter(letter.letter, letter.points);
+  private convertBoardLettersToMovableFields(startIndex: number, letters: BoardLetter[]): MovableField[] {
+    let movableFields: MovableField[] = [];
+    for (const letter of letters) {
+      movableFields.push(new MovableField(startIndex++, null, this.convert(letter.letter, letter.blank, letter.points)));
+    }
+    return movableFields;
+  }
+
+  private convert(letter: string, blank: boolean, points: number): GuiLetter {
+    return new GuiLetter(letter, blank, points);
   }
 
   dropped(event: CdkDragDrop<MovableField[]>) {
@@ -66,11 +75,14 @@ export class RackComponent implements OnInit {
     }
     event.container.data[event.currentIndex].x = event.currentIndex;
     event.container.data[event.currentIndex].y = null;
+    if(event.container.data[event.currentIndex].letter.blank) {
+      event.container.data[event.currentIndex].letter.letter = " ";
+    }
 
     this.gameService.move(this.extractMoveFromDropEvent(fromX, fromY, event));
   }
 
-  private updateCoordinates() {
+  private updateRackCoordinates() {
     let counter = 0;
     for(let movableField of this._rack.movableFields) {
       movableField.x = counter++;
@@ -84,8 +96,9 @@ export class RackComponent implements OnInit {
       fromY,
       new MovableField(
         event.currentIndex, null,
-        new Letter(
+        new GuiLetter(
           event.container.data[event.currentIndex].letter.letter,
+          event.container.data[event.currentIndex].letter.blank,
           event.container.data[event.currentIndex].letter.points
         )
       )

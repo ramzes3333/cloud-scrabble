@@ -3,6 +3,8 @@ import {BoardManagerService} from "../clients/board-manager/board-manager.servic
 import {TileManagerService} from "../clients/tile-manager/tile-manager.service";
 import {Board} from "../clients/board-manager/model/board";
 import {Letter as BoardLetter} from "../clients/board-manager/model/letter";
+import {Letter as TileLetter} from "../clients/tile-manager/model/letter";
+import {Letter as GuiLetter} from "../clients/board-manager/model/letter";
 import {Rack} from "../clients/board-manager/model/rack";
 import {Move} from "../board-ui/model/move";
 import {BoardValidationResult} from "../clients/board-manager/model/board-validation-result";
@@ -15,7 +17,7 @@ const maximumRackSize = 7;
 })
 export class GameService {
 
-  public fillRackEvent = new EventEmitter<BoardLetter[]>();
+  public fillRackEvent = new EventEmitter<TileLetter[]>();
   public updateBoardEvent = new EventEmitter<GameUpdate>();
 
   private boardUUID?: string;
@@ -54,9 +56,17 @@ export class GameService {
 
   move(move: Move) {
     if (this.started) {
-      this.updateField(move.fromX, move.fromY, move.field.x, move.field.y, move.field.letter!.letter, move.field.letter!.points);
-      this.updateRack(move.fromX, move.fromY, move.field.x, move.field.y, move.field.letter!.letter, move.field.letter!.points);
+      this.updateField(move.fromX, move.fromY, move.field.x, move.field.y, move.field.letter);
+      this.updateRack(move.fromX, move.fromY, move.field.x, move.field.y, move.field.letter);
       this.updateBoardEvent.emit(new GameUpdate(GameUpdateType.MOVE_PERFORMED, null, null));
+    }
+  }
+
+  selectedLetterForBlank(x: number, y: number, letter: string) {
+    for (const field of this.board!.fields) {
+      if (field.x == x && field.y == y) {
+        field.letter!.letter = letter;
+      }
     }
   }
 
@@ -97,13 +107,14 @@ export class GameService {
 
   }
 
-  private updateField(fromX: number, fromY: number | null, toX: number, toY: number | null, letter: string, points: number) {
+  private updateField(fromX: number, fromY: number | null, toX: number, toY: number | null,
+                      letter: GuiLetter) {
     for (const field of this.board!.fields) {
       if (fromY !== null && field.x == fromX && field.y == fromY) {
         field.letter = undefined;
       }
       if (toY !== null && field.x == toX && field.y == toY) {
-        field.letter = new BoardLetter(letter, points);
+        field.letter = new BoardLetter(letter.letter, letter.blank, letter.points);
       }
     }
   }
@@ -117,21 +128,33 @@ export class GameService {
           rack.letters = [];
           board.racks[0] = rack;
         }
-        board.racks[0].letters = board.racks[0].letters!.concat(value);
+        board.racks[0].letters = board.racks[0].letters!.concat(this.convertTileLettersToBoardLetters(value));
         this.boardManager.updateBoard(board).subscribe();
         this.fillRackEvent.emit(value);
       });
     }
   }
 
-  private updateRack(fromX: number, fromY: number | null, toX: number, toY: number | null, letter: string, points: number) {
+  private convertTileLettersToBoardLetters(letters: TileLetter[]): BoardLetter[] {
+    let result: BoardLetter[] = [];
+    for (const letter of letters) {
+      result.push(this.convertTileLetterToBoardLetter(letter));
+    }
+    return result;
+  }
+
+  private convertTileLetterToBoardLetter(letter: TileLetter): BoardLetter {
+    return new BoardLetter(letter.letter, letter.letter == ' ', letter.points)
+  }
+
+  private updateRack(fromX: number, fromY: number | null, toX: number, toY: number | null, letter: GuiLetter) {
     if (this.board && this.board.racks.length > 0) {
       let rack = this.board.racks[0];
-      if (fromY == null && rack.letters?.at(fromX)?.letter == letter) {
+      if (fromY == null && rack.letters?.at(fromX)?.letter == letter.letter) {
         rack.letters!.splice(fromX, 1);
       }
       if (toY == null) {
-        rack.letters!.splice(toX, 0, new BoardLetter(letter, points));
+        rack.letters!.splice(toX, 0, new BoardLetter(letter.letter, letter.blank, letter.points));
       }
     }
   }

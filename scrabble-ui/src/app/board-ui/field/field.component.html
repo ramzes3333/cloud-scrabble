@@ -1,7 +1,11 @@
 <div class="board-field-container" cdkDropList
      [cdkDropListData]="movableFields"
      [cdkDropListEnterPredicate]="canDropLetter"
+     [cdkDropListDisabled]="isDragDisabled()"
      (cdkDropListDropped)="dropped($event)">
-  <div *ngIf="isLetter()" class="board-field-letter {{getLetterColor()}}" cdkDrag>{{getLetter()}}</div>
+  <div *ngIf="isLetter()" class="board-field-letter {{getLetterColor()}}" cdkDrag>
+    {{getLetter()}}
+    <div class="board-field-points">{{getLetterPoints()}}</div>
+  </div>
   <div class="board-field-background {{getBackgroundColor()}}">{{getBackgroundContent()}}</div>
 </div>

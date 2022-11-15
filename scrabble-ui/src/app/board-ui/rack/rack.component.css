@@ -11,6 +11,7 @@
 }
 
 .letter {
+  position: relative;
   display: inline-block;
   border: 1px solid chocolate;
   margin: 2px;
@@ -33,6 +34,14 @@
 .letter:hover {
   background-color: aliceblue;
   cursor: pointer;
+}
+
+.points {
+  position: absolute;
+  top: 16px;
+  right: 5px;
+
+  font-size: 9px;
 }
 
 

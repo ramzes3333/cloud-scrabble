@@ -60,9 +60,22 @@
   color: white;
 }
 
+.board-field-letter.blank {
+  color: #bfbfbf;
+}
+
 .board-field-letter:hover {
   background-color: aliceblue;
   cursor: pointer;
+}
+
+.board-field-points {
+  position: absolute;
+  top: 16px;
+  right: 5px;
+
+  font-size: 9px;
+  color: grey;
 }
 
 .board-field-tws:hover {

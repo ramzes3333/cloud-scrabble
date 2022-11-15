@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -35,13 +36,14 @@ public class DictionaryService {
     }
 
     @Transactional(readOnly = true)
-    public Map<String, Boolean> lookup(List<String> entries) {
+    public Map<String, Boolean> lookup(Set<String> entries) {
         List<String> entriesInDictionary = dictionaryRepository.lookupInDefaultDictionary(entries);
 
         return entries.stream()
                 .collect(Collectors.toMap(
                         Function.identity(),
-                        s -> entriesInDictionary.contains(s.toLowerCase())
+                        s -> entriesInDictionary.contains(s.toLowerCase()),
+                        (v1, v2) -> v1 || v2
                 ));
     }
 }

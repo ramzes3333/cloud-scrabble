@@ -1,7 +1,7 @@
 package com.aryzko.scrabble.scrabbleboardmanager.application.request;
 
-import com.aryzko.scrabble.scrabbleboardmanager.application.response.Field;
-import com.aryzko.scrabble.scrabbleboardmanager.application.response.Rack;
+import com.aryzko.scrabble.scrabbleboardmanager.application.common.Field;
+import com.aryzko.scrabble.scrabbleboardmanager.application.common.Rack;
 import com.aryzko.scrabble.scrabbleboardmanager.application.validator.UUID;
 import lombok.Data;
 

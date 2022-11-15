@@ -1,4 +1,4 @@
-package com.aryzko.scrabble.scrabbleboardmanager.application.response;
+package com.aryzko.scrabble.scrabbleboardmanager.application.common;
 
 import lombok.Data;
 

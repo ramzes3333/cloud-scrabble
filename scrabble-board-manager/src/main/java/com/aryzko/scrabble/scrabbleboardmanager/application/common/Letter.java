@@ -1,4 +1,4 @@
-package com.aryzko.scrabble.scrabbleboardmanager.application.response;
+package com.aryzko.scrabble.scrabbleboardmanager.application.common;
 
 import lombok.Data;
 
@@ -11,4 +11,5 @@ public class Letter {
     private Character letter;
     @NotNull
     private Integer points;
+    private boolean blank;
 }

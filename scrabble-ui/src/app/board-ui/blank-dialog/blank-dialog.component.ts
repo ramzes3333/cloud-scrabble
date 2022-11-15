@@ -13,7 +13,6 @@ export class BlankDialogComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
 }
 
 export interface BlankDialogData {

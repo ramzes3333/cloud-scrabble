@@ -5,6 +5,7 @@
       [y]="field.y"
       [bonus]="field.bonus"
       [letter]="field.letter?.letter"
+      [blank]="field.letter?.blank"
       [points]="field.letter?.points"></app-field>
     <br *ngIf="((i+1)%board!.boardParameters!.horizontalSize == 0)"/>
   </ng-container>

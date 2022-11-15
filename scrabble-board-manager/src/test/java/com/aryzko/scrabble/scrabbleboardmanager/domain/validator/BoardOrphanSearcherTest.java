@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(MockitoExtension.class)
 class BoardOrphanSearcherTest {
 
-    private ObjectMapper objectMapper = new ObjectMapper();;
+    private ObjectMapper objectMapper = new ObjectMapper();
     private BoardOrphanSearcher boardOrphanSearcher = new BoardOrphanSearcher();
 
     @BeforeEach
@@ -36,7 +36,7 @@ class BoardOrphanSearcherTest {
     @Test
     void searchOrphans_withoutLonelyCentralTile_returnsOrphans() throws IOException {
         //given
-        Board board = prepareBoard("sample-board.json");
+        Board board = prepareBoard("sample-board-15x15.json");
 
         //when
         List<CharacterWithPosition> orphans = boardOrphanSearcher.searchOrphans(board);

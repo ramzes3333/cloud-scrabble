@@ -4,6 +4,9 @@
      [cdkDropListDisabled]="isGameNotStarted()"
      (cdkDropListDropped)="dropped($event)">
   <ng-container *ngFor="let movableField of rack.movableFields; let i = index" >
-    <div class="letter cdk-drag" cdkDrag>{{movableField.letter.letter}}</div>
+    <div class="letter cdk-drag" cdkDrag>
+      {{movableField.letter.letter}}
+      <div class="points">{{movableField.letter.points}}</div>
+    </div>
   </ng-container>
 </div>
