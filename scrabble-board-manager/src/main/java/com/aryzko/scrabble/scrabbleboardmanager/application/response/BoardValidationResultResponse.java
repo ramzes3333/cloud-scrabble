@@ -13,7 +13,6 @@ public class BoardValidationResultResponse {
     private final List<CharacterWithPosition> orphans;
 
     public record CharacterSequence(List<CharacterWithPosition> characters) {
-
     }
 
     public record CharacterWithPosition(Integer x, Integer y, Character character) {

@@ -1,4 +1,4 @@
-package com.aryzko.scrabble.scrabbledictionary.infrastracture.aspect;
+package com.aryzko.scrabble.scrabbledictionary.domain.aspect;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;

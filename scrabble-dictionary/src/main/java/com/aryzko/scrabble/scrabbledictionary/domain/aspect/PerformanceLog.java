@@ -1,4 +1,4 @@
-package com.aryzko.scrabble.scrabbledictionary.infrastracture.aspect;
+package com.aryzko.scrabble.scrabbledictionary.domain.aspect;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

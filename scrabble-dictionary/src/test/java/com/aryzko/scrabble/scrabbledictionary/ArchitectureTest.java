@@ -3,6 +3,7 @@ package com.aryzko.scrabble.scrabbledictionary;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
+import lombok.experimental.NonFinal;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,8 @@ public class ArchitectureTest {
             "org.assertj..",
             "org.mockito..",
             "org.slf4j..",
-            "org.springframework.."
+            "org.springframework..",
+            "org.aspectj.."
     };
 
     @ArchTest
@@ -44,7 +46,7 @@ public class ArchitectureTest {
 
     @ArchTest
     static final ArchRule SERVICES_SHOULD_HAVE_ONLY_FINAL_FIELDS =
-            classes().that().areAnnotatedWith(Service.class)
+            classes().that().areAnnotatedWith(Service.class).and().areNotAnnotatedWith(NonFinal.class)
                     .and().resideOutsideOfPackage("..configuration..")
                     .should().haveOnlyFinalFields();
 
