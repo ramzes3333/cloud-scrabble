@@ -12,6 +12,7 @@ import java.util.Stack;
 public class DawgBuilder {
     private int idSeq = 0;
     private String previousWord = "";
+
     private final Node root = new Node(0);
     private final Map<Node, Node> minimizedNodes = new HashMap<>();
     private final Stack<UncheckedNode> uncheckedNodes = new Stack<>();

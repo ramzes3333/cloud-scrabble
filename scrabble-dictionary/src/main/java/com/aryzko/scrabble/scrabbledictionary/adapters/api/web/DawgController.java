@@ -4,6 +4,7 @@ import com.aryzko.scrabble.scrabbledictionary.adapters.api.web.error.RestErrorRe
 import com.aryzko.scrabble.scrabbledictionary.domain.aspect.PerformanceLog;
 import com.aryzko.scrabble.scrabbledictionary.domain.exception.DawgIsNotReady;
 import com.aryzko.scrabble.scrabbledictionary.domain.service.DawgService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotBlank;
 
+import java.util.List;
+
 import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
@@ -24,13 +27,26 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @RequiredArgsConstructor
 public class DawgController {
 
-    public static final String DAWG_IS_NOT_READY = "E0000";
+    private static final String DAWG_IS_NOT_READY = "E0000";
+
     private final DawgService dawgService;
 
     @PerformanceLog
     @GetMapping("lookup/{entry}")
     public Boolean lookupEntry(@PathVariable @NotBlank String entry) throws DawgIsNotReady {
         return dawgService.lookup(entry);
+    }
+
+    @Operation(
+            summary = "Fill gap in pattern",
+            description = """
+                    Fill gap in pattern. Example: 
+                    - [english dictionary] c*t will produce list [a, o, u, w], because these words exist: cat, cot, cut, cwt
+                    - [polish dictionary] k*t will produce list [e, o, ą], because these words exist: ket, kot, kąt""")
+    @PerformanceLog
+    @GetMapping("fill-gap/{pattern}")
+    public List<Character> fillGap(@PathVariable @NotBlank String pattern) throws DawgIsNotReady {
+        return dawgService.fillGapInPattern(pattern);
     }
 
     @ExceptionHandler(DawgIsNotReady.class)

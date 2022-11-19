@@ -1,5 +1,8 @@
 package com.aryzko.scrabble.scrabbledictionary.domain.model.dawg;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +20,15 @@ public class Node {
     private final int id;
     private boolean terminal;
     private SortedMap<Character, Node> transitions = new TreeMap<>();
+
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public Node(@JsonProperty("id") int id,
+                @JsonProperty("terminal") boolean terminal,
+                @JsonProperty("transitions") SortedMap<Character, Node> transitions) {
+        this.id = id;
+        this.terminal = terminal;
+        this.transitions = transitions;
+    }
 
     @Override
     public String toString() {

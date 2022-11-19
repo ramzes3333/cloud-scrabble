@@ -6,6 +6,9 @@ import com.aryzko.scrabble.scrabbledictionary.domain.model.DictionaryEntry;
 import com.aryzko.scrabble.scrabbledictionary.domain.model.dawg.DawgBuilder;
 import com.aryzko.scrabble.scrabbledictionary.domain.model.dawg.Node;
 import com.aryzko.scrabble.scrabbledictionary.domain.ports.DictionaryRepository;
+import liquibase.pro.packaged.C;
+import liquibase.pro.packaged.K;
+import liquibase.pro.packaged.V;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
@@ -15,14 +18,23 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import static java.lang.String.format;
 
 @Slf4j
 @RequiredArgsConstructor
 @NonFinal
 @Service
 public class DawgService implements ApplicationListener<ApplicationReadyEvent> {
+
+    private static final Character WILD_CARD = '*';
+    private static final int MINIMUM_PATTERN_LENGTH = 2;
 
     private Node root;
     private final DictionaryRepository dictionaryRepository;
@@ -38,16 +50,19 @@ public class DawgService implements ApplicationListener<ApplicationReadyEvent> {
         root = builder.build();
     }
 
-    public boolean isDawgReady() {
+    private boolean isDawgReady() {
         return root != null;
     }
 
-    public Node getDawg() throws DawgIsNotReady {
+    private Node getDawg() throws DawgIsNotReady {
         return Optional.ofNullable(root).orElseThrow(() -> new DawgIsNotReady());
     }
 
     public boolean lookup(String word) throws DawgIsNotReady {
-        Node node = getDawg();
+        return lookup(getDawg(), word);
+    }
+
+    private boolean lookup(Node node, String word) throws DawgIsNotReady {
         for (Character character : word.toCharArray()){
             node = node.getTransitions().get(character);
             if (node == null) {
@@ -55,5 +70,36 @@ public class DawgService implements ApplicationListener<ApplicationReadyEvent> {
             }
         }
         return node.isTerminal();
+    }
+
+    public List<Character> fillGapInPattern(String pattern) throws DawgIsNotReady {
+        if (!isPatternCorrect(pattern)) {
+            throw new IllegalArgumentException(format("Pattern should contain exactly one occurrence of %c sign", WILD_CARD));
+        }
+        List<Character> matchedCharacters = new ArrayList<>();
+        Node node = getDawg();
+        for (int i = 0; i < pattern.length(); i++) {
+            Character character = pattern.charAt(i);
+            if (character == WILD_CARD) {
+                for (Map.Entry<Character, Node> transition : node.getTransitions().entrySet()) {
+                    if (lookup(transition.getValue(), pattern.substring(i+1))) {
+                        matchedCharacters.add(transition.getKey());
+                    }
+                }
+            } else {
+                node = node.getTransitions().get(character);
+                if (node == null) {
+                    break;
+                }
+            }
+        }
+        return matchedCharacters;
+    }
+
+    private static boolean isPatternCorrect(String pattern) {
+        return pattern.length() >= MINIMUM_PATTERN_LENGTH && pattern.chars()
+                .map(v -> (char) v)
+                .filter(character -> character == WILD_CARD)
+                .count() == 1;
     }
 }
