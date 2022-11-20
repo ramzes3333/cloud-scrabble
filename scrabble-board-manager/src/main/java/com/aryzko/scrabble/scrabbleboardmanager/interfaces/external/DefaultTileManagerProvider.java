@@ -1,6 +1,7 @@
 package com.aryzko.scrabble.scrabbleboardmanager.interfaces.external;
 
 import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.DictionaryProvider;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.TileManagerProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -9,17 +10,12 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class DefaultDictionaryProvider implements DictionaryProvider {
+public class DefaultTileManagerProvider implements TileManagerProvider {
 
-    private final DictionaryClient dictionaryClient;
-
-    @Override
-    public Map<String, Boolean> lookupEntries(List<String> values) {
-        return dictionaryClient.lookupEntries(values);
-    }
+    private final TileManagerClient tileManagerClient;
 
     @Override
-    public List<Character> fillGap(String pattern) {
-        return null;
+    public List<Character> getCharset(String uuid) {
+        return tileManagerClient.getCharset(uuid);
     }
 }

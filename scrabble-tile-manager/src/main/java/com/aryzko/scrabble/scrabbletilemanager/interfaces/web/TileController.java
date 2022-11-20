@@ -1,4 +1,4 @@
-package com.aryzko.scrabble.scrabbletilemanager.infrastracture.web;
+package com.aryzko.scrabble.scrabbletilemanager.interfaces.web;
 
 import com.aryzko.scrabble.scrabbletilemanager.application.mapper.TileMapper;
 import com.aryzko.scrabble.scrabbletilemanager.application.response.TileResponse;

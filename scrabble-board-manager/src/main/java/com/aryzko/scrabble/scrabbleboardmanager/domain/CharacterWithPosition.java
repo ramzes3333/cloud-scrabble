@@ -9,4 +9,8 @@ import java.util.Optional;
 @SuperBuilder
 public class CharacterWithPosition extends Position {
     private Optional<Character> character;
+
+    public boolean isCharSet() {
+        return character.isPresent();
+    }
 }

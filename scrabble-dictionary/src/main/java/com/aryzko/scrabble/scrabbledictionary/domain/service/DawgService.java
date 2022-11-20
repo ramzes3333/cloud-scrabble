@@ -6,20 +6,15 @@ import com.aryzko.scrabble.scrabbledictionary.domain.model.DictionaryEntry;
 import com.aryzko.scrabble.scrabbledictionary.domain.model.dawg.DawgBuilder;
 import com.aryzko.scrabble.scrabbledictionary.domain.model.dawg.Node;
 import com.aryzko.scrabble.scrabbledictionary.domain.ports.DictionaryRepository;
-import liquibase.pro.packaged.C;
-import liquibase.pro.packaged.K;
-import liquibase.pro.packaged.V;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -74,7 +69,8 @@ public class DawgService implements ApplicationListener<ApplicationReadyEvent> {
 
     public List<Character> fillGapInPattern(String pattern) throws DawgIsNotReady {
         if (!isPatternCorrect(pattern)) {
-            throw new IllegalArgumentException(format("Pattern should contain exactly one occurrence of %c sign", WILD_CARD));
+            throw new IllegalArgumentException(
+                    format("Pattern should contain exactly one occurrence of %c sign and length greater than 1", WILD_CARD));
         }
         List<Character> matchedCharacters = new ArrayList<>();
         Node node = getDawg();

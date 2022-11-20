@@ -1,0 +1,340 @@
+{
+  "lines": [
+    {
+      "fields": [
+        {
+          "x": 0,
+          "y": 0,
+          "letter": null,
+          "anchor": false,
+          "anyLetter": true,
+          "leftLimit": null,
+          "availableLetters": null
+        },
+        {
+          "x": 1,
+          "y": 0,
+          "letter": null,
+          "anchor": false,
+          "anyLetter": true,
+          "leftLimit": null,
+          "availableLetters": null
+        },
+        {
+          "x": 2,
+          "y": 0,
+          "letter": null,
+          "anchor": true,
+          "anyLetter": false,
+          "leftLimit": 2,
+          "availableLetters": [
+            "b",
+            "c",
+            "d",
+            "e",
+            "g",
+            "h",
+            "k",
+            "n",
+            "o",
+            "p",
+            "r",
+            "t",
+            "y"
+          ]
+        },
+        {
+          "x": 3,
+          "y": 0,
+          "letter": "o",
+          "anchor": false,
+          "anyLetter": false,
+          "leftLimit": null,
+          "availableLetters": null
+        },
+        {
+          "x": 4,
+          "y": 0,
+          "letter": null,
+          "anchor": true,
+          "anyLetter": false,
+          "leftLimit": 0,
+          "availableLetters": [
+            "d",
+            "h",
+            "j",
+            "k",
+            "m",
+            "n",
+            "o",
+            "p",
+            "r",
+            "s",
+            "t",
+            "z",
+            "ń",
+            "ś",
+            "ż"
+          ]
+        }
+      ]
+    },
+    {
+      "fields": [
+        {
+          "x": 0,
+          "y": 1,
+          "letter": null,
+          "anchor": true,
+          "anyLetter": false,
+          "leftLimit": 0,
+          "availableLetters": [
+            "o"
+          ]
+        },
+        {
+          "x": 1,
+          "y": 1,
+          "letter": null,
+          "anchor": true,
+          "anyLetter": false,
+          "leftLimit": 0,
+          "availableLetters": [
+            "b",
+            "c",
+            "d",
+            "e",
+            "g",
+            "h",
+            "k",
+            "n",
+            "o",
+            "p",
+            "r",
+            "t",
+            "y"
+          ]
+        },
+        {
+          "x": 2,
+          "y": 1,
+          "letter": null,
+          "anchor": true,
+          "anyLetter": false,
+          "leftLimit": 0,
+          "availableLetters": [
+            "a",
+            "e",
+            "o"
+          ]
+        },
+        {
+          "x": 3,
+          "y": 1,
+          "letter": "t",
+          "anchor": false,
+          "anyLetter": false,
+          "leftLimit": null,
+          "availableLetters": null
+        },
+        {
+          "x": 4,
+          "y": 1,
+          "letter": null,
+          "anchor": true,
+          "anyLetter": false,
+          "leftLimit": 0,
+          "availableLetters": [
+            "a",
+            "e",
+            "o",
+            "u"
+          ]
+        }
+      ]
+    },
+    {
+      "fields": [
+        {
+          "x": 0,
+          "y": 2,
+          "letter": "k",
+          "anchor": false,
+          "anyLetter": false,
+          "leftLimit": null,
+          "availableLetters": null
+        },
+        {
+          "x": 1,
+          "y": 2,
+          "letter": "o",
+          "anchor": false,
+          "anyLetter": false,
+          "leftLimit": null,
+          "availableLetters": null
+        },
+        {
+          "x": 2,
+          "y": 2,
+          "letter": "j",
+          "anchor": false,
+          "anyLetter": false,
+          "leftLimit": null,
+          "availableLetters": null
+        },
+        {
+          "x": 3,
+          "y": 2,
+          "letter": "o",
+          "anchor": false,
+          "anyLetter": false,
+          "leftLimit": null,
+          "availableLetters": null
+        },
+        {
+          "x": 4,
+          "y": 2,
+          "letter": "t",
+          "anchor": false,
+          "anyLetter": false,
+          "leftLimit": null,
+          "availableLetters": null
+        }
+      ]
+    },
+    {
+      "fields": [
+        {
+          "x": 0,
+          "y": 3,
+          "letter": null,
+          "anchor": true,
+          "anyLetter": false,
+          "leftLimit": 0,
+          "availableLetters": [
+            "a",
+            "i",
+            "o",
+            "u"
+          ]
+        },
+        {
+          "x": 1,
+          "y": 3,
+          "letter": null,
+          "anchor": true,
+          "anyLetter": false,
+          "leftLimit": 0,
+          "availableLetters": [
+            "d",
+            "h",
+            "j",
+            "k",
+            "m",
+            "n",
+            "o",
+            "p",
+            "r",
+            "s",
+            "t",
+            "z",
+            "ń",
+            "ś",
+            "ż"
+          ]
+        },
+        {
+          "x": 2,
+          "y": 3,
+          "letter": null,
+          "anchor": true,
+          "anyLetter": false,
+          "leftLimit": 0,
+          "availableLetters": [
+            "a",
+            "e",
+            "ą"
+          ]
+        },
+        {
+          "x": 3,
+          "y": 3,
+          "letter": null,
+          "anchor": true,
+          "anyLetter": false,
+          "leftLimit": 0,
+          "availableLetters": [
+            "k"
+          ]
+        },
+        {
+          "x": 4,
+          "y": 3,
+          "letter": null,
+          "anchor": true,
+          "anyLetter": false,
+          "leftLimit": 0,
+          "availableLetters": [
+            "a",
+            "e",
+            "o",
+            "s",
+            "u",
+            "y",
+            "ą",
+            "ę"
+          ]
+        }
+      ]
+    },
+    {
+      "fields": [
+        {
+          "x": 0,
+          "y": 4,
+          "letter": null,
+          "anchor": false,
+          "anyLetter": true,
+          "leftLimit": null,
+          "availableLetters": null
+        },
+        {
+          "x": 1,
+          "y": 4,
+          "letter": null,
+          "anchor": false,
+          "anyLetter": true,
+          "leftLimit": null,
+          "availableLetters": null
+        },
+        {
+          "x": 2,
+          "y": 4,
+          "letter": null,
+          "anchor": false,
+          "anyLetter": true,
+          "leftLimit": null,
+          "availableLetters": null
+        },
+        {
+          "x": 3,
+          "y": 4,
+          "letter": null,
+          "anchor": false,
+          "anyLetter": true,
+          "leftLimit": null,
+          "availableLetters": null
+        },
+        {
+          "x": 4,
+          "y": 4,
+          "letter": null,
+          "anchor": false,
+          "anyLetter": true,
+          "leftLimit": null,
+          "availableLetters": null
+        }
+      ]
+    }
+  ]
+}

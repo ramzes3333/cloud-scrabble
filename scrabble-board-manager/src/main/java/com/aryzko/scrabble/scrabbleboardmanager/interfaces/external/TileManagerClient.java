@@ -8,12 +8,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 import java.util.Map;
 
-@FeignClient("dictionary-service")
-public interface DictionaryClient {
+@FeignClient("tile-manager-service")
+public interface TileManagerClient {
 
-    @GetMapping("/api/dictionary/lookup")
-    Map<String, Boolean> lookupEntries(@RequestParam("entries") List<String> entries);
-
-    @GetMapping("/api/fill-gap/{pattern}")
-    List<Character> fillGap(@PathVariable("pattern") String pattern);
+    @GetMapping("boards/{uuid}/charset")
+    List<Character> getCharset(@PathVariable("uuid") String uuid);
 }
