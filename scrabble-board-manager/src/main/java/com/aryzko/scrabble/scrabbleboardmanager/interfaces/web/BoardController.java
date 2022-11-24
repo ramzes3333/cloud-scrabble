@@ -2,9 +2,12 @@ package com.aryzko.scrabble.scrabbleboardmanager.interfaces.web;
 
 import com.aryzko.scrabble.scrabbleboardmanager.application.mapper.BoardMapper;
 import com.aryzko.scrabble.scrabbleboardmanager.application.mapper.BoardValidationMapper;
+import com.aryzko.scrabble.scrabbleboardmanager.application.mapper.SolutionMapper;
 import com.aryzko.scrabble.scrabbleboardmanager.application.request.BoardRequest;
 import com.aryzko.scrabble.scrabbleboardmanager.application.response.BoardResponse;
 import com.aryzko.scrabble.scrabbleboardmanager.application.response.BoardValidationResultResponse;
+import com.aryzko.scrabble.scrabbleboardmanager.application.response.Solution;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.service.BoardResolver;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +29,9 @@ import java.util.stream.Collectors;
 public class BoardController {
 
     private final BoardService boardService;
+    private final BoardResolver resolver;
     private final BoardMapper boardMapper;
+    private final SolutionMapper solutionMapper;
     private final BoardValidationMapper boardValidationMapper;
 
     @PostMapping
@@ -55,5 +60,10 @@ public class BoardController {
     public BoardValidationResultResponse validate(@RequestBody @Valid BoardRequest board) {
         return boardValidationMapper.toBoardValidationResultResponse(
                 boardService.validate(boardMapper.toBoard(board)));
+    }
+
+    @PostMapping(value = "resolve")
+    public Solution resolve(@RequestBody @Valid BoardRequest board) {
+        return solutionMapper.convert(resolver.resolve(boardMapper.toBoard(board)));
     }
 }

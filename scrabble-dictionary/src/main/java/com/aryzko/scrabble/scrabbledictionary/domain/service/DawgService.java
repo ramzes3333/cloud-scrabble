@@ -49,7 +49,7 @@ public class DawgService implements ApplicationListener<ApplicationReadyEvent> {
         return root != null;
     }
 
-    private Node getDawg() throws DawgIsNotReady {
+    public Node getDawg() throws DawgIsNotReady {
         return Optional.ofNullable(root).orElseThrow(() -> new DawgIsNotReady());
     }
 

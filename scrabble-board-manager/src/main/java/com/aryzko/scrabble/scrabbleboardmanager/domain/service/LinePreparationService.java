@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.util.Optional.ofNullable;
 
@@ -29,37 +28,6 @@ public class LinePreparationService {
     private static final int FIRST_COLUMN_X = 0;
 
     private final DictionaryProvider dictionaryProvider;
-
-    private static StringBuilder traverse(DirectionalField directionalField, Function<DirectionalField, DirectionalField> getNextField) {
-        StringBuilder pattern = new StringBuilder();
-
-        while (ofNullable(getNextField.apply(directionalField)).map(DirectionalField::isCharSet).orElse(false)) {
-            directionalField = getNextField.apply(directionalField);
-            pattern.append(directionalField.getField().getCharacter().get());
-        }
-        return pattern;
-    }
-
-    private static List<Character> concat(List<Character> list1, List<Character> list2) {
-        return Stream.concat(list1.stream(), list2.stream())
-                .map(Character::toLowerCase)
-                .collect(Collectors.toList());
-    }
-
-    private static List<Character> intersection(List<Character> list1, List<Character> list2) {
-        return list1.stream()
-                .distinct()
-                .filter(list2::contains)
-                .map(Character::toLowerCase)
-                .collect(Collectors.toList());
-    }
-
-    private static Position getPosition(Integer x, Integer y) {
-        return Position.builder()
-                .x(x)
-                .y(y)
-                .build();
-    }
 
     protected PreparedLines prepareLines(final Board board) {
 
@@ -78,23 +46,17 @@ public class LinePreparationService {
         int leftLimit = 0;
         do {
             CharacterWithPosition character = directionalField.getField();
-            boolean isAdjacent = isAdjacent(directionalField);
-
             PreparedLine.LineField.LineFieldBuilder fieldBuilder = PreparedLine.LineField.builder().x(character.getX()).y(character.getY());
 
-            if (!character.isCharSet() && isAdjacent) {
-                fieldBuilder.availableLetters(computeAvailableCharacters(directionalField));
-                fieldBuilder.anchor(true);
-                fieldBuilder.leftLimit(leftLimit);
+            handleEmptyFieldAdjacentToUpOrDown(directionalField, character, fieldBuilder);
+            handleEmptyFieldAdjacentInAnyDirection(directionalField, leftLimit, character, fieldBuilder);
+            handleEmptyFieldNotAdjacentToUpOrDown(directionalField, character, fieldBuilder);
+            handleFieldWithChar(character, fieldBuilder);
+
+            if(character.isCharSet() || isAdjacentInAnyDirections(directionalField)) {
                 leftLimit = 0;
-            }
-            if (!character.isCharSet() && !isAdjacent) {
-                fieldBuilder.anyLetter(true);
+            } else {
                 leftLimit++;
-            }
-            if (character.isCharSet()) {
-                fieldBuilder.letter(Character.toLowerCase(character.getCharacter().get()));
-                leftLimit = 0;
             }
             preparedLineBuilder.field(fieldBuilder.build());
 
@@ -103,31 +65,38 @@ public class LinePreparationService {
         return preparedLineBuilder.build();
     }
 
-    private List<Character> computeAvailableCharacters(DirectionalField directionalField) {
-        StringBuilder verticalPattern = prepareVerticalPattern(directionalField);
-        StringBuilder horizontalPattern = prepareHorizontalPattern(directionalField);
-
-        List<Character> verticalCharacters = new ArrayList<>();
-        List<Character> horizontalCharacters = new ArrayList<>();
-        if (verticalPattern.length() > 1) {
-            verticalCharacters.addAll(dictionaryProvider.fillGap(verticalPattern.toString().toLowerCase()));
-        }
-        if (horizontalPattern.length() > 1) {
-            horizontalCharacters.addAll(dictionaryProvider.fillGap(horizontalPattern.toString().toLowerCase()));
-        }
-
-        if (!horizontalCharacters.isEmpty() && !verticalCharacters.isEmpty()) {
-            return intersection(verticalCharacters, horizontalCharacters);
-        } else {
-            return concat(verticalCharacters, horizontalCharacters);
+    private void handleFieldWithChar(CharacterWithPosition character, PreparedLine.LineField.LineFieldBuilder fieldBuilder) {
+        if (character.isCharSet()) {
+            fieldBuilder.letter(Character.toLowerCase(character.getCharacter().get()));
         }
     }
 
-    private StringBuilder prepareHorizontalPattern(DirectionalField startField) {
-        return traverse(startField, DirectionalField::getLeft)
-                .reverse()
-                .append("*")
-                .append(traverse(startField, DirectionalField::getRight));
+    private void handleEmptyFieldNotAdjacentToUpOrDown(DirectionalField directionalField, CharacterWithPosition character, PreparedLine.LineField.LineFieldBuilder fieldBuilder) {
+        if (!character.isCharSet() && !isAdjacentToUpOrDown(directionalField)) {
+            fieldBuilder.anyLetter(true);
+        }
+    }
+
+    private void handleEmptyFieldAdjacentInAnyDirection(DirectionalField directionalField, int leftLimit, CharacterWithPosition character, PreparedLine.LineField.LineFieldBuilder fieldBuilder) {
+        if(!character.isCharSet() && isAdjacentInAnyDirections(directionalField)) {
+            fieldBuilder.anchor(true);
+            fieldBuilder.leftLimit(leftLimit);
+        }
+    }
+
+    private void handleEmptyFieldAdjacentToUpOrDown(DirectionalField directionalField, CharacterWithPosition character, PreparedLine.LineField.LineFieldBuilder fieldBuilder) {
+        if (!character.isCharSet() && isAdjacentToUpOrDown(directionalField)) {
+            fieldBuilder.availableLetters(computeAvailableCharacters(directionalField));
+        }
+    }
+
+    private List<Character> computeAvailableCharacters(DirectionalField directionalField) {
+        StringBuilder verticalPattern = prepareVerticalPattern(directionalField);
+        List<Character> verticalCharacters = new ArrayList<>();
+        if (verticalPattern.length() > 1) {
+            verticalCharacters.addAll(dictionaryProvider.fillGap(verticalPattern.toString().toLowerCase()));
+        }
+        return verticalCharacters;
     }
 
     private StringBuilder prepareVerticalPattern(DirectionalField startField) {
@@ -137,7 +106,29 @@ public class LinePreparationService {
                 .append(traverse(startField, DirectionalField::getDown));
     }
 
-    private boolean isAdjacent(DirectionalField directionalField) {
+    private static StringBuilder traverse(DirectionalField directionalField, Function<DirectionalField, DirectionalField> getNextField) {
+        StringBuilder pattern = new StringBuilder();
+
+        while (ofNullable(getNextField.apply(directionalField)).map(DirectionalField::isCharSet).orElse(false)) {
+            directionalField = getNextField.apply(directionalField);
+            pattern.append(directionalField.getField().getCharacter().get());
+        }
+        return pattern;
+    }
+
+    private static Position getPosition(Integer x, Integer y) {
+        return Position.builder()
+                .x(x)
+                .y(y)
+                .build();
+    }
+
+    private boolean isAdjacentToUpOrDown(DirectionalField directionalField) {
+        return ofNullable(directionalField.getUp()).map(DirectionalField::isCharSet).orElse(false)
+                || ofNullable(directionalField.getDown()).map(DirectionalField::isCharSet).orElse(false);
+    }
+
+    private boolean isAdjacentInAnyDirections(DirectionalField directionalField) {
         return ofNullable(directionalField.getUp()).map(DirectionalField::isCharSet).orElse(false)
                 || ofNullable(directionalField.getDown()).map(DirectionalField::isCharSet).orElse(false)
                 || ofNullable(directionalField.getLeft()).map(DirectionalField::isCharSet).orElse(false)

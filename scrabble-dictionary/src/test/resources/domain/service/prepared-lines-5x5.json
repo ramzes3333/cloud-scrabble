@@ -1,0 +1,49 @@
+{
+  "fields": [
+    {
+      "x": 0,
+      "y": 0,
+      "letter": null,
+      "anchor": false,
+      "anyLetter": true,
+      "leftLimit": null,
+      "availableLetters": null
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "letter": null,
+      "anchor": false,
+      "anyLetter": true,
+      "leftLimit": null,
+      "availableLetters": null
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "letter": null,
+      "anchor": true,
+      "anyLetter": true,
+      "leftLimit": 2,
+      "availableLetters": null
+    },
+    {
+      "x": 3,
+      "y": 0,
+      "letter": "o",
+      "anchor": false,
+      "anyLetter": false,
+      "leftLimit": null,
+      "availableLetters": null
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "letter": null,
+      "anchor": true,
+      "anyLetter": true,
+      "leftLimit": 0,
+      "availableLetters": null
+    }
+  ]
+}

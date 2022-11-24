@@ -1,30 +1,27 @@
-package com.aryzko.scrabble.scrabbleboardmanager.domain;
+package com.aryzko.scrabble.scrabbledictionary.adapters.api.response;
 
 import lombok.Builder;
+import lombok.Setter;
 import lombok.Singular;
 import lombok.Value;
 
 import java.util.List;
 
-@Value
-@Builder
+@Setter
 public class Solution {
-    @Singular
+
     private List<Word> words;
 
-    @Value
-    @Builder
-    public static class Word {
-        private int points;
+    @Setter
+    private static class Word {
         private List<Element> elements;
 
-        @Value
-        @Builder
-        public static class Element {
+        @Setter
+        private static class Element {
             private int x;
             private int y;
             private char letter;
-            private boolean onBoard;
+            private boolean unmodifiableLetter;
         }
     }
 }

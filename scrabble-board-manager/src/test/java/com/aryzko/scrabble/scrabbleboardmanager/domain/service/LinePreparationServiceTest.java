@@ -59,10 +59,6 @@ class LinePreparationServiceTest {
         List<PreparedLine> lines = preparedLines.getLines();
 
         assertNotNull(lines);
-        assertEquals(List.of('b', 'c', 'd', 'e', 'g', 'h', 'k', 'n', 'o', 'p', 'r', 't', 'y'),
-                getField(lines, 2, 0).getAvailableLetters());
-        assertEquals(List.of('d', 'h', 'j', 'k', 'm', 'n', 'o', 'p', 'r', 's', 't', 'z', 'ń', 'ś', 'ż'),
-                getField(lines, 4, 0).getAvailableLetters());
 
         assertEquals(List.of('o'),
                 getField(lines, 0, 1).getAvailableLetters());
@@ -86,6 +82,20 @@ class LinePreparationServiceTest {
 
         assertTrue(getField(lines, 0, 0).isAnyLetter());
         assertTrue(getField(lines, 1, 0).isAnyLetter());
+        assertTrue(getField(lines, 2, 0).isAnyLetter());
+        assertTrue(getField(lines, 4, 0).isAnyLetter());
+
+        assertFalse(getField(lines, 0, 1).isAnyLetter());
+        assertFalse(getField(lines, 1, 1).isAnyLetter());
+        assertFalse(getField(lines, 2, 1).isAnyLetter());
+        assertFalse(getField(lines, 4, 1).isAnyLetter());
+
+        assertFalse(getField(lines, 0, 3).isAnyLetter());
+        assertFalse(getField(lines, 1, 3).isAnyLetter());
+        assertFalse(getField(lines, 2, 3).isAnyLetter());
+        assertFalse(getField(lines, 3, 3).isAnyLetter());
+        assertFalse(getField(lines, 4, 3).isAnyLetter());
+
         assertTrue(getField(lines, 0, 4).isAnyLetter());
         assertTrue(getField(lines, 1, 4).isAnyLetter());
         assertTrue(getField(lines, 2, 4).isAnyLetter());
