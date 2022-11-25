@@ -1,0 +1,169 @@
+{
+  "tiles": [
+    {
+      "letter": "A",
+      "points": 1,
+      "number": 9
+    },
+    {
+      "letter": "I",
+      "points": 1,
+      "number": 8
+    },
+    {
+      "letter": "E",
+      "points": 1,
+      "number": 7
+    },
+    {
+      "letter": "O",
+      "points": 1,
+      "number": 6
+    },
+    {
+      "letter": "N",
+      "points": 1,
+      "number": 5
+    },
+    {
+      "letter": "Z",
+      "points": 1,
+      "number": 5
+    },
+    {
+      "letter": "R",
+      "points": 1,
+      "number": 4
+    },
+    {
+      "letter": "S",
+      "points": 1,
+      "number": 4
+    },
+    {
+      "letter": "W",
+      "points": 1,
+      "number": 4
+    },
+    {
+      "letter": "Y",
+      "points": 2,
+      "number": 4
+    },
+    {
+      "letter": "C",
+      "points": 2,
+      "number": 3
+    },
+    {
+      "letter": "D",
+      "points": 2,
+      "number": 3
+    },
+    {
+      "letter": "K",
+      "points": 2,
+      "number": 3
+    },
+    {
+      "letter": "L",
+      "points": 2,
+      "number": 3
+    },
+    {
+      "letter": "M",
+      "points": 2,
+      "number": 3
+    },
+    {
+      "letter": "P",
+      "points": 2,
+      "number": 3
+    },
+    {
+      "letter": "T",
+      "points": 2,
+      "number": 3
+    },
+    {
+      "letter": "B",
+      "points": 3,
+      "number": 2
+    },
+    {
+      "letter": "G",
+      "points": 3,
+      "number": 2
+    },
+    {
+      "letter": "H",
+      "points": 3,
+      "number": 2
+    },
+    {
+      "letter": "J",
+      "points": 3,
+      "number": 2
+    },
+    {
+      "letter": "Ł",
+      "points": 3,
+      "number": 2
+    },
+    {
+      "letter": "U",
+      "points": 3,
+      "number": 2
+    },
+    {
+      "letter": "Ą",
+      "points": 5,
+      "number": 1
+    },
+    {
+      "letter": "Ę",
+      "points": 5,
+      "number": 1
+    },
+    {
+      "letter": "F",
+      "points": 5,
+      "number": 1
+    },
+    {
+      "letter": "Ó",
+      "points": 5,
+      "number": 1
+    },
+    {
+      "letter": "Ś",
+      "points": 5,
+      "number": 1
+    },
+    {
+      "letter": "Ż",
+      "points": 5,
+      "number": 1
+    },
+    {
+      "letter": "Ć",
+      "points": 6,
+      "number": 1
+    },
+    {
+      "letter": "Ń",
+      "points": 7,
+      "number": 1
+    },
+    {
+      "letter": "Ź",
+      "points": 9,
+      "number": 1
+    },
+    {
+      "letter": " ",
+      "points": 0,
+      "number": 2
+    }
+  ]
+}

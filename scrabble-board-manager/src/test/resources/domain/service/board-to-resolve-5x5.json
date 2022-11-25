@@ -11,7 +11,8 @@
     },
     {
       "x": 2,
-      "y": 0
+      "y": 0,
+      "bonus": "TripleWordScore"
     },
     {
       "x": 3,
@@ -23,7 +24,8 @@
     },
     {
       "x": 4,
-      "y": 0
+      "y": 0,
+      "bonus": "DoubleLetterScore"
     },
     {
       "x": 0,
@@ -31,7 +33,8 @@
     },
     {
       "x": 1,
-      "y": 1
+      "y": 1,
+      "bonus": "DoubleWordScore"
     },
     {
       "x": 2,
@@ -95,7 +98,8 @@
     },
     {
       "x": 1,
-      "y": 3
+      "y": 3,
+      "bonus": "TripleLetterScore"
     },
     {
       "x": 2,
@@ -150,6 +154,7 @@
   ],
   "boardParameters": {
     "horizontalSize": 5,
-    "verticalSize": 5
+    "verticalSize": 5,
+    "rackSize": 2
   }
 }

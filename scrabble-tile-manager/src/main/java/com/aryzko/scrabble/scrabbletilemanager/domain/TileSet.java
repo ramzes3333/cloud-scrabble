@@ -15,6 +15,6 @@ public class TileSet {
 
     private String name;
     private Integer version;
-    private boolean defaultSet;
+    private Boolean defaultSet;
     private List<TileConfiguration> tileConfigurations;
 }

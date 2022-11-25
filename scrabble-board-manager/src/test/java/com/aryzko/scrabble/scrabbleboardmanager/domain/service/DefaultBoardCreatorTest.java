@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
+import static com.aryzko.scrabble.scrabbleboardmanager.common.JsonUtils.loadObjectFromJson;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,7 +19,7 @@ class DefaultBoardCreatorTest {
     @Test
     void prepareEmptyBoard() throws IOException {
         //given
-        Board board = prepareBoard("new-board-15x15.json");
+        Board board = loadObjectFromJson("/domain/validator/new-board-15x15.json", Board.class);
 
         //when
         Board result = defaultBoardCreator.prepareEmptyBoard();
@@ -29,10 +30,5 @@ class DefaultBoardCreatorTest {
         assertEquals(result.getFields(), board.getFields());
         assertEquals(result.getRacks(), board.getRacks());
         assertEquals(result.getBoardParameters(), board.getBoardParameters());
-    }
-
-    private Board prepareBoard(String filename) throws IOException {
-        return objectMapper.readValue(
-                JsonUtils.loadJsonFromClasspath(format("/domain/validator/%s", filename)), Board.class);
     }
 }

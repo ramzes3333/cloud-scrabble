@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.IOException;
 import java.util.List;
 
+import static com.aryzko.scrabble.scrabbleboardmanager.common.JsonUtils.loadObjectFromJson;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -35,7 +36,7 @@ class LinePreparationServiceTest {
     @Test
     void prepareLines() throws IOException {
         //given
-        Board board = prepareBoard("board-to-resolve-5x5.json");
+        Board board = loadObjectFromJson("/domain/service/board-to-resolve-5x5.json", Board.class);
 
         when(dictionaryProvider.fillGap("*j")).thenReturn(List.of('a', 'e', 'o'));
         when(dictionaryProvider.fillGap("*t")).thenReturn(List.of('a', 'e', 'o', 'u'));
@@ -142,10 +143,5 @@ class LinePreparationServiceTest {
 
     private static PreparedLine.LineField getField(List<PreparedLine> preparedLines, int x, int y) {
         return preparedLines.get(y).getFields().get(x);
-    }
-
-    private Board prepareBoard(String filename) throws IOException {
-        return objectMapper.readValue(
-                JsonUtils.loadJsonFromClasspath(format("/domain/service/%s", filename)), Board.class);
     }
 }

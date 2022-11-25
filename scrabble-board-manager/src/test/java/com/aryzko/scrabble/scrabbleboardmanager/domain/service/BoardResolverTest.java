@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 
+import static com.aryzko.scrabble.scrabbleboardmanager.common.JsonUtils.loadObjectFromJson;
 import static java.lang.String.format;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,16 +32,11 @@ class BoardResolverTest {
     @Test
     void resolve() throws IOException {
         //given
-        Board board = loadObjectFromJson("board-to-resolve-5x5.json", Board.class);
-        PreparedLines lines = loadObjectFromJson("prepared-lines-5x5.json", PreparedLines.class);
+        Board board = loadObjectFromJson("/domain/service/board-to-resolve-5x5.json", Board.class);
+        PreparedLines lines = loadObjectFromJson("/domain/service/prepared-lines-5x5.json", PreparedLines.class);
 
         //when
 
         //then
-    }
-
-    private <T> T loadObjectFromJson(String filename, Class<T> clazz) throws IOException {
-        return objectMapper.readValue(
-                JsonUtils.loadJsonFromClasspath(format("/domain/service/%s", filename)), clazz);
     }
 }

@@ -6,6 +6,7 @@ import com.aryzko.scrabble.scrabbletilemanager.domain.TileConfiguration;
 import com.aryzko.scrabble.scrabbletilemanager.domain.TileSet;
 import com.aryzko.scrabble.scrabbletilemanager.domain.repository.BoardTilesRepository;
 import com.aryzko.scrabble.scrabbletilemanager.domain.repository.TileSetRepository;
+import com.aryzko.scrabble.scrabbletilemanager.domain.service.exception.NoBoardWithUUIDException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -54,5 +55,11 @@ public class TileService {
         boardTiles.setTileSet(defaultTileSet);
         boardTiles.setTiles(new ArrayList<>());
         return boardTiles;
+    }
+
+    public List<TileConfiguration> getTileConfigurations(UUID boardId) {
+        return boardTilesRepository.getBoardTileSet(boardId)
+                .orElseThrow(() -> new NoBoardWithUUIDException(boardId))
+                .getTileConfigurations();
     }
 }

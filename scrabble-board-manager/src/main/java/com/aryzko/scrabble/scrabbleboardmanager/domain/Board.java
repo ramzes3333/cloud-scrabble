@@ -42,4 +42,16 @@ public class Board {
                         field -> ofNullable(field.getLetter())
                                 .map(Letter::getLetter)));
     }
+
+    @JsonIgnore
+    public Map<Position, Bonus> getBonusMap() {
+        return fields.stream()
+                .collect(Collectors.toMap(
+                        field -> Position.builder()
+                                .x(field.getX())
+                                .y(field.getY())
+                                .build(),
+                        field -> ofNullable(field.getBonus()).
+                                orElse(Bonus.None)));
+    }
 }

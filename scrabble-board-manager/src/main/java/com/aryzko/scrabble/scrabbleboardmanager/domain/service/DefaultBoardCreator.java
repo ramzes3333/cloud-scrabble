@@ -21,6 +21,7 @@ public class DefaultBoardCreator implements BoardCreator {
 
     public static final int BOARD_HORIZONTAL_SIZE = 15;
     public static final int BOARD_VERTICAL_SIZE = 15;
+    public static final int BOARD_RACK_SIZE = 7;
 
     public Board prepareEmptyBoard() {
         Board board = new Board();
@@ -42,6 +43,7 @@ public class DefaultBoardCreator implements BoardCreator {
                 BoardParameters.builder()
                         .horizontalSize(BOARD_HORIZONTAL_SIZE)
                         .verticalSize(BOARD_VERTICAL_SIZE)
+                        .rackSize(BOARD_RACK_SIZE)
                         .build());
         return board;
     }

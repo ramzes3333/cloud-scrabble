@@ -10,4 +10,5 @@ import lombok.extern.jackson.Jacksonized;
 public class BoardParameters {
     private Integer horizontalSize;
     private Integer verticalSize;
+    private Integer rackSize;
 }
