@@ -9,6 +9,7 @@ import {Rack} from "../clients/board-manager/model/rack";
 import {Move} from "../board-ui/model/move";
 import {BoardValidationResult} from "../clients/board-manager/model/board-validation-result";
 import {EMPTY, Observable} from "rxjs";
+import {Solution} from "../clients/board-manager/model/solution/solution";
 
 const maximumRackSize = 7;
 
@@ -19,6 +20,7 @@ export class GameService {
 
   public fillRackEvent = new EventEmitter<TileLetter[]>();
   public updateBoardEvent = new EventEmitter<GameUpdate>();
+  public solutionEvent = new EventEmitter<Solution>();
 
   private boardUUID?: string;
   private board?: Board;
@@ -156,6 +158,14 @@ export class GameService {
       if (toY == null) {
         rack.letters!.splice(toX, 0, new BoardLetter(letter.letter, letter.blank, letter.points));
       }
+    }
+  }
+
+  resolve() {
+    if (this.board) {
+      this.boardManager.resolve(this.board).subscribe(solution => {
+        this.solutionEvent.emit(solution);
+      });
     }
   }
 }

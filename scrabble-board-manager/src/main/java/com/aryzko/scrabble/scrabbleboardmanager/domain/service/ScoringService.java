@@ -8,6 +8,7 @@ import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.TileManagerProvi
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -28,6 +29,11 @@ public class ScoringService {
 
         solution.getWords()
                 .forEach(word -> word.setPoints(score(board.getBoardParameters().getRackSize(), pointsMap, bonusMap, word)));
+
+        solution.getWords().stream()
+                .map(Solution.Word::getElements)
+                .flatMap(Collection::stream)
+                .forEach(el -> el.setPoints(getLetterPoints(pointsMap, el)));
 
         return solution;
     }

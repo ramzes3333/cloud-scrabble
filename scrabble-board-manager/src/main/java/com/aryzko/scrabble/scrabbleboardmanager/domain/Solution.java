@@ -32,12 +32,14 @@ public class Solution {
                     .collect(Collectors.joining());
         }
 
-        @Value
+        @Getter
         @Builder
         public static class Element {
             private int x;
             private int y;
             private char letter;
+            @Setter
+            private int points;
             private boolean onBoard;
         }
     }

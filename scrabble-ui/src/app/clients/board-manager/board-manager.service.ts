@@ -4,6 +4,7 @@ import {Observable} from "rxjs";
 import {Board} from "./model/board";
 import {map} from 'rxjs/operators';
 import {BoardValidationResult} from "./model/board-validation-result";
+import {Solution} from "./model/solution/solution";
 
 @Injectable({
   providedIn: 'root'
@@ -49,6 +50,17 @@ export class BoardManagerService {
 
   validateBoard(board: Board): Observable<BoardValidationResult> {
     return this.http.post<BoardValidationResult>(`board-manager-service/api/boards/validate`,
+      board,
+      {
+        observe: 'response'
+      }
+    ).pipe(
+      map(response => response.body!)
+    );
+  }
+
+  resolve(board: Board): Observable<Solution> {
+    return this.http.post<Solution>(`board-manager-service/api/boards/resolve`,
       board,
       {
         observe: 'response'

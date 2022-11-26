@@ -10,5 +10,5 @@ public class Solution {
 
     public record Word (int points, List<Element> elements) { }
 
-    public record Element (int x, int y, char letter, boolean onBoard) { }
+    public record Element (int x, int y, char letter, int points, boolean onBoard) { }
 }

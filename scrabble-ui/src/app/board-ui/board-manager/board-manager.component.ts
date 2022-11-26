@@ -1,7 +1,7 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {BoardManagerService} from "../../clients/board-manager/board-manager.service";
 import {Board} from "../../clients/board-manager/model/board";
-import {ActivatedRoute, Router} from "@angular/router";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-board-manager',
