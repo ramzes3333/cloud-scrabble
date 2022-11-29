@@ -7,7 +7,6 @@ import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.DictionaryProvid
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -21,6 +20,7 @@ public class BoardResolver {
     private final DictionaryProvider dictionaryProvider;
     private final LinePreparationService linePreparationService;
     private final ScoringService scoringService;
+    private final RelatedWordsFillService relatedWordsSearchService;
 
     public Solution resolve(final Board board) {
         Board boardFromDb = boardService.getBoard(board.getId());
@@ -35,6 +35,8 @@ public class BoardResolver {
                 .build();
 
         scoringService.score(board, solution);
+        relatedWordsSearchService.fill(board, solution);
+
         solution.getWords().sort(Comparator.comparing(Solution.Word::getPoints).reversed());
         return solution;
     }

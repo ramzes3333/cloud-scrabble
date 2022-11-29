@@ -22,6 +22,19 @@
             </div>
           </ng-container>
         </div>
+        <div class="related-words-container" *ngIf="word.relatedWords.length > 0">
+          <div class="related-words-label">Related words:</div>
+          <ng-container *ngFor="let relatedWord of word.relatedWords">
+            <div class="word-container">
+              <ng-container *ngFor="let element of relatedWord.elements">
+                <div class="letter points-{{element.points}}">
+                  {{element.letter}}
+                  <div class="points">{{element.points}}</div>
+                </div>
+              </ng-container>
+            </div>
+          </ng-container>
+        </div>
       </td>
     </ng-container>
     <ng-container matColumnDef="points">

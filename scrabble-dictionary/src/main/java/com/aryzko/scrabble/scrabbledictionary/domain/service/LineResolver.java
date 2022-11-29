@@ -20,6 +20,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import static java.util.Optional.ofNullable;
+
 @RequiredArgsConstructor
 @Service
 public class LineResolver {
@@ -40,58 +42,50 @@ public class LineResolver {
     }
 
     private static BiConsumer<Line.LineField, Consumer<Solution.Word>> resolve(Node root, DynamicAvailableLetters letters) {
-        return (anchor, wordConsumer) -> leftPart(root, anchor, letters, wordConsumer);
+        return (anchor, wordConsumer) -> leftPart(new StringBuilder(), root, anchor, anchor.getLeftLimit(), letters, wordConsumer);
     }
 
-    private static void leftPart(Node root, Line.LineField field,
+    private static void leftPart(StringBuilder leftPart, Node root, Line.LineField field, Integer leftLimit,
                                  DynamicAvailableLetters letters, Consumer<Solution.Word> wordConsumer) {
-        int leftLimit = field.getLeftLimit();
-        while(leftLimit > 0) {
+        if(leftLimit > 0) {
             for(Map.Entry<Character, Node> entry : root.getTransitions().entrySet()) {
                 if(letters.isAvailable(entry.getKey())) {
                     letters.useLetter(entry.getKey());
 
-                    Solution.Word.WordBuilder wordBuilder = Solution.Word.builder().element(
-                            prepareElement(field, entry.getKey(), false));
-
-                    extendRight(wordBuilder, entry.getValue(), field, letters, wordConsumer);
+                    leftPart((new StringBuilder(leftPart.toString())).append(entry.getKey()), entry.getValue(), field, leftLimit--, letters, wordConsumer);
+                    extendRight(initWordBuilder(leftPart, field), entry.getValue(), field, letters, wordConsumer, false);
                     letters.returnLetter(entry.getKey());
                 }
             }
-            leftLimit--;
         }
         if(field.getPrev() != null && field.getPrev().isLetter()) {
             Solution.Word.WordBuilder wordBuilder = buildLeftPrefix(field.getPrev());
             Node node = getNode(root, wordBuilder.build().getWordAsString());
             if(node != null) {
-                extendRight(wordBuilder, getNode(root, wordBuilder.build().getWordAsString()), field, letters, wordConsumer);
+                extendRight(wordBuilder, getNode(root, wordBuilder.build().getWordAsString()), field, letters, wordConsumer, false);
             }
         } else {
-            extendRight(Solution.Word.builder(), root, field, letters, wordConsumer);
+            extendRight(initWordBuilder(leftPart, field), root, field, letters, wordConsumer, false);
         }
     }
 
     private static void extendRight(Solution.Word.WordBuilder wordBuilder, Node node, Line.LineField field,
-                                    DynamicAvailableLetters letters, Consumer<Solution.Word> wordConsumer) {
-
-        if(wordBuilder.build().getElements().size() > 1 && node.isTerminal()) {
-            wordConsumer.accept(wordBuilder.build());
-        }
-        if(field == null) {
-            return;
-        }
-        if(field.getLetter() != null) {
+                                    DynamicAvailableLetters letters, Consumer<Solution.Word> wordConsumer,
+                                    boolean extendedRight) {
+        if(field != null && field.getLetter() != null) {
             for(Map.Entry<Character, Node> entry : node.getTransitions().entrySet()) {
                 if(field.getLetter().equals(entry.getKey())) {
+                    extendedRight = true;
                     Solution.Word.WordBuilder wordBuilderCopy = Solution.Word.builder()
                             .elements(wordBuilder.build().getElements());
                     wordBuilderCopy.element(prepareElement(field, entry.getKey(), true));
-                    extendRight(wordBuilderCopy, entry.getValue(), field.getNext(), letters, wordConsumer);
+                    extendRight(wordBuilderCopy, entry.getValue(), field.getNext(), letters, wordConsumer, extendedRight);
                 }
             }
-        } else {
+        } else if(field != null) {
             List<Character> intersection = intersection(letters, node.getTransitions(), field);
             for(Character character : intersection) {
+                extendedRight = true;
                 letters.useLetter(character);
                 Solution.Word.WordBuilder wordBuilderCopy = Solution.Word.builder()
                         .elements(wordBuilder.build().getElements());
@@ -100,10 +94,57 @@ public class LineResolver {
                         node.getTransitions().get(character),
                         field.getNext(),
                         letters,
-                        wordConsumer);
+                        wordConsumer,
+                        extendedRight);
                 letters.returnLetter(character);
             }
         }
+        if(extendedRight
+                && !isNextFieldHasLetter(field)
+                && !isFieldHasLetter(field)
+                && isWordHasLengthGreaterThan1(wordBuilder)
+                && !isWordWithLettersOnlyFromBoard(wordBuilder)
+                && node.isTerminal()) {
+            wordConsumer.accept(wordBuilder.build());
+        }
+    }
+
+    private static boolean isFieldHasLetter(Line.LineField field) {
+        return field != null && field.isLetter();
+    }
+
+    private static Solution.Word.WordBuilder initWordBuilder(StringBuilder leftPartBuilder, Line.LineField field) {
+        if(leftPartBuilder.length() == 0) {
+            return Solution.Word.builder();
+        } else {
+            Solution.Word.WordBuilder wordBuilder = Solution.Word.builder();
+            String leftPart = leftPartBuilder.toString();
+            for(int x=0; x < leftPart.length(); x++) {
+                wordBuilder.element(
+                        prepareElement(
+                                field.getX()-leftPart.length()+x,
+                                field.getY(),
+                                leftPart.charAt(x),
+                                false));
+            }
+            return wordBuilder;
+        }
+    }
+
+    private static boolean isWordWithLettersOnlyFromBoard(Solution.Word.WordBuilder wordBuilder) {
+        return wordBuilder.build().getElements().stream()
+                .allMatch(Solution.Word.Element::isUnmodifiableLetter);
+    }
+
+    private static boolean isWordHasLengthGreaterThan1(Solution.Word.WordBuilder wordBuilder) {
+        return wordBuilder.build().getElements().size() > 1;
+    }
+
+    private static boolean isNextFieldHasLetter(Line.LineField field) {
+        return ofNullable(field)
+                .map(Line.LineField::getNext)
+                .map(Line.LineField::isLetter)
+                .orElse(false);
     }
 
     private static Node getNode(Node node, String wordAsString) {
@@ -130,9 +171,13 @@ public class LineResolver {
     }
 
     private static Solution.Word.Element prepareElement(Line.LineField field, Character character, boolean unmodifiableLetter) {
+        return prepareElement(field.getX(), field.getY(), character, unmodifiableLetter);
+    }
+
+    private static Solution.Word.Element prepareElement(Integer x, Integer y, Character character, boolean unmodifiableLetter) {
         return Solution.Word.Element.builder()
-                .x(field.getX())
-                .y(field.getY())
+                .x(x)
+                .y(y)
                 .letter(character)
                 .unmodifiableLetter(unmodifiableLetter)
                 .build();
@@ -148,6 +193,7 @@ public class LineResolver {
                 .filter(transitions::containsKey)
                 .filter(character -> field.isAnyLetter() || field.getAvailableLetters().contains(character))
                 .map(Character::toLowerCase)
+                .distinct()
                 .collect(Collectors.toList());
     }
 

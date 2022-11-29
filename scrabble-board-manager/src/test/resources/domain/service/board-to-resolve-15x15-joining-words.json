@@ -477,11 +477,19 @@
     },
     {
       "x": 6,
-      "y": 7
+      "y": 7,
+      "letter": {
+        "letter": "P",
+        "points": 2
+      }
     },
     {
       "x": 7,
-      "y": 7
+      "y": 7,
+      "letter": {
+        "letter": "O",
+        "points": 1
+      }
     },
     {
       "x": 8,
@@ -506,12 +514,20 @@
     },
     {
       "x": 13,
-      "y": 7
+      "y": 7,
+      "letter": {
+        "letter": "N",
+        "points": 1
+      }
     },
     {
       "x": 14,
       "y": 7,
-      "bonus": "TripleWordScore"
+      "bonus": "TripleWordScore",
+      "letter": {
+        "letter": "I",
+        "points": 1
+      }
     },
     {
       "x": 0,
@@ -545,7 +561,11 @@
     },
     {
       "x": 7,
-      "y": 8
+      "y": 8,
+      "letter": {
+        "letter": "T",
+        "points": 2
+      }
     },
     {
       "x": 8,
@@ -571,7 +591,11 @@
     },
     {
       "x": 13,
-      "y": 8
+      "y": 8,
+      "letter": {
+        "letter": "A",
+        "points": 1
+      }
     },
     {
       "x": 14,
@@ -609,33 +633,61 @@
     },
     {
       "x": 7,
-      "y": 9
+      "y": 9,
+      "letter": {
+        "letter": "O",
+        "points": 1
+      }
     },
     {
       "x": 8,
-      "y": 9
+      "y": 9,
+      "letter": {
+        "letter": "D",
+        "points": 2
+      }
     },
     {
       "x": 9,
       "y": 9,
-      "bonus": "TripleLetterScore"
+      "bonus": "TripleLetterScore",
+      "letter": {
+        "letter": "W",
+        "points": 1
+      }
     },
     {
       "x": 10,
-      "y": 9
+      "y": 9,
+      "letter": {
+        "letter": "I",
+        "points": 1
+      }
     },
     {
       "x": 11,
-      "y": 9
+      "y": 9,
+      "letter": {
+        "letter": "T",
+        "points": 2
+      }
     },
     {
       "x": 12,
-      "y": 9
+      "y": 9,
+      "letter": {
+        "letter": "A",
+        "points": 1
+      }
     },
     {
       "x": 13,
       "y": 9,
-      "bonus": "TripleLetterScore"
+      "bonus": "TripleLetterScore",
+      "letter": {
+        "letter": "Ć",
+        "points": 6
+      }
     },
     {
       "x": 14,

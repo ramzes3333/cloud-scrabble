@@ -8,7 +8,7 @@ import java.util.List;
 public class Solution {
     private List<Word> words;
 
-    public record Word (int points, List<Element> elements) { }
+    public record Word (int points, List<Element> elements, List<Word> relatedWords) { }
 
     public record Element (int x, int y, char letter, int points, boolean onBoard) { }
 }

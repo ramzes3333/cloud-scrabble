@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
 import static java.util.Optional.ofNullable;
+import static java.util.function.Predicate.not;
 
 @RequiredArgsConstructor
 @Service
@@ -96,9 +96,5 @@ public class ScoringService {
             case DoubleLetterScore, TripleLetterScore -> true;
             case DoubleWordScore, TripleWordScore, None -> false;
         };
-    }
-
-    public static <R> Predicate<R> not(Predicate<R> predicate) {
-        return predicate.negate();
     }
 }

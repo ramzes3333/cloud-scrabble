@@ -6,16 +6,12 @@ import com.aryzko.scrabble.scrabbleboardmanager.domain.Position;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.PreparedLine;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.PreparedLines;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.DictionaryProvider;
-import lombok.Builder;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -31,7 +27,7 @@ public class LinePreparationService {
 
     protected PreparedLines prepareLines(final Board board) {
 
-        final Map<Position, DirectionalField> fieldMap = buildFieldMap(board);
+        final Map<Position, Board.DirectionalField> fieldMap = board.buildFieldMap();
 
         return PreparedLines.builder()
                 .lines(fieldMap.values().stream()
@@ -41,7 +37,7 @@ public class LinePreparationService {
                 .build();
     }
 
-    private PreparedLine prepareLine(DirectionalField directionalField) {
+    private PreparedLine prepareLine(Board.DirectionalField directionalField) {
         PreparedLine.PreparedLineBuilder preparedLineBuilder = PreparedLine.builder();
         int leftLimit = 0;
         do {
@@ -71,26 +67,26 @@ public class LinePreparationService {
         }
     }
 
-    private void handleEmptyFieldNotAdjacentToUpOrDown(DirectionalField directionalField, CharacterWithPosition character, PreparedLine.LineField.LineFieldBuilder fieldBuilder) {
+    private void handleEmptyFieldNotAdjacentToUpOrDown(Board.DirectionalField directionalField, CharacterWithPosition character, PreparedLine.LineField.LineFieldBuilder fieldBuilder) {
         if (!character.isCharSet() && !isAdjacentToUpOrDown(directionalField)) {
             fieldBuilder.anyLetter(true);
         }
     }
 
-    private void handleEmptyFieldAdjacentInAnyDirection(DirectionalField directionalField, int leftLimit, CharacterWithPosition character, PreparedLine.LineField.LineFieldBuilder fieldBuilder) {
+    private void handleEmptyFieldAdjacentInAnyDirection(Board.DirectionalField directionalField, int leftLimit, CharacterWithPosition character, PreparedLine.LineField.LineFieldBuilder fieldBuilder) {
         if(!character.isCharSet() && isAdjacentInAnyDirections(directionalField)) {
             fieldBuilder.anchor(true);
             fieldBuilder.leftLimit(leftLimit);
         }
     }
 
-    private void handleEmptyFieldAdjacentToUpOrDown(DirectionalField directionalField, CharacterWithPosition character, PreparedLine.LineField.LineFieldBuilder fieldBuilder) {
+    private void handleEmptyFieldAdjacentToUpOrDown(Board.DirectionalField directionalField, CharacterWithPosition character, PreparedLine.LineField.LineFieldBuilder fieldBuilder) {
         if (!character.isCharSet() && isAdjacentToUpOrDown(directionalField)) {
             fieldBuilder.availableLetters(computeAvailableCharacters(directionalField));
         }
     }
 
-    private List<Character> computeAvailableCharacters(DirectionalField directionalField) {
+    private List<Character> computeAvailableCharacters(Board.DirectionalField directionalField) {
         StringBuilder verticalPattern = prepareVerticalPattern(directionalField);
         List<Character> verticalCharacters = new ArrayList<>();
         if (verticalPattern.length() > 1) {
@@ -99,82 +95,32 @@ public class LinePreparationService {
         return verticalCharacters;
     }
 
-    private StringBuilder prepareVerticalPattern(DirectionalField startField) {
-        return traverse(startField, DirectionalField::getUp)
+    private StringBuilder prepareVerticalPattern(Board.DirectionalField startField) {
+        return traverse(startField, Board.DirectionalField::getUp)
                 .reverse()
                 .append("*")
-                .append(traverse(startField, DirectionalField::getDown));
+                .append(traverse(startField, Board.DirectionalField::getDown));
     }
 
-    private static StringBuilder traverse(DirectionalField directionalField, Function<DirectionalField, DirectionalField> getNextField) {
+    private static StringBuilder traverse(Board.DirectionalField directionalField, Function<Board.DirectionalField, Board.DirectionalField> getNextField) {
         StringBuilder pattern = new StringBuilder();
 
-        while (ofNullable(getNextField.apply(directionalField)).map(DirectionalField::isCharSet).orElse(false)) {
+        while (ofNullable(getNextField.apply(directionalField)).map(Board.DirectionalField::isCharSet).orElse(false)) {
             directionalField = getNextField.apply(directionalField);
             pattern.append(directionalField.getField().getCharacter().get());
         }
         return pattern;
     }
 
-    private static Position getPosition(Integer x, Integer y) {
-        return Position.builder()
-                .x(x)
-                .y(y)
-                .build();
+    private boolean isAdjacentToUpOrDown(Board.DirectionalField directionalField) {
+        return ofNullable(directionalField.getUp()).map(Board.DirectionalField::isCharSet).orElse(false)
+                || ofNullable(directionalField.getDown()).map(Board.DirectionalField::isCharSet).orElse(false);
     }
 
-    private boolean isAdjacentToUpOrDown(DirectionalField directionalField) {
-        return ofNullable(directionalField.getUp()).map(DirectionalField::isCharSet).orElse(false)
-                || ofNullable(directionalField.getDown()).map(DirectionalField::isCharSet).orElse(false);
-    }
-
-    private boolean isAdjacentInAnyDirections(DirectionalField directionalField) {
-        return ofNullable(directionalField.getUp()).map(DirectionalField::isCharSet).orElse(false)
-                || ofNullable(directionalField.getDown()).map(DirectionalField::isCharSet).orElse(false)
-                || ofNullable(directionalField.getLeft()).map(DirectionalField::isCharSet).orElse(false)
-                || ofNullable(directionalField.getRight()).map(DirectionalField::isCharSet).orElse(false);
-    }
-
-    private Map<Position, DirectionalField> buildFieldMap(final Board board) {
-        Map<Position, Optional<Character>> characterMap = board.getCharacterMap();
-
-        Map<Position, DirectionalField> fieldMap = characterMap.keySet().stream()
-                .map(character ->
-                        DirectionalField.builder().field(
-                                        CharacterWithPosition.builder()
-                                                .x(character.getX())
-                                                .y(character.getY())
-                                                .character(characterMap.get(getPosition(character.getX(), character.getY())))
-                                                .build())
-                                .build())
-                .collect(Collectors.toMap(
-                        directionalField -> getPosition(directionalField.getField().getX(), directionalField.getField().getY()),
-                        directionalField -> directionalField));
-
-        fieldMap.values()
-                .forEach(field -> {
-                    field.setUp(fieldMap.get(getPosition(field.getField().getX(), field.getField().getY() - 1)));
-                    field.setDown(fieldMap.get(getPosition(field.getField().getX(), field.getField().getY() + 1)));
-                    field.setLeft(fieldMap.get(getPosition(field.getField().getX() - 1, field.getField().getY())));
-                    field.setRight(fieldMap.get(getPosition(field.getField().getX() + 1, field.getField().getY())));
-                });
-
-        return fieldMap;
-    }
-
-    @Getter
-    @Setter
-    @Builder
-    private static class DirectionalField {
-        private final CharacterWithPosition field;
-
-        private DirectionalField up;
-        private DirectionalField down;
-        private DirectionalField left;
-        private DirectionalField right;
-
-        public boolean isCharSet() {
-            return field.getCharacter().isPresent();
-        }
+    private boolean isAdjacentInAnyDirections(Board.DirectionalField directionalField) {
+        return ofNullable(directionalField.getUp()).map(Board.DirectionalField::isCharSet).orElse(false)
+                || ofNullable(directionalField.getDown()).map(Board.DirectionalField::isCharSet).orElse(false)
+                || ofNullable(directionalField.getLeft()).map(Board.DirectionalField::isCharSet).orElse(false)
+                || ofNullable(directionalField.getRight()).map(Board.DirectionalField::isCharSet).orElse(false);
     }
 }

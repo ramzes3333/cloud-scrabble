@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class BoardLineResolverTest {
+class LineResolverTest {
 
     @Mock
     private DawgService dawgService;
@@ -123,6 +123,95 @@ class BoardLineResolverTest {
         assertEquals(0, word5.getElements().get(1).getY());
     }
 
+    @Test
+    void resolve_joiningWords() throws IOException, DawgIsNotReady {
+        //given
+        Node root = JsonUtils.loadObjectFromJson("/domain/service/dawg-for-resolver-joining-words.json", Node.class);
+        Line preparedLine = JsonUtils.loadObjectFromJson("/domain/service/prepared-lines-15x15-joining-words.json", Line.class);
+        AvailableLetters rack = AvailableLetters.builder()
+                .character('n').character('o').character('w').character('i').character('e').character('ó').build();
+
+        when(dawgService.getDawg()).thenReturn(root);
+
+        //when
+        Solution solution = resolver.resolve(preparedLine, rack);
+
+        //then
+        assertNotNull(solution);
+        assertNotNull(solution.getWords());
+        assertEquals(2, solution.getWords().size()); //ponów, ponowieni, !ponowie!
+
+        //fok
+        Solution.Word word1 = getWord(solution, "ponów", 6, 7);
+        assertEquals('p', word1.getElements().get(0).getLetter());
+        assertEquals('o', word1.getElements().get(1).getLetter());
+        assertEquals('n', word1.getElements().get(2).getLetter());
+        assertEquals('ó', word1.getElements().get(3).getLetter());
+        assertEquals('w', word1.getElements().get(4).getLetter());
+
+        assertTrue(word1.getElements().get(0).isUnmodifiableLetter());
+        assertTrue(word1.getElements().get(1).isUnmodifiableLetter());
+        assertFalse(word1.getElements().get(2).isUnmodifiableLetter());
+        assertFalse(word1.getElements().get(2).isUnmodifiableLetter());
+        assertFalse(word1.getElements().get(2).isUnmodifiableLetter());
+
+        assertEquals(6, word1.getElements().get(0).getX());
+        assertEquals(7, word1.getElements().get(1).getX());
+        assertEquals(8, word1.getElements().get(2).getX());
+        assertEquals(9, word1.getElements().get(3).getX());
+        assertEquals(10, word1.getElements().get(4).getX());
+
+        assertEquals(7, word1.getElements().get(0).getY());
+        assertEquals(7, word1.getElements().get(1).getY());
+        assertEquals(7, word1.getElements().get(2).getY());
+        assertEquals(7, word1.getElements().get(3).getY());
+        assertEquals(7, word1.getElements().get(4).getY());
+
+        //koc
+        Solution.Word word2 = getWord(solution, "ponowieni", 6, 7);
+        assertEquals('p', word2.getElements().get(0).getLetter());
+        assertEquals('o', word2.getElements().get(1).getLetter());
+        assertEquals('n', word2.getElements().get(2).getLetter());
+        assertEquals('o', word2.getElements().get(3).getLetter());
+        assertEquals('w', word2.getElements().get(4).getLetter());
+        assertEquals('i', word2.getElements().get(5).getLetter());
+        assertEquals('e', word2.getElements().get(6).getLetter());
+        assertEquals('n', word2.getElements().get(7).getLetter());
+        assertEquals('i', word2.getElements().get(8).getLetter());
+
+        assertTrue(word2.getElements().get(0).isUnmodifiableLetter());
+        assertTrue(word2.getElements().get(1).isUnmodifiableLetter());
+        assertFalse(word2.getElements().get(2).isUnmodifiableLetter());
+        assertFalse(word2.getElements().get(3).isUnmodifiableLetter());
+        assertFalse(word2.getElements().get(4).isUnmodifiableLetter());
+        assertFalse(word2.getElements().get(5).isUnmodifiableLetter());
+        assertFalse(word2.getElements().get(6).isUnmodifiableLetter());
+        assertTrue(word2.getElements().get(7).isUnmodifiableLetter());
+        assertTrue(word2.getElements().get(8).isUnmodifiableLetter());
+
+        assertEquals(6, word2.getElements().get(0).getX());
+        assertEquals(7, word2.getElements().get(1).getX());
+        assertEquals(8, word2.getElements().get(2).getX());
+        assertEquals(9, word2.getElements().get(3).getX());
+        assertEquals(10, word2.getElements().get(4).getX());
+        assertEquals(11, word2.getElements().get(5).getX());
+        assertEquals(12, word2.getElements().get(6).getX());
+        assertEquals(13, word2.getElements().get(7).getX());
+        assertEquals(14, word2.getElements().get(8).getX());
+
+        assertEquals(7, word2.getElements().get(0).getY());
+        assertEquals(7, word2.getElements().get(1).getY());
+        assertEquals(7, word2.getElements().get(2).getY());
+        assertEquals(7, word2.getElements().get(3).getY());
+        assertEquals(7, word2.getElements().get(4).getY());
+        assertEquals(7, word2.getElements().get(5).getY());
+        assertEquals(7, word2.getElements().get(6).getY());
+        assertEquals(7, word2.getElements().get(7).getY());
+        assertEquals(7, word2.getElements().get(8).getY());
+
+        noWord(solution, "ponowie", 6, 7);
+    }
+
     private Solution.Word getWord(Solution solution, String word, Integer x, Integer y) {
         List<Solution.Word> words = solution.getWords().stream()
                 .filter(w -> w.getWordAsString().equals(word)
@@ -132,5 +221,15 @@ class BoardLineResolverTest {
 
         assertEquals(1, words.size());
         return words.get(0);
+    }
+
+    private void noWord(Solution solution, String word, Integer x, Integer y) {
+        List<Solution.Word> words = solution.getWords().stream()
+                .filter(w -> w.getWordAsString().equals(word)
+                        && w.getElements().get(0).getX() == x
+                        && w.getElements().get(0).getY() == y)
+                .collect(Collectors.toList());
+
+        assertEquals(0, words.size());
     }
 }

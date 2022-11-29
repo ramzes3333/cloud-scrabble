@@ -104,3 +104,13 @@
   width: 15% !important;
   color: grey;
 }
+
+.related-words-container {
+  margin-left: 10px;
+}
+
+.related-words-label {
+  font-size: 8px;
+  color: grey;
+  margin-bottom: 6px;
+}

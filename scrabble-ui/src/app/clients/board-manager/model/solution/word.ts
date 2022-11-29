@@ -3,9 +3,11 @@ import {Element} from "./element";
 export class Word {
   public elements: Element[];
   public points: number;
+  public relatedWords: Word[];
 
-  constructor(points: number, elements: Element[]) {
-    this.points = points;
+  constructor(elements: Element[], points: number, relatedWords: Word[]) {
     this.elements = elements;
+    this.points = points;
+    this.relatedWords = relatedWords;
   }
 }

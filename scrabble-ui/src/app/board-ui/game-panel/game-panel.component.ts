@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {GameService} from "../../services/game.service";
-import {Word} from "../model/word";
+import {Word} from "../../clients/board-manager/model/solution/word";
+import {Word as GuiWord} from "../model/word";
 import {Element} from "../../clients/board-manager/model/solution/element";
 import {Element as GuiElement} from "../model/element";
 
@@ -12,7 +13,7 @@ import {Element as GuiElement} from "../model/element";
 export class GamePanelComponent implements OnInit {
 
   displayedColumns: string[] = ['words', 'points'];
-  words: Word[] = [];
+  words: GuiWord[] = [];
 
   constructor(private gameService: GameService) { }
 
@@ -21,10 +22,14 @@ export class GamePanelComponent implements OnInit {
       this.words = [];
       for (const w of solution.words) {
         let elements: Element[] = [];
-        let word: Word = new Word(w.points, elements);
+        let relatedWords: GuiWord[] = [];
+        let word: GuiWord = new GuiWord(w.points, elements, relatedWords);
 
         for (const el of w.elements) {
           elements.push(this.convertElement(el));
+        }
+        for (const rw of w.relatedWords) {
+          relatedWords.push(this.convertRelatedWord(rw));
         }
         this.words.push(word);
       }
@@ -53,5 +58,16 @@ export class GamePanelComponent implements OnInit {
 
   private convertElement(el: Element): GuiElement {
     return new GuiElement(el.x, el.y, el.letter, el.points, el.onBoard);
+  }
+
+  private convertRelatedWord(rw: Word): GuiWord {
+    let elements: Element[] = [];
+    let relatedWords: Word[] = [];
+    let word: GuiWord = new GuiWord(rw.points, elements, relatedWords);
+
+    for (const el of rw.elements) {
+      elements.push(this.convertElement(el));
+    }
+    return word;
   }
 }

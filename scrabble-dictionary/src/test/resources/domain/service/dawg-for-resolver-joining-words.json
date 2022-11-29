@@ -1,0 +1,102 @@
+{
+  "id": 0,
+  "terminal": false,
+  "transitions": {
+    "b": {
+      "id": 1,
+      "terminal": false,
+      "transitions": {
+        "o": {
+          "id": 2,
+          "terminal": true,
+          "transitions": {
+            "k": {
+              "id": 3,
+              "terminal": true,
+              "transitions": {
+              }
+            }
+          }
+        }
+      }
+    },
+    "p": {
+      "id": 4,
+      "terminal": false,
+      "transitions": {
+        "o": {
+          "id": 5,
+          "terminal": true,
+          "transitions": {
+            "n": {
+              "id": 6,
+              "terminal": false,
+              "transitions": {
+                "o": {
+                  "id": 7,
+                  "terminal": false,
+                  "transitions": {
+                    "w": {
+                      "id": 8,
+                      "terminal": false,
+                      "transitions": {
+                        "i": {
+                          "id": 9,
+                          "terminal": false,
+                          "transitions": {
+                            "e": {
+                              "id": 10,
+                              "terminal": true,
+                              "transitions": {
+                                "n": {
+                                  "id": 11,
+                                  "terminal": false,
+                                  "transitions": {
+                                    "i": {
+                                      "id": 12,
+                                      "terminal": true,
+                                      "transitions": {
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "ó": {
+                  "id": 13,
+                  "terminal": false,
+                  "transitions": {
+                    "w": {
+                      "id": 14,
+                      "terminal": true,
+                      "transitions": {
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "n": {
+      "id": 15,
+      "terminal": false,
+      "transitions": {
+        "i": {
+          "id": 16,
+          "terminal": true,
+          "transitions": {
+          }
+        }
+      }
+    }
+  }
+}

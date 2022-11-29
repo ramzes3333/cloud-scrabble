@@ -6,13 +6,14 @@ import lombok.Setter;
 import lombok.Singular;
 import lombok.Value;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Optional.ofNullable;
 
-@Value
+@Getter
 @Builder
 public class Solution {
     private List<Word> words;
@@ -24,6 +25,9 @@ public class Solution {
         private int points;
         @Singular
         private List<Element> elements;
+        @Setter
+        @Builder.Default
+        private List<Word> relatedWords = new ArrayList<>();
 
         public String getWordAsString() {
             return ofNullable(elements).orElse(Collections.emptyList()).stream()

@@ -1,0 +1,76 @@
+{
+  "id": "843ff009-2f4f-43b4-9a6c-74229b09a7df",
+  "fields": [
+    {
+      "x": 0,
+      "y": 0
+    },
+    {
+      "x": 1,
+      "y": 0
+    },
+    {
+      "x": 2,
+      "y": 0
+    },
+    {
+      "x": 0,
+      "y": 1,
+      "letter": {
+        "letter": "O",
+        "points": 1
+      }
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "letter": {
+        "letter": "N",
+        "points": 1
+      }
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "letter": {
+        "letter": "A",
+        "points": 1
+      }
+    },
+    {
+      "x": 0,
+      "y": 2
+    },
+    {
+      "x": 1,
+      "y": 2
+    },
+    {
+      "x": 2,
+      "y": 2
+    }
+  ],
+  "racks": [
+    {
+      "letters": [
+        {
+          "letter": "N",
+          "points": 1
+        },
+        {
+          "letter": "O",
+          "points": 1
+        },
+        {
+          "letter": "S",
+          "points": 1
+        }
+      ]
+    }
+  ],
+  "boardParameters": {
+    "horizontalSize": 3,
+    "verticalSize": 3,
+    "rackSize": 3
+  }
+}
