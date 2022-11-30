@@ -53,7 +53,6 @@ public class LineResolver {
                     letters.useLetter(entry.getKey());
 
                     leftPart((new StringBuilder(leftPart.toString())).append(entry.getKey()), entry.getValue(), field, leftLimit--, letters, wordConsumer);
-                    extendRight(initWordBuilder(leftPart, field), entry.getValue(), field, letters, wordConsumer, false);
                     letters.returnLetter(entry.getKey());
                 }
             }
@@ -75,7 +74,6 @@ public class LineResolver {
         if(field != null && field.getLetter() != null) {
             for(Map.Entry<Character, Node> entry : node.getTransitions().entrySet()) {
                 if(field.getLetter().equals(entry.getKey())) {
-                    extendedRight = true;
                     Solution.Word.WordBuilder wordBuilderCopy = Solution.Word.builder()
                             .elements(wordBuilder.build().getElements());
                     wordBuilderCopy.element(prepareElement(field, entry.getKey(), true));
@@ -85,7 +83,6 @@ public class LineResolver {
         } else if(field != null) {
             List<Character> intersection = intersection(letters, node.getTransitions(), field);
             for(Character character : intersection) {
-                extendedRight = true;
                 letters.useLetter(character);
                 Solution.Word.WordBuilder wordBuilderCopy = Solution.Word.builder()
                         .elements(wordBuilder.build().getElements());
@@ -95,7 +92,7 @@ public class LineResolver {
                         field.getNext(),
                         letters,
                         wordConsumer,
-                        extendedRight);
+                        true);
                 letters.returnLetter(character);
             }
         }

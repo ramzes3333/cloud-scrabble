@@ -24,6 +24,7 @@ export class FieldComponent implements OnInit {
   @Input() points?: number;
   invalid: boolean = false;
   movableFields!: MovableField[];
+  potentialLetter: Letter | null = null;
 
   constructor(private gameService: GameService, private dialog: MatDialog) { }
 
@@ -38,6 +39,13 @@ export class FieldComponent implements OnInit {
         this.moveInvalid(gameUpdate);
       } else if (gameUpdate.gameUpdateType == GameUpdateType.ORPHAN) {
         this.moveInvalid(gameUpdate);
+      }
+    });
+    this.gameService.potentialWordLetterEvent.subscribe(element => {
+      if (element.x == this.x && element.y == this.y && !element.onBoard) {
+        this.potentialLetter = new Letter(element.letter, false, element.points)
+      } else if (element.x == -1 && element.y == -1) {
+        this.potentialLetter = null;
       }
     });
   }
@@ -194,6 +202,10 @@ export class FieldComponent implements OnInit {
     return this.letter != undefined || this.movableFields.length > 0;
   }
 
+  isPotentialLetter() {
+    return this.potentialLetter != null;
+  }
+
   getLetterPoints() {
     return this.points != undefined
       ? this.points : this.movableFields.length > 0
@@ -202,5 +214,19 @@ export class FieldComponent implements OnInit {
 
   isDragDisabled() {
     return this.movableFields.length == 0;
+  }
+
+  getPotentialLetter() {
+    if(this.potentialLetter != null) {
+      return this.potentialLetter.letter.toUpperCase();
+    }
+    return null;
+  }
+
+  getPotentialLetterPoints() {
+    if(this.potentialLetter != null) {
+      return this.potentialLetter.points;
+    }
+    return null;
   }
 }

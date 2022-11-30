@@ -34,8 +34,8 @@ public class BoardResolver {
                                 .collect(Collectors.toList()))
                 .build();
 
-        scoringService.score(board, solution);
         relatedWordsSearchService.fill(board, solution);
+        scoringService.score(board, solution);
 
         solution.getWords().sort(Comparator.comparing(Solution.Word::getPoints).reversed());
         return solution;

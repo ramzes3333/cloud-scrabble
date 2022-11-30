@@ -38,10 +38,12 @@ export class GamePanelComponent implements OnInit {
 
   startGame() {
     this.gameService.startGame();
+    this.words = [];
   }
 
   confirmMove() {
     this.gameService.confirmMove();
+    this.words = [];
   }
 
   resolve() {
@@ -69,5 +71,13 @@ export class GamePanelComponent implements OnInit {
       elements.push(this.convertElement(el));
     }
     return word;
+  }
+
+  showPotentialWord(word: GuiWord) {
+    this.gameService.showPotentialWord(word);
+  }
+
+  clearPotentialWord() {
+    this.gameService.clearPotentialWord();
   }
 }

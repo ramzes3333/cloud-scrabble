@@ -27,10 +27,23 @@ public class ScoringService {
         Map<Character, Integer> pointsMap = tileManagerProvider.getTileConfiguration(board.getId().toString()).getPointsMap();
         Map<Position, Bonus> bonusMap = board.getBonusMap();
 
+        solution.getWords().stream()
+                .map(Solution.Word::getRelatedWords)
+                .flatMap(Collection::stream)
+                .forEach(relatedWord -> relatedWord.setPoints(
+                        score(board.getBoardParameters().getRackSize(), pointsMap, bonusMap, relatedWord)));
+
         solution.getWords()
                 .forEach(word -> word.setPoints(score(board.getBoardParameters().getRackSize(), pointsMap, bonusMap, word)));
 
         solution.getWords().stream()
+                .map(Solution.Word::getElements)
+                .flatMap(Collection::stream)
+                .forEach(el -> el.setPoints(getLetterPoints(pointsMap, el)));
+
+        solution.getWords().stream()
+                .map(Solution.Word::getRelatedWords)
+                .flatMap(Collection::stream)
                 .map(Solution.Word::getElements)
                 .flatMap(Collection::stream)
                 .forEach(el -> el.setPoints(getLetterPoints(pointsMap, el)));
@@ -44,7 +57,7 @@ public class ScoringService {
                 .filter(this::isWordBonus)
                 .toList();
 
-        int points = word.getElements().stream()
+        int lettersPoints = word.getElements().stream()
                 .mapToInt(e -> getLetterBonus(bonusMap, e).getMultiply() * getLetterPoints(pointsMap, e))
                 .sum();
 
@@ -52,16 +65,20 @@ public class ScoringService {
                 .filter(not(Solution.Word.Element::isOnBoard))
                 .count() == rackSize;
 
-        return wordBonus.stream()
+        int wordPoints = wordBonus.stream()
                 .mapToInt(Bonus::getMultiply)
                 .reduce((bonus, bonus2) -> bonus * bonus2)
-                .orElse(1) * points + (bingoBonus ? BINGO_BONUS : 0);
+                .orElse(1) * lettersPoints + (bingoBonus ? BINGO_BONUS : 0);
+
+        return wordPoints + word.getRelatedWords().stream()
+                .mapToInt(Solution.Word::getPoints)
+                .sum();
     }
 
     private static Integer getLetterPoints(Map<Character, Integer> pointsMap, Solution.Word.Element e) {
-        if(e.isOnBoard()) {
+        /*if(e.isOnBoard()) {
             return 0;
-        }
+        }*/
         return ofNullable(pointsMap.get(Character.toLowerCase(e.getLetter())))
                 .orElseThrow(() -> new IllegalStateException("No tile configuration for letter"));
     }

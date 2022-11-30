@@ -7,6 +7,8 @@ import {Letter as TileLetter} from "../clients/tile-manager/model/letter";
 import {Letter as GuiLetter} from "../clients/board-manager/model/letter";
 import {Rack} from "../clients/board-manager/model/rack";
 import {Move} from "../board-ui/model/move";
+import {Element as GuiElement} from "../board-ui/model/element";
+import {Word as GuiWord} from "../board-ui/model/word";
 import {BoardValidationResult} from "../clients/board-manager/model/board-validation-result";
 import {EMPTY, Observable} from "rxjs";
 import {Solution} from "../clients/board-manager/model/solution/solution";
@@ -21,6 +23,7 @@ export class GameService {
   public fillRackEvent = new EventEmitter<TileLetter[]>();
   public updateBoardEvent = new EventEmitter<GameUpdate>();
   public solutionEvent = new EventEmitter<Solution>();
+  public potentialWordLetterEvent = new EventEmitter<GuiElement>();
 
   private boardUUID?: string;
   private board?: Board;
@@ -167,6 +170,17 @@ export class GameService {
         this.solutionEvent.emit(solution);
       });
     }
+  }
+
+  showPotentialWord(word: GuiWord) {
+    this.clearPotentialWord();
+    for (const element of word.elements) {
+      this.potentialWordLetterEvent.emit(element);
+    }
+  }
+
+  clearPotentialWord() {
+    this.potentialWordLetterEvent.emit(new GuiElement(-1, -1, "", -1, false));
   }
 }
 

@@ -50,6 +50,15 @@
   z-index: 1;
 }
 
+.board-field-letter.potential {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  background-color: #dab4ff;
+  color: grey;
+}
+
 .board-field-letter.invalid {
   background-color: red;
   color: white;

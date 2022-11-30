@@ -152,8 +152,8 @@ class LineResolverTest {
         assertTrue(word1.getElements().get(0).isUnmodifiableLetter());
         assertTrue(word1.getElements().get(1).isUnmodifiableLetter());
         assertFalse(word1.getElements().get(2).isUnmodifiableLetter());
-        assertFalse(word1.getElements().get(2).isUnmodifiableLetter());
-        assertFalse(word1.getElements().get(2).isUnmodifiableLetter());
+        assertFalse(word1.getElements().get(3).isUnmodifiableLetter());
+        assertFalse(word1.getElements().get(4).isUnmodifiableLetter());
 
         assertEquals(6, word1.getElements().get(0).getX());
         assertEquals(7, word1.getElements().get(1).getX());
@@ -210,6 +210,88 @@ class LineResolverTest {
         assertEquals(7, word2.getElements().get(8).getY());
 
         noWord(solution, "ponowie", 6, 7);
+    }
+
+    @Test
+    void resolve_duplicatesInAvailableLetters() throws IOException, DawgIsNotReady {
+        //given
+        Node root = JsonUtils.loadObjectFromJson("/domain/service/dawg-for-resolver-joining-words.json", Node.class);
+        Line preparedLine = JsonUtils.loadObjectFromJson("/domain/service/prepared-lines-15x15-joining-words.json", Line.class);
+        AvailableLetters rack = AvailableLetters.builder()
+                .character('n').character('w').character('ó').character('ó').build();
+
+        when(dawgService.getDawg()).thenReturn(root);
+
+        //when
+        Solution solution = resolver.resolve(preparedLine, rack);
+
+        //then
+        assertNotNull(solution);
+        assertNotNull(solution.getWords());
+        assertEquals(1, solution.getWords().size()); //ponów, ponowieni, !ponowie!
+
+        //fok
+        Solution.Word word1 = getWord(solution, "ponów", 6, 7);
+        assertEquals('p', word1.getElements().get(0).getLetter());
+        assertEquals('o', word1.getElements().get(1).getLetter());
+        assertEquals('n', word1.getElements().get(2).getLetter());
+        assertEquals('ó', word1.getElements().get(3).getLetter());
+        assertEquals('w', word1.getElements().get(4).getLetter());
+
+        assertTrue(word1.getElements().get(0).isUnmodifiableLetter());
+        assertTrue(word1.getElements().get(1).isUnmodifiableLetter());
+        assertFalse(word1.getElements().get(2).isUnmodifiableLetter());
+        assertFalse(word1.getElements().get(3).isUnmodifiableLetter());
+        assertFalse(word1.getElements().get(4).isUnmodifiableLetter());
+
+        assertEquals(6, word1.getElements().get(0).getX());
+        assertEquals(7, word1.getElements().get(1).getX());
+        assertEquals(8, word1.getElements().get(2).getX());
+        assertEquals(9, word1.getElements().get(3).getX());
+        assertEquals(10, word1.getElements().get(4).getX());
+
+        assertEquals(7, word1.getElements().get(0).getY());
+        assertEquals(7, word1.getElements().get(1).getY());
+        assertEquals(7, word1.getElements().get(2).getY());
+        assertEquals(7, word1.getElements().get(3).getY());
+        assertEquals(7, word1.getElements().get(4).getY());
+    }
+
+    @Test
+    void resolve_anchorFilled() throws IOException, DawgIsNotReady {
+        //given
+        Node root = JsonUtils.loadObjectFromJson("/domain/service/dawg-for-resolver-anchor-filling.json", Node.class);
+        Line preparedLine = JsonUtils.loadObjectFromJson("/domain/service/prepared-lines-5x5-anchor-filling.json", Line.class);
+        AvailableLetters rack = AvailableLetters.builder()
+                .character('u').character('l').character('a').build();
+
+        when(dawgService.getDawg()).thenReturn(root);
+
+        //when
+        Solution solution = resolver.resolve(preparedLine, rack);
+
+        //then
+        assertNotNull(solution);
+        assertNotNull(solution.getWords());
+        assertEquals(1, solution.getWords().size()); //ponów, ponowieni, !ponowie!
+
+        //fok
+        Solution.Word word1 = getWord(solution, "ula", 0, 0);
+        assertEquals('u', word1.getElements().get(0).getLetter());
+        assertEquals('l', word1.getElements().get(1).getLetter());
+        assertEquals('a', word1.getElements().get(2).getLetter());
+
+        assertFalse(word1.getElements().get(0).isUnmodifiableLetter());
+        assertFalse(word1.getElements().get(1).isUnmodifiableLetter());
+        assertFalse(word1.getElements().get(2).isUnmodifiableLetter());
+
+        assertEquals(0, word1.getElements().get(0).getX());
+        assertEquals(1, word1.getElements().get(1).getX());
+        assertEquals(2, word1.getElements().get(2).getX());
+
+        assertEquals(0, word1.getElements().get(0).getY());
+        assertEquals(0, word1.getElements().get(1).getY());
+        assertEquals(0, word1.getElements().get(2).getY());
     }
 
     private Solution.Word getWord(Solution solution, String word, Integer x, Integer y) {

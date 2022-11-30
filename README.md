@@ -18,3 +18,7 @@ sudo docker run -d --hostname my-postgres --name postgres -e POSTGRES_PASSWORD=m
 ## Screen:
 
 ![](cloud-scrabble-v2.png)
+
+## Board resolver:
+
+![](cloud-scrabble-resolver.gif)
