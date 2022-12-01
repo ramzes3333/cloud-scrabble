@@ -17,4 +17,12 @@ public class Letter {
     private Character letter;
     private Integer points;
     private boolean blank;
+
+    protected Letter clone() {
+        Letter clone = new Letter();
+        clone.setLetter(letter);
+        clone.setPoints(points);
+        clone.setBlank(blank);
+        return clone;
+    }
 }

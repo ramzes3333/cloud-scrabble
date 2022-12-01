@@ -76,9 +76,6 @@ public class ScoringService {
     }
 
     private static Integer getLetterPoints(Map<Character, Integer> pointsMap, Solution.Word.Element e) {
-        /*if(e.isOnBoard()) {
-            return 0;
-        }*/
         return ofNullable(pointsMap.get(Character.toLowerCase(e.getLetter())))
                 .orElseThrow(() -> new IllegalStateException("No tile configuration for letter"));
     }

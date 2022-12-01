@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Singular;
-import lombok.Value;
+import org.apache.commons.lang.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,5 +46,48 @@ public class Solution {
             private int points;
             private boolean onBoard;
         }
+    }
+
+    public Solution transpose(TransposeType transposeType) {
+        Solution transposed = Solution.builder()
+                .words(words.stream()
+                        .map(word -> transpose(word, transposeType))
+                        .collect(Collectors.toList()))
+                .build();
+        return transposed;
+    }
+
+    private Solution.Word transpose(Solution.Word word, TransposeType transposeType) {
+        Solution.Word transposed = Word.builder()
+                .points(word.getPoints())
+                .elements(word.getElements().stream()
+                        .map(e -> transpose(e, transposeType))
+                        .collect(Collectors.toList()))
+                .relatedWords(word.getRelatedWords().stream()
+                        .map(w -> transpose(w, transposeType))
+                        .collect(Collectors.toList()))
+                .build();
+        return transposed;
+    }
+
+    private Solution.Word.Element transpose(Solution.Word.Element element, TransposeType transposeType) {
+        if(transposeType == TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_LEFT) {
+            throw new NotImplementedException();
+        }
+
+        Solution.Word.Element transposed = Word.Element.builder()
+                .x(element.getY())
+                .y(element.getX())
+                .letter(element.getLetter())
+                .points(element.getPoints())
+                .onBoard(element.isOnBoard())
+                .build();
+
+        return transposed;
+    }
+
+    public enum TransposeType {
+        FLIP_HORIZONTALLY_AND_ROTATE_LEFT,
+        FLIP_HORIZONTALLY_AND_ROTATE_RIGHT
     }
 }

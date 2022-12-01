@@ -1,0 +1,158 @@
+{
+  "id": "843ff009-2f4f-43b4-9a6c-74229b09a7df",
+  "fields": [
+    {
+      "x": 0,
+      "y": 0,
+      "bonus": "DoubleLetterScore"
+    },
+    {
+      "x": 1,
+      "y": 0
+    },
+    {
+      "x": 2,
+      "y": 0
+    },
+    {
+      "x": 3,
+      "y": 0,
+      "letter": {
+        "letter": "O",
+        "points": 1
+      }
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "bonus": "TripleWordScore"
+    },
+    {
+      "x": 0,
+      "y": 1
+    },
+    {
+      "x": 1,
+      "y": 1
+    },
+    {
+      "x": 2,
+      "y": 1
+    },
+    {
+      "x": 3,
+      "y": 1,
+      "letter": {
+        "letter": "T",
+        "points": 2
+      }
+    },
+    {
+      "x": 4,
+      "y": 1
+    },
+    {
+      "x": 0,
+      "y": 2,
+      "letter": {
+        "letter": "K",
+        "points": 2
+      }
+    },
+    {
+      "x": 1,
+      "y": 2,
+      "letter": {
+        "letter": "O",
+        "points": 1
+      }
+    },
+    {
+      "x": 2,
+      "y": 2,
+      "letter": {
+        "letter": "J",
+        "points": 3
+      }
+    },
+    {
+      "x": 3,
+      "y": 2,
+      "letter": {
+        "letter": "O",
+        "points": 1
+      }
+    },
+    {
+      "x": 4,
+      "y": 2,
+      "letter": {
+        "letter": "T",
+        "points": 2
+      }
+    },
+    {
+      "x": 0,
+      "y": 3
+    },
+    {
+      "x": 1,
+      "y": 3
+    },
+    {
+      "x": 2,
+      "y": 3
+    },
+    {
+      "x": 3,
+      "y": 3
+    },
+    {
+      "x": 4,
+      "y": 3
+    },
+    {
+      "x": 0,
+      "y": 4
+    },
+    {
+      "x": 1,
+      "y": 4
+    },
+    {
+      "x": 2,
+      "y": 4
+    },
+    {
+      "x": 3,
+      "y": 4
+    },
+    {
+      "x": 4,
+      "y": 4
+    }
+  ],
+  "racks": [
+    {
+      "letters": [
+        {
+          "letter": "N",
+          "points": 1
+        },
+        {
+          "letter": "O",
+          "points": 1
+        },
+        {
+          "letter": "S",
+          "points": 1
+        }
+      ]
+    }
+  ],
+  "boardParameters": {
+    "horizontalSize": 3,
+    "verticalSize": 3,
+    "rackSize": 3
+  }
+}

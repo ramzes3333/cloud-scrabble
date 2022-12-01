@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.commons.lang.NotImplementedException;
 
 import javax.persistence.Id;
 import java.util.List;
@@ -90,6 +91,35 @@ public class Board {
                 .build();
     }
 
+    public Board transpose(TransposeType transposeType) {
+        Board transposed = new Board();
+        transposed.setId(UUID.fromString(this.getId().toString()));
+        transposed.setBoardParameters(BoardParameters.builder()
+                .horizontalSize(boardParameters.getHorizontalSize())
+                .verticalSize(boardParameters.getVerticalSize())
+                .rackSize(boardParameters.getRackSize())
+                .build());
+        transposed.setRacks(racks.stream()
+                .map(Rack::clone)
+                .collect(Collectors.toList()));
+        transposed.setFields(fields.stream()
+                .map(field -> transpose(field, transposeType))
+                .collect(Collectors.toList()));
+        return transposed;
+    }
+
+    private Field transpose(Field field, TransposeType transposeType) {
+        if(transposeType == TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_RIGHT) {
+            throw new NotImplementedException();
+        }
+        Field transposedField = new Field();
+        transposedField.setX(field.getY());
+        transposedField.setY(field.getX());
+        transposedField.setBonus(field.getBonus());
+        transposedField.setLetter(field.getLetter());
+        return transposedField;
+    }
+
     @Getter
     @Setter
     @Builder
@@ -104,5 +134,10 @@ public class Board {
         public boolean isCharSet() {
             return field.getCharacter().isPresent();
         }
+    }
+
+    public enum TransposeType {
+        FLIP_HORIZONTALLY_AND_ROTATE_LEFT,
+        FLIP_HORIZONTALLY_AND_ROTATE_RIGHT
     }
 }

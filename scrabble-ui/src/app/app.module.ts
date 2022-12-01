@@ -17,6 +17,7 @@ import {DragDropModule} from "@angular/cdk/drag-drop";
 import {GamePanelComponent} from './board-ui/game-panel/game-panel.component';
 import {BlankDialogComponent} from './board-ui/blank-dialog/blank-dialog.component';
 import {MatDialogModule} from "@angular/material/dialog";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 @NgModule({
   declarations: [
@@ -28,18 +29,19 @@ import {MatDialogModule} from "@angular/material/dialog";
     GamePanelComponent,
     BlankDialogComponent
   ],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    MatButtonModule,
-    MatTableModule,
-    MatToolbarModule,
-    MatPaginatorModule,
-    DragDropModule,
-    MatDialogModule
-  ],
+    imports: [
+        BrowserModule,
+        HttpClientModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        MatButtonModule,
+        MatTableModule,
+        MatToolbarModule,
+        MatPaginatorModule,
+        DragDropModule,
+        MatDialogModule,
+        MatProgressSpinnerModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

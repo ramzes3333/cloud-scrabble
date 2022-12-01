@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -17,5 +18,13 @@ import java.util.List;
 @ToString
 public class Rack {
     private List<Letter> letters;
+
+    protected Rack clone() {
+        Rack clone = new Rack();
+        clone.setLetters(letters.stream()
+                .map(Letter::clone)
+                .collect(Collectors.toList()));
+        return clone;
+    }
 }
 

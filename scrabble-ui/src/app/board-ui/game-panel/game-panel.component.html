@@ -10,6 +10,17 @@
   </div>
 </div>
 <div class="resolve-container">
+  <div style="display: flex;
+        justify-content: center;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.6);
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: 1;" *ngIf="isLoading" >
+    <mat-progress-spinner color="accent" mode="indeterminate" diameter="50">
+    </mat-progress-spinner>
+  </div>
   <table mat-table [dataSource]="words" class="words-table mat-elevation-z1">
     <ng-container matColumnDef="words">
       <th mat-header-cell *matHeaderCellDef> Words </th>

@@ -14,6 +14,7 @@ export class GamePanelComponent implements OnInit {
 
   displayedColumns: string[] = ['words', 'points'];
   words: GuiWord[] = [];
+  isLoading: boolean = false;
 
   constructor(private gameService: GameService) { }
 
@@ -33,6 +34,7 @@ export class GamePanelComponent implements OnInit {
         }
         this.words.push(word);
       }
+      this.isLoading = false;
     });
   }
 
@@ -47,6 +49,8 @@ export class GamePanelComponent implements OnInit {
   }
 
   resolve() {
+    this.words = [];
+    this.isLoading = true;
     this.gameService.resolve();
   }
 
