@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 /**
  * Based on The World’s Fastest Scrabble Program by ANDREW W. APPEL AND GUY J. JACOBSON
+ * Please see https://www.cs.cmu.edu/afs/cs/academic/class/15451-s06/www/lectures/scrabble.pdf
  */
 @RequiredArgsConstructor
 @Service
