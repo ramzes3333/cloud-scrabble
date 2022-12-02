@@ -24,41 +24,55 @@ public class ScoringService {
     private final TileManagerProvider tileManagerProvider;
 
     public Solution score(final Board board, final Solution solution) {
-        Map<Character, Integer> pointsMap = tileManagerProvider.getTileConfiguration(board.getId().toString()).getPointsMap();
-        Map<Position, Bonus> bonusMap = board.getBonusMap();
+        final Map<Character, Integer> pointsMap = tileManagerProvider.getTileConfiguration(board.getId().toString()).getPointsMap();
+        final Map<Position, Bonus> bonusMap = board.getBonusMap();
+        final List<Position> positionsWithBlank = board.getPositionsWithBlank();
 
         solution.getWords().stream()
                 .map(Solution.Word::getRelatedWords)
                 .flatMap(Collection::stream)
                 .forEach(relatedWord -> relatedWord.setPoints(
-                        score(board.getBoardParameters().getRackSize(), pointsMap, bonusMap, relatedWord)));
+                        score(board.getBoardParameters().getRackSize(),
+                                pointsMap,
+                                bonusMap,
+                                positionsWithBlank,
+                                relatedWord)));
 
         solution.getWords()
-                .forEach(word -> word.setPoints(score(board.getBoardParameters().getRackSize(), pointsMap, bonusMap, word)));
+                .forEach(word -> word.setPoints(score(board.getBoardParameters().getRackSize(),
+                        pointsMap,
+                        bonusMap,
+                        positionsWithBlank,
+                        word)));
 
         solution.getWords().stream()
                 .map(Solution.Word::getElements)
                 .flatMap(Collection::stream)
-                .forEach(el -> el.setPoints(getLetterPoints(pointsMap, el)));
+                .forEach(el -> el.setPoints(getLetterPoints(pointsMap, positionsWithBlank, el)));
 
         solution.getWords().stream()
                 .map(Solution.Word::getRelatedWords)
                 .flatMap(Collection::stream)
                 .map(Solution.Word::getElements)
                 .flatMap(Collection::stream)
-                .forEach(el -> el.setPoints(getLetterPoints(pointsMap, el)));
+                .forEach(el -> el.setPoints(getLetterPoints(pointsMap, positionsWithBlank, el)));
 
         return solution;
     }
 
-    private int score(Integer rackSize, Map<Character, Integer> pointsMap, Map<Position, Bonus> bonusMap, Solution.Word word) {
+    private int score(final Integer rackSize,
+                      final Map<Character, Integer> pointsMap,
+                      final Map<Position, Bonus> bonusMap,
+                      final List<Position> positionsWithBlank,
+                      final Solution.Word word) {
+
         List<Bonus> wordBonus = word.getElements().stream()
                 .map(e -> getBonus(bonusMap, e))
                 .filter(this::isWordBonus)
                 .toList();
 
         int lettersPoints = word.getElements().stream()
-                .mapToInt(e -> getLetterBonus(bonusMap, e).getMultiply() * getLetterPoints(pointsMap, e))
+                .mapToInt(e -> getLetterBonus(bonusMap, e).getMultiply() * getLetterPoints(pointsMap, positionsWithBlank, e))
                 .sum();
 
         boolean bingoBonus = word.getElements().stream()
@@ -75,17 +89,27 @@ public class ScoringService {
                 .sum();
     }
 
-    private static Integer getLetterPoints(Map<Character, Integer> pointsMap, Solution.Word.Element e) {
+    private static Integer getLetterPoints(
+            final Map<Character, Integer> pointsMap,
+            final List<Position> positionsWithBlank,
+            final Solution.Word.Element e) {
+
+        if (e.isBlank() || positionsWithBlank.contains(Position.builder().x(e.getX()).y(e.getY()).build())) {
+            return 0;
+        }
         return ofNullable(pointsMap.get(Character.toLowerCase(e.getLetter())))
                 .orElseThrow(() -> new IllegalStateException("No tile configuration for letter"));
     }
 
     private static Bonus getBonus(Map<Position, Bonus> bonusMap, Solution.Word.Element e) {
-        return ofNullable(bonusMap.get(Position.builder()
+        return e.isOnBoard() ? Bonus.None : ofNullable(bonusMap.get(getPosition(e))).orElse(Bonus.None);
+    }
+
+    private static Position getPosition(Solution.Word.Element e) {
+        return Position.builder()
                 .x(e.getX())
                 .y(e.getY())
-                .build()))
-                .orElse(Bonus.None);
+                .build();
     }
 
     private Bonus getLetterBonus(Map<Position, Bonus> bonusMap, Solution.Word.Element e) {

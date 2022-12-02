@@ -4,6 +4,7 @@ import {Word} from "../../clients/board-manager/model/solution/word";
 import {Word as GuiWord} from "../model/word";
 import {Element} from "../../clients/board-manager/model/solution/element";
 import {Element as GuiElement} from "../model/element";
+import {TableVirtualScrollDataSource} from "ng-table-virtual-scroll";
 
 @Component({
   selector: 'app-game-panel',
@@ -13,14 +14,15 @@ import {Element as GuiElement} from "../model/element";
 export class GamePanelComponent implements OnInit {
 
   displayedColumns: string[] = ['words', 'points'];
-  words: GuiWord[] = [];
+  //words: GuiWord[] = [];
+  words = new TableVirtualScrollDataSource<GuiWord>([]);
   isLoading: boolean = false;
 
   constructor(private gameService: GameService) { }
 
   ngOnInit(): void {
     this.gameService.solutionEvent.subscribe(solution => {
-      this.words = [];
+      this.words = new TableVirtualScrollDataSource<GuiWord>([]);
       for (const w of solution.words) {
         let elements: Element[] = [];
         let relatedWords: GuiWord[] = [];
@@ -32,7 +34,8 @@ export class GamePanelComponent implements OnInit {
         for (const rw of w.relatedWords) {
           relatedWords.push(this.convertRelatedWord(rw));
         }
-        this.words.push(word);
+        //this.words.push(word);
+        this.words.data.push(word);
       }
       this.isLoading = false;
     });
@@ -40,16 +43,16 @@ export class GamePanelComponent implements OnInit {
 
   startGame() {
     this.gameService.startGame();
-    this.words = [];
+    this.words = new TableVirtualScrollDataSource<GuiWord>([]);
   }
 
   confirmMove() {
     this.gameService.confirmMove();
-    this.words = [];
+    this.words = new TableVirtualScrollDataSource<GuiWord>([]);
   }
 
   resolve() {
-    this.words = [];
+    this.words = new TableVirtualScrollDataSource<GuiWord>([]);
     this.isLoading = true;
     this.gameService.resolve();
   }

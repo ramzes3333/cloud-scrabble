@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 import org.apache.commons.lang.NotImplementedException;
 
 import javax.persistence.Id;
@@ -84,6 +85,13 @@ public class Board {
         return fieldMap;
     }
 
+    public List<Position> getPositionsWithBlank() {
+        return fields.stream()
+                .filter(field -> field.getLetter() != null && field.getLetter().isBlank())
+                .map(field -> getPosition(field.getX(), field.getY()))
+                .collect(Collectors.toList());
+    }
+
     private static Position getPosition(Integer x, Integer y) {
         return Position.builder()
                 .x(x)
@@ -121,14 +129,17 @@ public class Board {
     }
 
     @Getter
-    @Setter
-    @Builder
+    @SuperBuilder
     public static class DirectionalField {
         private final CharacterWithPosition field;
 
+        @Setter
         private DirectionalField up;
+        @Setter
         private DirectionalField down;
+        @Setter
         private DirectionalField left;
+        @Setter
         private DirectionalField right;
 
         public boolean isCharSet() {

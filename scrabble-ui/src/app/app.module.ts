@@ -18,6 +18,8 @@ import {GamePanelComponent} from './board-ui/game-panel/game-panel.component';
 import {BlankDialogComponent} from './board-ui/blank-dialog/blank-dialog.component';
 import {MatDialogModule} from "@angular/material/dialog";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import {ScrollingModule} from "@angular/cdk/scrolling";
+import {TableVirtualScrollModule} from 'ng-table-virtual-scroll';
 
 @NgModule({
   declarations: [
@@ -29,19 +31,21 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
     GamePanelComponent,
     BlankDialogComponent
   ],
-    imports: [
-        BrowserModule,
-        HttpClientModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        MatButtonModule,
-        MatTableModule,
-        MatToolbarModule,
-        MatPaginatorModule,
-        DragDropModule,
-        MatDialogModule,
-        MatProgressSpinnerModule
-    ],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    MatButtonModule,
+    MatTableModule,
+    MatToolbarModule,
+    MatPaginatorModule,
+    DragDropModule,
+    MatDialogModule,
+    MatProgressSpinnerModule,
+    ScrollingModule,
+    TableVirtualScrollModule
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })

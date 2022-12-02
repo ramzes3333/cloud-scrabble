@@ -1,9 +1,13 @@
 package com.aryzko.scrabble.scrabbledictionary.domain.model.dawg;
 
+import java.text.Collator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Stack;
+
+import static java.lang.String.format;
 
 /**
  * Based on Steve Hanov python script
@@ -16,6 +20,7 @@ public class DawgBuilder {
     private final Node root = new Node(0);
     private final Map<Node, Node> minimizedNodes = new HashMap<>();
     private final Stack<UncheckedNode> uncheckedNodes = new Stack<>();
+    private final Collator collator = Collator.getInstance(new Locale("pl", "PL"));
 
     public DawgBuilder insert(List<String> words) {
         words.stream().forEach(this::insert);
@@ -23,6 +28,12 @@ public class DawgBuilder {
     }
 
     public DawgBuilder insert(String word) {
+        if(collator.compare(word, previousWord) < 0) {
+            throw new IllegalArgumentException(
+                    format("Words must be inserted in alphabetical order (prev: %s, actual: %s)",
+                            previousWord,
+                            word));
+        }
         int commonPrefix = commonPrefix(word);
         minimize(commonPrefix);
 

@@ -7,21 +7,26 @@ import com.aryzko.scrabble.scrabbledictionary.domain.model.resolver.Line;
 import com.aryzko.scrabble.scrabbledictionary.domain.model.resolver.Solution;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.Singular;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Optional.ofNullable;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class LineResolver {
@@ -29,30 +34,31 @@ public class LineResolver {
     private final DawgService dawgService;
 
     public Solution resolve(final Line line, final AvailableLetters availableLetters) throws DawgIsNotReady {
-        DynamicAvailableLetters letters = DynamicAvailableLetters.of(availableLetters);
         Solution.SolutionBuilder solutionBuilder = Solution.builder();
         Node root = dawgService.getDawg();
 
         return solutionBuilder.words(
                         line.getFields().stream()
                                 .filter(Line.LineField::isAnchor)
-                                .mapMulti(resolve(root, letters))
+                                .mapMulti(resolve(root, DynamicAvailableLetters.of(availableLetters)))
                                 .collect(Collectors.toList()))
                 .build();
     }
 
     private static BiConsumer<Line.LineField, Consumer<Solution.Word>> resolve(Node root, DynamicAvailableLetters letters) {
-        return (anchor, wordConsumer) -> leftPart(new StringBuilder(), root, anchor, anchor.getLeftLimit(), letters, wordConsumer);
+        return (anchor, wordConsumer) -> leftPart(LeftPart.builder(), root, anchor, anchor.getLeftLimit(), letters, wordConsumer);
     }
 
-    private static void leftPart(StringBuilder leftPart, Node root, Line.LineField field, Integer leftLimit,
+    private static void leftPart(LeftPart.LeftPartBuilder leftPartBuilder, Node root, Line.LineField field, Integer leftLimit,
                                  DynamicAvailableLetters letters, Consumer<Solution.Word> wordConsumer) {
-        if(leftLimit > 0) {
-            for(Map.Entry<Character, Node> entry : root.getTransitions().entrySet()) {
-                if(letters.isAvailable(entry.getKey())) {
-                    letters.useLetter(entry.getKey());
-
-                    leftPart((new StringBuilder(leftPart.toString())).append(entry.getKey()), entry.getValue(), field, leftLimit--, letters, wordConsumer);
+        if (leftLimit > 0) {
+            for (Map.Entry<Character, Node> entry : root.getTransitions().entrySet()) {
+                if (letters.isAvailable(entry.getKey())) {
+                    boolean blankUsed = letters.useLetter(entry.getKey());
+                    leftPart(LeftPart.builder()
+                                    .letters(leftPartBuilder.build().getLetters())
+                                    .letter(new LeftPart.Letter(entry.getKey(), blankUsed)),
+                            entry.getValue(), field, leftLimit - 1, letters, wordConsumer);
                     letters.returnLetter(entry.getKey());
                 }
             }
@@ -64,7 +70,7 @@ public class LineResolver {
                 extendRight(wordBuilder, getNode(root, wordBuilder.build().getWordAsString()), field, letters, wordConsumer, false);
             }
         } else {
-            extendRight(initWordBuilder(leftPart, field), root, field, letters, wordConsumer, false);
+            extendRight(initWordBuilder(leftPartBuilder, field), root, field, letters, wordConsumer, false);
         }
     }
 
@@ -76,17 +82,17 @@ public class LineResolver {
                 if(field.getLetter().equals(entry.getKey())) {
                     Solution.Word.WordBuilder wordBuilderCopy = Solution.Word.builder()
                             .elements(wordBuilder.build().getElements());
-                    wordBuilderCopy.element(prepareElement(field, entry.getKey(), true));
+                    wordBuilderCopy.element(prepareElement(field, entry.getKey(), false, true));
                     extendRight(wordBuilderCopy, entry.getValue(), field.getNext(), letters, wordConsumer, extendedRight);
                 }
             }
         } else if(field != null) {
             List<Character> intersection = intersection(letters, node.getTransitions(), field);
             for(Character character : intersection) {
-                letters.useLetter(character);
+                boolean blankUsed = letters.useLetter(character);
                 Solution.Word.WordBuilder wordBuilderCopy = Solution.Word.builder()
                         .elements(wordBuilder.build().getElements());
-                wordBuilderCopy.element(prepareElement(field, character, false));
+                wordBuilderCopy.element(prepareElement(field, character, blankUsed, false));
                 extendRight(wordBuilderCopy,
                         node.getTransitions().get(character),
                         field.getNext(),
@@ -97,7 +103,6 @@ public class LineResolver {
             }
         }
         if(extendedRight
-                && !isNextFieldHasLetter(field)
                 && !isFieldHasLetter(field)
                 && isWordHasLengthGreaterThan1(wordBuilder)
                 && !isWordWithLettersOnlyFromBoard(wordBuilder)
@@ -110,18 +115,19 @@ public class LineResolver {
         return field != null && field.isLetter();
     }
 
-    private static Solution.Word.WordBuilder initWordBuilder(StringBuilder leftPartBuilder, Line.LineField field) {
-        if(leftPartBuilder.length() == 0) {
+    private static Solution.Word.WordBuilder initWordBuilder(LeftPart.LeftPartBuilder leftPartBuilder, Line.LineField field) {
+        LeftPart leftPart = leftPartBuilder.build();
+        if(leftPart.getLetters().size() == 0) {
             return Solution.Word.builder();
         } else {
             Solution.Word.WordBuilder wordBuilder = Solution.Word.builder();
-            String leftPart = leftPartBuilder.toString();
-            for(int x=0; x < leftPart.length(); x++) {
+            for(int x=0; x < leftPart.getLetters().size(); x++) {
                 wordBuilder.element(
                         prepareElement(
-                                field.getX()-leftPart.length()+x,
+                                field.getX()-leftPart.getLetters().size()+x,
                                 field.getY(),
-                                leftPart.charAt(x),
+                                leftPart.getLetters().get(x).letter(),
+                                leftPart.getLetters().get(x).blank(),
                                 false));
             }
             return wordBuilder;
@@ -161,37 +167,47 @@ public class LineResolver {
         }
 
         do {
-            wordBuilder.element(prepareElement(field, field.getLetter(), true));
+            wordBuilder.element(prepareElement(field, field.getLetter(), false, true));
             field = field.getNext();
         } while (field != null && field.isLetter());
         return wordBuilder;
     }
 
-    private static Solution.Word.Element prepareElement(Line.LineField field, Character character, boolean unmodifiableLetter) {
-        return prepareElement(field.getX(), field.getY(), character, unmodifiableLetter);
+    private static Solution.Word.Element prepareElement(Line.LineField field, Character character, boolean blank, boolean unmodifiableLetter) {
+        return prepareElement(field.getX(), field.getY(), character, blank, unmodifiableLetter);
     }
 
-    private static Solution.Word.Element prepareElement(Integer x, Integer y, Character character, boolean unmodifiableLetter) {
+    private static Solution.Word.Element prepareElement(Integer x, Integer y, Character character, boolean blank, boolean unmodifiableLetter) {
         return Solution.Word.Element.builder()
                 .x(x)
                 .y(y)
                 .letter(character)
+                .blank(blank)
                 .unmodifiableLetter(unmodifiableLetter)
                 .build();
     }
 
-    private static List<Character> intersection(DynamicAvailableLetters letters,
-                                                SortedMap<Character, Node> transitions,
-                                                Line.LineField field) {
-        return letters.getLetters().stream()
-                .filter(DynamicAvailableLetters.CharacterWithAvailability::isAvailable)
-                .distinct()
-                .map(DynamicAvailableLetters.CharacterWithAvailability::getLetter)
-                .filter(transitions::containsKey)
+    private static List<Character> intersection(final DynamicAvailableLetters letters,
+                                                final SortedMap<Character, Node> transitions,
+                                                final Line.LineField field) {
+        return getBase(letters, transitions)
                 .filter(character -> field.isAnyLetter() || field.getAvailableLetters().contains(character))
                 .map(Character::toLowerCase)
                 .distinct()
                 .collect(Collectors.toList());
+    }
+
+    private static Stream<Character> getBase(final DynamicAvailableLetters letters,
+                                             final SortedMap<Character, Node> transitions) {
+        if(letters.isBlankAvailable()) {
+            return transitions.keySet().stream();
+        } else {
+            return letters.getLetters().stream()
+                    .filter(DynamicAvailableLetters.CharacterWithAvailability::isAvailable)
+                    .distinct()
+                    .map(DynamicAvailableLetters.CharacterWithAvailability::getLetter)
+                    .filter(transitions::containsKey);
+        }
     }
 
     @Getter
@@ -201,10 +217,53 @@ public class LineResolver {
 
         public static DynamicAvailableLetters of(AvailableLetters availableLetters) {
             List<CharacterWithAvailability> letters = availableLetters.getCharacters().stream()
-                    .map(l -> new CharacterWithAvailability(Character.toLowerCase(l), true))
+                    .map(l -> new CharacterWithAvailability(Character.toLowerCase(l), l.equals(' '), true))
                     .collect(Collectors.toList());
 
             return new DynamicAvailableLetters(letters);
+        }
+
+        public boolean isBlankAvailable() {
+            return letters.stream()
+                    .anyMatch(ch -> ch.isBlank() && ch.isAvailable());
+        }
+
+        public boolean isAvailable(Character character) {
+            return letters.stream()
+                    .anyMatch(ch -> (ch.getLetter().equals(character) || ch.isBlank) && ch.isAvailable());
+        }
+
+        /**
+         * Use letter from available letters
+         * @param character letter to use
+         * @return true if blank is used, false otherwise
+         */
+        public boolean useLetter(Character character) {
+            CharacterWithAvailability foundLetter = letters.stream()
+                    .filter(ch -> (ch.getLetter().equals(character) || ch.isBlank) && ch.isAvailable())
+                    .sorted(Comparator.comparing(CharacterWithAvailability::isBlank))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("There is no available letter"));
+
+            foundLetter.isAvailable = false;
+            if(foundLetter.isBlank()) {
+                foundLetter.letter = character;
+            }
+
+            return foundLetter.isBlank;
+        }
+
+        public void returnLetter(Character character) {
+            CharacterWithAvailability foundLetter = letters.stream()
+                    .filter(ch -> ch.getLetter().equals(character) && !ch.isAvailable())
+                    .sorted(Comparator.comparing(CharacterWithAvailability::isBlank).reversed())
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("Letter is not used"));
+
+            foundLetter.isAvailable = true;
+            if(foundLetter.isBlank()) {
+                foundLetter.letter = ' ';
+            }
         }
 
         @Getter
@@ -212,31 +271,17 @@ public class LineResolver {
         @AllArgsConstructor
         public static class CharacterWithAvailability {
             private Character letter;
-            @Setter
+            private boolean isBlank;
             private boolean isAvailable;
         }
+    }
 
-        public boolean isAvailable(Character character) {
-            return letters.stream()
-                    .anyMatch(ch -> ch.getLetter().equals(character) && ch.isAvailable());
-        }
+    @Getter
+    @Builder
+    public static class LeftPart {
+        @Singular
+        private List<Letter> letters;
 
-        public void useLetter(Character character) {
-            CharacterWithAvailability characterWithAvailability = letters.stream()
-                    .filter(ch -> ch.getLetter().equals(character) && ch.isAvailable())
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException("There is no available letter"));
-
-            characterWithAvailability.setAvailable(false);
-        }
-
-        public void returnLetter(Character character) {
-            CharacterWithAvailability characterWithAvailability = letters.stream()
-                    .filter(ch -> ch.getLetter().equals(character) && !ch.isAvailable())
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException("Letter is not used"));
-
-            characterWithAvailability.setAvailable(true);
-        }
+        public record Letter(Character letter, boolean blank) { }
     }
 }

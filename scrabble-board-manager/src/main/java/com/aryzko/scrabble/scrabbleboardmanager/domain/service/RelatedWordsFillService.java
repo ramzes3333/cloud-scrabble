@@ -4,6 +4,8 @@ import com.aryzko.scrabble.scrabbleboardmanager.domain.Board;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.CharacterWithPosition;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.Position;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.Solution;
+import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,7 +24,7 @@ public class RelatedWordsFillService {
     public void fill(final Board board, final Solution solution) {
         final Map<Position, Board.DirectionalField> fieldMap = board.buildFieldMap();
 
-        solution.getWords().stream()
+        solution.getWords()
                 .forEach(w -> fill(fieldMap, w));
     }
 
@@ -32,7 +34,8 @@ public class RelatedWordsFillService {
                 .map(e -> prepareTemporaryField(
                         fieldMap,
                         Position.builder().x(e.getX()).y(e.getY()).build(),
-                        e.getLetter()))
+                        e.getLetter(),
+                        e.isBlank()))
                 .filter(this::isAdjacentToUpOrDown)
                 .map(this::getWord)
                 .collect(Collectors.toList());
@@ -40,9 +43,10 @@ public class RelatedWordsFillService {
         word.getRelatedWords().addAll(relatedWords);
     }
 
-    private Board.DirectionalField prepareTemporaryField(final Map<Position, Board.DirectionalField> fieldMap,
-                                                         Position position, Character character) {
-        return Board.DirectionalField.builder()
+    private PotentialField prepareTemporaryField(final Map<Position, Board.DirectionalField> fieldMap,
+                                                 Position position, Character character,
+                                                 boolean isBlank) {
+        return PotentialField.builder()
                 .field(CharacterWithPosition.builder()
                         .x(position.getX())
                         .y(position.getY())
@@ -50,10 +54,11 @@ public class RelatedWordsFillService {
                         .build())
                 .up(fieldMap.get(Position.builder().x(position.getX()).y(position.getY() - 1).build()))
                 .down(fieldMap.get(Position.builder().x(position.getX()).y(position.getY() + 1).build()))
+                .blank(isBlank)
                 .build();
     }
 
-    private Solution.Word getWord(Board.DirectionalField field) {
+    private Solution.Word getWord(PotentialField field) {
         Solution.Word.WordBuilder wordBuilder = Solution.Word.builder();
         List<Solution.Word.Element> upPart = traverse(field, Board.DirectionalField::getUp);
         Collections.reverse(upPart);
@@ -61,6 +66,7 @@ public class RelatedWordsFillService {
         wordBuilder.element(prepareElement(
                 field,
                 Character.toLowerCase(field.getField().getCharacter().get()),
+                field.isBlank(),
                 false));
         wordBuilder.elements(traverse(field, Board.DirectionalField::getDown));
 
@@ -75,20 +81,21 @@ public class RelatedWordsFillService {
             elements.add(prepareElement(
                     directionalField,
                     Character.toLowerCase(directionalField.getField().getCharacter().get()),
+                    false,
                     true));
         }
         return elements;
     }
 
-    private static boolean isUnmodifiableLetter(int sourceX, int sourceY, Board.DirectionalField field) {
-        return sourceX != field.getField().getX() || sourceY != field.getField().getY();
-    }
-
-    private static Solution.Word.Element prepareElement(Board.DirectionalField field, Character character, boolean unmodifiableLetter) {
+    private static Solution.Word.Element prepareElement(Board.DirectionalField field,
+                                                        Character character,
+                                                        boolean blank,
+                                                        boolean unmodifiableLetter) {
         return Solution.Word.Element.builder()
                 .x(field.getField().getX())
                 .y(field.getField().getY())
                 .letter(character)
+                .blank(blank)
                 .onBoard(unmodifiableLetter)
                 .build();
     }
@@ -96,5 +103,11 @@ public class RelatedWordsFillService {
     private boolean isAdjacentToUpOrDown(Board.DirectionalField directionalField) {
         return ofNullable(directionalField.getUp()).map(Board.DirectionalField::isCharSet).orElse(false)
                 || ofNullable(directionalField.getDown()).map(Board.DirectionalField::isCharSet).orElse(false);
+    }
+
+    @Getter
+    @SuperBuilder
+    private static class PotentialField extends Board.DirectionalField {
+        private boolean blank;
     }
 }

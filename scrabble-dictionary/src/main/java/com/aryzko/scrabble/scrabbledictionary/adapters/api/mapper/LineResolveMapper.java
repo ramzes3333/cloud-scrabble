@@ -8,7 +8,7 @@ import org.mapstruct.Mapper;
 public interface LineResolveMapper {
     com.aryzko.scrabble.scrabbledictionary.domain.model.resolver.Line convert(Line line);
 
-    com.aryzko.scrabble.scrabbledictionary.domain.model.resolver.Solution.Word.Element convert(Solution.Word.Element element);
-    com.aryzko.scrabble.scrabbledictionary.domain.model.resolver.Solution.Word convert(Solution.Word word);
-    com.aryzko.scrabble.scrabbledictionary.domain.model.resolver.Solution convert(Solution line);
+    com.aryzko.scrabble.scrabbledictionary.adapters.api.response.Solution.Word.Element convert(Solution.Word.Element element);
+    com.aryzko.scrabble.scrabbledictionary.adapters.api.response.Solution.Word convert(Solution.Word word);
+    com.aryzko.scrabble.scrabbledictionary.adapters.api.response.Solution convert(Solution line);
 }

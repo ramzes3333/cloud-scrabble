@@ -44,6 +44,7 @@ public class Solution {
             private char letter;
             @Setter
             private int points;
+            private boolean blank;
             private boolean onBoard;
         }
     }

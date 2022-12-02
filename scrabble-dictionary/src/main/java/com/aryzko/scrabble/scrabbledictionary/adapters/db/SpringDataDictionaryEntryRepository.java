@@ -31,5 +31,5 @@ public interface SpringDataDictionaryEntryRepository extends JpaRepository<Dicti
     boolean findInDictionary(@NonNull String language, @NonNull String entry);
 
 
-    Stream<DictionaryEntryDb> findAllByDictionaryId(Integer dictionaryId);
+    Stream<DictionaryEntryDb> findAllByDictionaryIdOrderByIdAsc(Integer dictionaryId);
 }

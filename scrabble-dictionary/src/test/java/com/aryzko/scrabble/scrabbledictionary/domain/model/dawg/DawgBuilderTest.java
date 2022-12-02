@@ -1,8 +1,10 @@
 package com.aryzko.scrabble.scrabbledictionary.domain.model.dawg;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,7 +22,7 @@ class DawgBuilderTest {
     @Test
     public void build() {
         //given
-        List<String> words = List.of("gol", "rynna", "nity", "zew", "polska", "nit", "woka").stream()
+        List<String> words = List.of("ił", "iły", "iłżecku", "im", "ima", "imacie", "imać").stream()
                 .sorted()
                 .collect(Collectors.toList());
 
@@ -29,6 +31,17 @@ class DawgBuilderTest {
 
         //then
         assertNotNull(node);
+    }
+
+    @Test
+    public void build_incorrectOrder() {
+        //given
+        List<String> words = List.of("iły", "iłżecku", "im", "ima", "imacie", "imać", "ił");
+
+        //when
+        Assertions.assertThrows(IllegalArgumentException.class, () -> builder.insert(words).build());
+
+        //then
     }
 
 }

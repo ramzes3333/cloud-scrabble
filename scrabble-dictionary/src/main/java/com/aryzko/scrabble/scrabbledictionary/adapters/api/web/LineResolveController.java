@@ -2,11 +2,11 @@ package com.aryzko.scrabble.scrabbledictionary.adapters.api.web;
 
 import com.aryzko.scrabble.scrabbledictionary.adapters.api.mapper.LineResolveMapper;
 import com.aryzko.scrabble.scrabbledictionary.adapters.api.request.ResolveRequest;
+import com.aryzko.scrabble.scrabbledictionary.adapters.api.response.Solution;
 import com.aryzko.scrabble.scrabbledictionary.adapters.api.web.error.RestErrorResponse;
 import com.aryzko.scrabble.scrabbledictionary.domain.aspect.PerformanceLog;
 import com.aryzko.scrabble.scrabbledictionary.domain.exception.DawgIsNotReady;
 import com.aryzko.scrabble.scrabbledictionary.domain.model.resolver.AvailableLetters;
-import com.aryzko.scrabble.scrabbledictionary.domain.model.resolver.Solution;
 import com.aryzko.scrabble.scrabbledictionary.domain.service.LineResolver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

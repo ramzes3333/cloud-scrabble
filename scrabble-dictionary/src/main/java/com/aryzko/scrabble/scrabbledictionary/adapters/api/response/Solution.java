@@ -1,26 +1,28 @@
 package com.aryzko.scrabble.scrabbledictionary.adapters.api.response;
 
-import lombok.Builder;
+import lombok.Getter;
 import lombok.Setter;
-import lombok.Singular;
-import lombok.Value;
 
 import java.util.List;
 
+@Getter
 @Setter
 public class Solution {
 
     private List<Word> words;
 
+    @Getter
     @Setter
-    private static class Word {
+    public static class Word {
         private List<Element> elements;
 
+        @Getter
         @Setter
-        private static class Element {
+        public static class Element {
             private int x;
             private int y;
             private char letter;
+            private boolean blank;
             private boolean unmodifiableLetter;
         }
     }

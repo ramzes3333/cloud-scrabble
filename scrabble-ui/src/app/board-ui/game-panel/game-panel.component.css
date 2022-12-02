@@ -17,10 +17,15 @@
 }
 
 .resolve-container {
-  position: relative;
   margin-top: 20px;
+  position: relative;
   height: 500px;
   overflow: auto;
+}
+
+.wrapper {
+  height: 500px;
+  width: 465px;
 }
 
 .words-table {

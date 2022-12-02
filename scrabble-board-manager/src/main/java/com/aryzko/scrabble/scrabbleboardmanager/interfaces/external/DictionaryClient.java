@@ -49,6 +49,7 @@ public interface DictionaryClient {
                 private int x;
                 private int y;
                 private char letter;
+                private boolean blank;
                 private boolean unmodifiableLetter;
             }
         }

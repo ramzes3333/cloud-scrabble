@@ -58,7 +58,7 @@ public class DbDictionaryRepository implements DictionaryRepository {
         DictionaryDb defaultDictionary = dictionaryRepository.findDefaultDictionary()
                 .orElseThrow(() -> new IllegalStateException("There is no default dictionary"));
 
-        return dictionaryEntryRepository.findAllByDictionaryId(defaultDictionary.getId())
+        return dictionaryEntryRepository.findAllByDictionaryIdOrderByIdAsc(defaultDictionary.getId())
                 .map(dictionaryEntryMapper::dictionaryEntryDbToDictionaryEntry);
     }
 
