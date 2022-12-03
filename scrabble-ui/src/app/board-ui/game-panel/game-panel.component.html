@@ -22,7 +22,7 @@
     </mat-progress-spinner>
   </div>
   <!--tvsItemSize="48"-->
-  <cdk-virtual-scroll-viewport tvsItemSize="48" class="virtual-scroll-wrapper">
+  <cdk-virtual-scroll-viewport tvsItemSize="63" class="virtual-scroll-wrapper">
     <table mat-table [dataSource]="words" class="words-table mat-elevation-z1">
       <ng-container matColumnDef="words">
         <th mat-header-cell *matHeaderCellDef> Words </th>
@@ -35,7 +35,17 @@
               </div>
             </ng-container>
           </div>
-          <div class="related-words-container" *ngIf="word.relatedWords.length > 0">
+          <div class="additional-data">
+            <div
+              matTooltipClass="multiline-tooltip"
+              [matTooltip]="relatedWordsTooltip(word)"
+              class="related-words-{{word.relatedWords.length > 0}}">Related words: {{word.relatedWords.length}}</div>
+            <div
+              matTooltipClass="multiline-tooltip"
+              [matTooltip]="bonusesTooltip(word)"
+              class="bonuses-{{word.bonuses.length > 0}}">Bonuses: {{word.bonuses.length}}</div>
+          </div>
+          <!--<div class="related-words-container" *ngIf="word.relatedWords.length > 0">
             <div class="related-words-label">Related words:</div>
             <ng-container *ngFor="let relatedWord of word.relatedWords">
               <div class="word-container">
@@ -47,7 +57,7 @@
                 </ng-container>
               </div>
             </ng-container>
-          </div>
+          </div>-->
         </td>
       </ng-container>
       <ng-container matColumnDef="points">

@@ -8,7 +8,15 @@ import java.util.List;
 public class Solution {
     private List<Word> words;
 
-    public record Word (int points, List<Element> elements, List<Word> relatedWords) { }
+    public record Word (int points, List<Element> elements, List<Word> relatedWords, List<Bonus> bonuses) { }
 
     public record Element (int x, int y, char letter, int points, boolean blank, boolean onBoard) { }
+
+    public enum Bonus {
+        DoubleWordScore,
+        TripleWordScore,
+        DoubleLetterScore,
+        TripleLetterScore,
+        None
+    }
 }

@@ -28,6 +28,9 @@ public class Solution {
         @Setter
         @Builder.Default
         private List<Word> relatedWords = new ArrayList<>();
+        @Setter
+        @Builder.Default
+        private List<Bonus> bonuses = new ArrayList<>();
 
         public String getWordAsString() {
             return ofNullable(elements).orElse(Collections.emptyList()).stream()
@@ -67,6 +70,7 @@ public class Solution {
                 .relatedWords(word.getRelatedWords().stream()
                         .map(w -> transpose(w, transposeType))
                         .collect(Collectors.toList()))
+                .bonuses(word.getBonuses())
                 .build();
         return transposed;
     }

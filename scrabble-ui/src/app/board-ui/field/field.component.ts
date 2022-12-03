@@ -1,5 +1,4 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Bonus} from "../../clients/board-manager/model/bonus";
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {Letter} from "../model/letter";
 import {MovableField} from "../model/movable-field";
@@ -8,6 +7,7 @@ import {MoveType} from "../model/move-type";
 import {GameService, GameUpdate, GameUpdateType} from "../../services/game.service";
 import {MatDialog} from "@angular/material/dialog";
 import {BlankDialogComponent} from "../blank-dialog/blank-dialog.component";
+import {Bonus} from "../model/bonus";
 
 @Component({
   selector: 'app-field',

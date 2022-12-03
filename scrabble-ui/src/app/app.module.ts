@@ -20,6 +20,7 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {ScrollingModule} from "@angular/cdk/scrolling";
 import {TableVirtualScrollModule} from 'ng-table-virtual-scroll';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import {TableVirtualScrollModule} from 'ng-table-virtual-scroll';
     MatDialogModule,
     MatProgressSpinnerModule,
     ScrollingModule,
-    TableVirtualScrollModule
+    TableVirtualScrollModule,
+    MatTooltipModule
   ],
   providers: [],
   bootstrap: [AppComponent]

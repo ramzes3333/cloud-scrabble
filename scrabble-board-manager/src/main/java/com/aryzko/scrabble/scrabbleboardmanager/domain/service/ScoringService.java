@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static java.util.Optional.ofNullable;
 import static java.util.function.Predicate.not;
@@ -28,36 +30,68 @@ public class ScoringService {
         final Map<Position, Bonus> bonusMap = board.getBonusMap();
         final List<Position> positionsWithBlank = board.getPositionsWithBlank();
 
-        solution.getWords().stream()
-                .map(Solution.Word::getRelatedWords)
-                .flatMap(Collection::stream)
-                .forEach(relatedWord -> relatedWord.setPoints(
-                        score(board.getBoardParameters().getRackSize(),
-                                pointsMap,
-                                bonusMap,
-                                positionsWithBlank,
-                                relatedWord)));
-
-        solution.getWords()
-                .forEach(word -> word.setPoints(score(board.getBoardParameters().getRackSize(),
-                        pointsMap,
-                        bonusMap,
-                        positionsWithBlank,
-                        word)));
-
-        solution.getWords().stream()
-                .map(Solution.Word::getElements)
-                .flatMap(Collection::stream)
-                .forEach(el -> el.setPoints(getLetterPoints(pointsMap, positionsWithBlank, el)));
-
-        solution.getWords().stream()
-                .map(Solution.Word::getRelatedWords)
-                .flatMap(Collection::stream)
-                .map(Solution.Word::getElements)
-                .flatMap(Collection::stream)
-                .forEach(el -> el.setPoints(getLetterPoints(pointsMap, positionsWithBlank, el)));
+        processWords(board, solution, pointsMap, bonusMap, positionsWithBlank);
+        processRelatedWords(board, solution, pointsMap, bonusMap, positionsWithBlank);
+        processWordElements(solution, pointsMap, positionsWithBlank);
+        processRelatedWordElements(solution, pointsMap, positionsWithBlank);
 
         return solution;
+    }
+
+    private void processRelatedWords(Board board, Solution solution, Map<Character, Integer> pointsMap, Map<Position, Bonus> bonusMap, List<Position> positionsWithBlank) {
+        solution.getWords()
+                .forEach(word -> {
+                    word.setPoints(score(board.getBoardParameters().getRackSize(),
+                            pointsMap,
+                            bonusMap,
+                            positionsWithBlank,
+                            word));
+                    word.setBonuses(
+                            getBonuses(word, bonusMap)
+                    );
+                });
+    }
+
+    private void processWords(Board board, Solution solution, Map<Character, Integer> pointsMap, Map<Position, Bonus> bonusMap, List<Position> positionsWithBlank) {
+        solution.getWords().stream()
+                .map(Solution.Word::getRelatedWords)
+                .flatMap(Collection::stream)
+                .forEach(relatedWord -> {
+                            relatedWord.setPoints(
+                                    score(board.getBoardParameters().getRackSize(),
+                                            pointsMap,
+                                            bonusMap,
+                                            positionsWithBlank,
+                                            relatedWord));
+                            relatedWord.setBonuses(
+                                    getBonuses(relatedWord, bonusMap)
+                            );
+                        }
+                );
+    }
+
+    private static void processRelatedWordElements(Solution solution, Map<Character, Integer> pointsMap, List<Position> positionsWithBlank) {
+        solution.getWords().stream()
+                .map(Solution.Word::getRelatedWords)
+                .flatMap(Collection::stream)
+                .map(Solution.Word::getElements)
+                .flatMap(Collection::stream)
+                .forEach(el -> el.setPoints(getLetterPoints(pointsMap, positionsWithBlank, el)));
+    }
+
+    private static void processWordElements(Solution solution, Map<Character, Integer> pointsMap, List<Position> positionsWithBlank) {
+        solution.getWords().stream()
+                .map(Solution.Word::getElements)
+                .flatMap(Collection::stream)
+                .forEach(el -> el.setPoints(getLetterPoints(pointsMap, positionsWithBlank, el)));
+    }
+
+    private static List<Bonus> getBonuses(Solution.Word word, Map<Position, Bonus> bonusMap) {
+        return word.getElements().stream()
+                .filter(not(Solution.Word.Element::isOnBoard))
+                .map(e -> getBonus(bonusMap, e))
+                .filter(b -> !b.equals(Bonus.None))
+                .collect(Collectors.toList());
     }
 
     private int score(final Integer rackSize,

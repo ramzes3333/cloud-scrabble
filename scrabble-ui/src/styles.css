@@ -2,3 +2,7 @@
 
 html, body { height: 100%; }
 body { margin: 20px; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.multiline-tooltip {
+  white-space: pre-line !important;
+}

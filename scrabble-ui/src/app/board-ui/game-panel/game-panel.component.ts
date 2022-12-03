@@ -4,6 +4,8 @@ import {Word} from "../../clients/board-manager/model/solution/word";
 import {Word as GuiWord} from "../model/word";
 import {Element} from "../../clients/board-manager/model/solution/element";
 import {Element as GuiElement} from "../model/element";
+import {Bonus} from "../../clients/board-manager/model/bonus";
+import {Bonus as GuiBonus} from "../model/bonus";
 import {TableVirtualScrollDataSource} from "ng-table-virtual-scroll";
 
 @Component({
@@ -26,13 +28,17 @@ export class GamePanelComponent implements OnInit {
       for (const w of solution.words) {
         let elements: Element[] = [];
         let relatedWords: GuiWord[] = [];
-        let word: GuiWord = new GuiWord(w.points, elements, relatedWords);
+        let bonuses: GuiBonus[] = [];
+        let word: GuiWord = new GuiWord(w.points, elements, relatedWords, bonuses);
 
         for (const el of w.elements) {
           elements.push(this.convertElement(el));
         }
         for (const rw of w.relatedWords) {
           relatedWords.push(this.convertRelatedWord(rw));
+        }
+        for (const b of w.bonuses) {
+          bonuses.push(this.convertBonus(b));
         }
         //this.words.push(word);
         this.words.data.push(word);
@@ -69,13 +75,21 @@ export class GamePanelComponent implements OnInit {
     return new GuiElement(el.x, el.y, el.letter, el.points, el.onBoard);
   }
 
+  private convertBonus(b: Bonus): GuiBonus {
+    return b as GuiBonus;
+  }
+
   private convertRelatedWord(rw: Word): GuiWord {
-    let elements: Element[] = [];
-    let relatedWords: Word[] = [];
-    let word: GuiWord = new GuiWord(rw.points, elements, relatedWords);
+    let elements: GuiElement[] = [];
+    let relatedWords: GuiWord[] = [];
+    let bonuses: GuiBonus[] = [];
+    let word: GuiWord = new GuiWord(rw.points, elements, relatedWords, bonuses);
 
     for (const el of rw.elements) {
       elements.push(this.convertElement(el));
+    }
+    for (const b of rw.bonuses) {
+      bonuses.push(this.convertBonus(b));
     }
     return word;
   }
@@ -86,5 +100,35 @@ export class GamePanelComponent implements OnInit {
 
   clearPotentialWord() {
     this.gameService.clearPotentialWord();
+  }
+
+  relatedWordsTooltip(word: GuiWord): string {
+    let relatedWords: string = "";
+    for (const rw of word.relatedWords) {
+      relatedWords += rw.getWordAsString() + " (" + rw.points + ")\r\n";
+    }
+    return relatedWords;
+  }
+
+  bonusesTooltip(word: GuiWord): string {
+    let bonuses: string = "";
+    for (const b of word.bonuses) {
+      switch (b.toString()) {
+        case "DoubleWordScore":
+          bonuses += "Double word score";
+          break;
+        case "TripleWordScore":
+          bonuses += "Triple word score";
+          break;
+        case "DoubleLetterScore":
+          bonuses += "Double letter score";
+          break;
+        case "TripleLetterScore":
+          bonuses += "Triple letter score";
+          break;
+      }
+      bonuses += "\r\n";
+    }
+    return bonuses;
   }
 }

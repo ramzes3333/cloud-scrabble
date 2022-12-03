@@ -108,6 +108,37 @@
   width: 15% !important;
   color: grey;
 }
+.additional-data {
+  margin-bottom: 5px;
+  margin-left: 10px;
+}
+
+.additional-data div {
+  display: inline-block;
+  border-radius: 5px;
+  margin-left: 20px;
+  font-size: 9px;
+  padding-left: 15px;
+  padding-right: 15px;
+  border: 1px solid lightgray;
+}
+
+.related-words-true {
+  background-color: #ffeee9;
+}
+
+.related-words-false {
+  background-color: white;
+}
+
+.bonuses-true {
+  background-color: #e8fcff;
+}
+
+.bonuses-false {
+  background-color: white;
+}
+
 
 .related-words-container {
   margin-left: 10px;
