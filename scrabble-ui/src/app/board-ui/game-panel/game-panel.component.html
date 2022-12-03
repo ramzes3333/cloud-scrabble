@@ -3,10 +3,10 @@
       <button *ngIf="isNotStarted()" mat-raised-button (click)="startGame()">Start game!</button>
   </div>
   <div>
-    <button *ngIf="isStarted()" mat-raised-button (click)="confirmMove()" class="confirm-button">Confirm move!</button>
+    <button *ngIf="isStarted()" color="primary" mat-raised-button (click)="confirmMove()" class="confirm-button">Confirm move!</button>
   </div>
   <div>
-    <button *ngIf="isStarted()" mat-raised-button (click)="resolve()" class="resolve-button">Resolve!</button>
+    <button *ngIf="isStarted()" color="accent" mat-raised-button (click)="resolve()" class="resolve-button">Resolve!</button>
   </div>
 </div>
 <div class="resolve-container">
@@ -21,7 +21,8 @@
     <mat-progress-spinner color="accent" mode="indeterminate" diameter="50">
     </mat-progress-spinner>
   </div>
-  <cdk-virtual-scroll-viewport tvsItemSize="48" class="wrapper">
+  <!--tvsItemSize="48"-->
+  <cdk-virtual-scroll-viewport tvsItemSize="48" class="virtual-scroll-wrapper">
     <table mat-table [dataSource]="words" class="words-table mat-elevation-z1">
       <ng-container matColumnDef="words">
         <th mat-header-cell *matHeaderCellDef> Words </th>
@@ -56,7 +57,7 @@
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
   </cdk-virtual-scroll-viewport>

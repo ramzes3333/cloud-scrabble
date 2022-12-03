@@ -7,13 +7,11 @@
 .confirm-button {
   margin-top: 20px;
   width: 150px;
-  background-color: #5edcd4;
 }
 
 .resolve-button {
   margin-top: 20px;
   width: 150px;
-  background-color: #dcc35e;
 }
 
 .resolve-container {
@@ -23,7 +21,7 @@
   overflow: auto;
 }
 
-.wrapper {
+.virtual-scroll-wrapper {
   height: 500px;
   width: 465px;
 }
