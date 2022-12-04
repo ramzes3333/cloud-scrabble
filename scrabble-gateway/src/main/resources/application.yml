@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+        - id: board-manager-service
+          uri: http://localhost:8080/api/
+          predicates:
+            - Path=/board-manager-service/api/**
+          filters:
+            - RewritePath=/board-manager-service/api/(?<segment>.*),/api/$\{segment}
+        - id: tile-manager-service
+          uri: http://localhost:8082/api/
+          predicates:
+            - Path=/tile-manager-service/api/**
+          filters:
+            - RewritePath=/tile-manager-service/api/(?<segment>.*),/api/$\{segment}
+server:
+  port: 8085
+
+#Eureka
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8084/eureka/
+  instance:
+    instance-id: ${spring.application.name}:${random.uuid}
+
+#Routes
