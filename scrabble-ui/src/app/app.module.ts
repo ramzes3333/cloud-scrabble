@@ -1,4 +1,4 @@
-import {NgModule} from '@angular/core';
+import {APP_INITIALIZER, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {HttpClientModule} from '@angular/common/http';
 
@@ -21,6 +21,10 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {ScrollingModule} from "@angular/cdk/scrolling";
 import {TableVirtualScrollModule} from 'ng-table-virtual-scroll';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {KeycloakAngularModule, KeycloakService} from "keycloak-angular";
+import {initializeKeycloak} from "./init/keycloak-init.factory";
+import {MainComponent} from './board-ui/main/main.component';
+import {HashLocationStrategy, LocationStrategy} from "@angular/common";
 
 @NgModule({
   declarations: [
@@ -30,7 +34,8 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     BoardManagerComponent,
     RackComponent,
     GamePanelComponent,
-    BlankDialogComponent
+    BlankDialogComponent,
+    MainComponent
   ],
   imports: [
     BrowserModule,
@@ -46,9 +51,21 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     MatProgressSpinnerModule,
     ScrollingModule,
     TableVirtualScrollModule,
-    MatTooltipModule
+    MatTooltipModule,
+    KeycloakAngularModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeKeycloak,
+      multi: true,
+      deps: [KeycloakService]
+    },
+    {
+      provide: LocationStrategy,
+      useClass: HashLocationStrategy
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

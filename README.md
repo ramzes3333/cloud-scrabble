@@ -1,5 +1,16 @@
 ## Docker commands to execute before starting applications:
 
+### [SECURITY] Run keycloak for all apps
+```
+sudo docker run -d --name keycloak -p 8086:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:20.0.1 start-dev
+```
+Preparation:
+- Realm: scrabble
+- Client: scrabble
+  - Valid redirect URIs: http://localhost:4200/*
+  - Web origins: http://localhost:4200
+  - Authentication flow: standard flow
+
 ### [DB] Run mongo db for scrabble-board-manager, scrabble-tile-manager:
 ```
 sudo docker run -d --hostname my-mongo --name mongo -p 27017:27017 mongo:6

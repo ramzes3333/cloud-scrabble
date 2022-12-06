@@ -1,7 +1,7 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {BoardManagerService} from "../../clients/board-manager/board-manager.service";
 import {Board} from "../../clients/board-manager/model/board";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Route, Router} from "@angular/router";
 
 @Component({
   selector: 'app-board-manager',
@@ -24,12 +24,12 @@ export class BoardManagerComponent implements OnInit {
   createBoard() {
     this.boardManager.createBoard().subscribe((result: Board) => {
       this.refreshBoardsTable();
-      this.router.navigate(["board/" + result.id])
+      this.router.navigate(["main/board", result.id])
     });
   }
 
   getBoard(uuid: string) {
-    this.router.navigate(["board/" + uuid]);
+    this.router.navigate(["main/board", uuid]);
   }
 
   refreshBoardsTable() {

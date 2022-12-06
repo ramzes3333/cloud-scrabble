@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import {Board} from "./clients/board-manager/model/board";
 
 @Component({
   selector: 'app-root',
@@ -7,5 +6,4 @@ import {Board} from "./clients/board-manager/model/board";
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'Scrabble';
 }
