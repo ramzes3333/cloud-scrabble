@@ -19,8 +19,18 @@
 		<mapstruct.version>1.5.3.Final</mapstruct.version>
 		<springdoc.version>1.6.12</springdoc.version>
 		<archunit.version>1.0.0</archunit.version>
+		<logbook.version>2.14.0</logbook.version>
 	</properties>
 	<dependencies>
+		<dependency>
+			<groupId>org.zalando</groupId>
+			<artifactId>logbook-spring-boot-starter</artifactId>
+			<version>${logbook.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-cache</artifactId>

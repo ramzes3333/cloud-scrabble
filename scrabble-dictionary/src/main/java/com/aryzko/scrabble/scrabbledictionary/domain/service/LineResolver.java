@@ -162,7 +162,7 @@ public class LineResolver {
 
     private static Solution.Word.WordBuilder buildLeftPrefix(Line.LineField field) {
         Solution.Word.WordBuilder wordBuilder = Solution.Word.builder();
-        while (field != null && field.getPrev().isLetter()) {
+        while (ofNullable(field).map(Line.LineField::getPrev).map(Line.LineField::isLetter).orElse(false)) {
             field = field.getPrev();
         }
 

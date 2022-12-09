@@ -24,12 +24,12 @@ export class BoardManagerComponent implements OnInit {
   createBoard() {
     this.boardManager.createBoard().subscribe((result: Board) => {
       this.refreshBoardsTable();
-      this.router.navigate(["main/board", result.id])
+      this.router.navigate(["board", result.id])
     });
   }
 
   getBoard(uuid: string) {
-    this.router.navigate(["main/board", uuid]);
+    this.router.navigate(["board", uuid]);
   }
 
   refreshBoardsTable() {

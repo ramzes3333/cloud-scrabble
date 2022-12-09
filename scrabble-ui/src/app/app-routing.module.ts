@@ -7,9 +7,8 @@ import {AuthGuard} from "./guard/auth.guard";
 import {MainComponent} from "./board-ui/main/main.component";
 
 const routes: Routes = [
-  {path: '', redirectTo: 'main', pathMatch: 'full'},
   {
-    path: 'main', component: MainComponent, canActivate: [AuthGuard], children: [
+    path: '', component: MainComponent, canActivate: [AuthGuard], children: [
       {
         path: 'board/:uuid',
         component: BoardComponent,

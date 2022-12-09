@@ -7,10 +7,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.lang.NonNull;
 
+import javax.persistence.QueryHint;
 import java.util.Collection;
 import java.util.stream.Stream;
+
+import static org.hibernate.jpa.QueryHints.HINT_CACHEABLE;
+import static org.hibernate.jpa.QueryHints.HINT_FETCH_SIZE;
+import static org.hibernate.jpa.QueryHints.HINT_READONLY;
 
 public interface SpringDataDictionaryEntryRepository extends JpaRepository<DictionaryEntryDb, Long> {
 
@@ -31,5 +37,11 @@ public interface SpringDataDictionaryEntryRepository extends JpaRepository<Dicti
     boolean findInDictionary(@NonNull String language, @NonNull String entry);
 
 
+    @QueryHints(
+            value = {
+                    @QueryHint(name = HINT_FETCH_SIZE, value = "100000"),
+                    @QueryHint(name = HINT_CACHEABLE, value = "false"),
+                    @QueryHint(name = HINT_READONLY, value = "true")
+            })
     Stream<DictionaryEntryDb> findAllByDictionaryIdOrderByIdAsc(Integer dictionaryId);
 }
