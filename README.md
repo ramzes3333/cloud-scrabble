@@ -16,10 +16,13 @@ Preparation:
 sudo docker run -d --hostname my-mongo --name mongo -p 27017:27017 mongo:6
 ```
 
-### [DB] Run postgres for scrabble-dictionary:
+### [DB] Run postgres for scrabble-dictionary, scrabble-game:
 ```
 sudo docker run -d --hostname my-postgres --name postgres -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 postgres:15
 ```
+Preparation:
+- db name for scrabble-dictionary: dictionary
+- db name for scrabble-game: game
 
 ### [ADMIN] Run mongo-express admin (optional):
 ```

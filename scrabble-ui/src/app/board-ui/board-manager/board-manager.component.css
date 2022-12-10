@@ -8,3 +8,18 @@
 .boards-table {
   width: 100%;
 }
+
+.board-parameters {
+  display: inline-block;
+  vertical-align: top;
+  width: 60%;
+  border: 1px solid black;
+}
+
+.board-preview {
+  display: inline-block;
+  vertical-align: top;
+  margin-left: 20px;
+  width: 30%;
+  border: 1px solid black;
+}

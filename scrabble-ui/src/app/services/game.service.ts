@@ -35,6 +35,7 @@ export class GameService {
   init(boardUUID: string) {
     this.boardUUID = boardUUID;
     this.started = false;
+    this.solutionEvent.emit(new Solution([]));
   }
 
   getCharset(): Observable<string[]> {

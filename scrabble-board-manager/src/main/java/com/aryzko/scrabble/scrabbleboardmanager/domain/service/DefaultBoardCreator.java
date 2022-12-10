@@ -4,10 +4,13 @@ import com.aryzko.scrabble.scrabbleboardmanager.domain.Board;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.BoardParameters;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.Bonus;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.Field;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.common.DateTimeProvider;
 import lombok.Builder;
 import lombok.Value;
 import org.springframework.stereotype.Component;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +29,7 @@ public class DefaultBoardCreator implements BoardCreator {
     public Board prepareEmptyBoard() {
         Board board = new Board();
         board.setId(generateUUID());
+        board.setCreationDate(DateTimeProvider.getActualOffsetDateTime());
         board.setFields(
                 IntStream.range(0, BOARD_VERTICAL_SIZE)
                         .mapToObj(y -> IntStream.range(0, BOARD_HORIZONTAL_SIZE)

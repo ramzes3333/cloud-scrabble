@@ -17,7 +17,7 @@
 		<java.version>17</java.version>
 		<spring-cloud.version>2021.0.4</spring-cloud.version>
 		<mapstruct.version>1.5.3.Final</mapstruct.version>
-		<springdoc.version>1.6.12</springdoc.version>
+		<springdoc.version>1.6.13</springdoc.version>
 	</properties>
 	<dependencies>
 		<dependency>

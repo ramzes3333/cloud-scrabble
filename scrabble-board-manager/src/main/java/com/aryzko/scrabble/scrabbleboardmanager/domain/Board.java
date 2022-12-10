@@ -12,6 +12,7 @@ import lombok.experimental.SuperBuilder;
 import org.apache.commons.lang.NotImplementedException;
 
 import javax.persistence.Id;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -29,9 +30,9 @@ import static java.util.Optional.ofNullable;
 public class Board {
     @Id
     private UUID id;
+    private OffsetDateTime creationDate;
     private List<Field> fields;
     private List<Rack> racks;
-
     private BoardParameters boardParameters;
 
     @JsonIgnore
