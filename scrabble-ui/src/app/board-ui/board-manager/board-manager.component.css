@@ -12,14 +12,97 @@
 .board-parameters {
   display: inline-block;
   vertical-align: top;
-  width: 60%;
-  border: 1px solid black;
+  width: 65%;
+  font-size: 10px;
+  color: gray;
+  margin: 5px 5px 5px 5px;
 }
 
 .board-preview {
   display: inline-block;
   vertical-align: top;
-  margin-left: 20px;
-  width: 30%;
-  border: 1px solid black;
+  width: 25%;
+  line-height: 3px;
+  margin: 5px 5px 5px 20px;
+}
+
+.field-preview {
+  margin: 1px;
+  width: 2px;
+  height: 2px;
+  display: inline-block;
+  vertical-align: top;
+  border: 1px solid #ececec;
+}
+
+.field-preview.used {
+  background-color: #8ea3ff;
+  border-radius: 2px;
+}
+
+.letter {
+  position: relative;
+  display: inline-block;
+  border: 1px solid chocolate;
+  margin: 1px;
+  width: 15px;
+  height: 15px;
+  line-height: 15px;
+  border-radius: 3px;
+  padding: 2px;
+  font-size: 10px;
+  vertical-align: top;
+  text-align: center;
+
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+
+.letter.points-0 {
+  color: grey;
+  background-color: beige;
+}
+
+.letter.points-1 {
+  color: grey;
+  background-color: beige;
+}
+
+.letter.points-2 {
+  color: grey;
+  background-color: #c9f3f6;
+}
+
+.letter.points-3 {
+  color: grey;
+  background-color: #c6e4fc;
+}
+
+.letter.points-5 {
+  color: grey;
+  background-color: #ffe9ed;
+}
+
+.letter.points-6 {
+  color: grey;
+  background-color: #ffe9ed;
+}
+
+.letter.points-7 {
+  color: grey;
+  background-color: #ffe9ed;
+}
+
+.letter.points-9 {
+  color: grey;
+  background-color: #ffe9ed;
+}
+
+.points {
+  position: absolute;
+  top: 8px;
+  right: 3px;
+
+  font-size: 4px;
 }
