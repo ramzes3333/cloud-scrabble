@@ -1,15 +1,13 @@
 package com.aryzko.scrabble.scrabbledictionary.adapters.db;
 
-import com.aryzko.scrabble.scrabbledictionary.adapters.api.mapper.DictionaryEntryMapper;
-import com.aryzko.scrabble.scrabbledictionary.adapters.api.mapper.DictionaryMapper;
+import com.aryzko.scrabble.scrabbledictionary.adapters.db.mapper.DictionaryEntryMapper;
+import com.aryzko.scrabble.scrabbledictionary.adapters.db.mapper.DictionaryMapper;
 import com.aryzko.scrabble.scrabbledictionary.adapters.db.model.DictionaryDb;
 import com.aryzko.scrabble.scrabbledictionary.adapters.db.model.DictionaryEntryDb;
 import com.aryzko.scrabble.scrabbledictionary.domain.model.Dictionary;
 import com.aryzko.scrabble.scrabbledictionary.domain.model.DictionaryEntry;
 import com.aryzko.scrabble.scrabbledictionary.domain.ports.DictionaryRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

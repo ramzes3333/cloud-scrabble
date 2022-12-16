@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.QueryHint;
 import java.util.Collection;
@@ -18,6 +19,7 @@ import static org.hibernate.jpa.QueryHints.HINT_CACHEABLE;
 import static org.hibernate.jpa.QueryHints.HINT_FETCH_SIZE;
 import static org.hibernate.jpa.QueryHints.HINT_READONLY;
 
+@Repository
 public interface SpringDataDictionaryEntryRepository extends JpaRepository<DictionaryEntryDb, Long> {
 
     @Cacheable("findInDefaultDictionary")

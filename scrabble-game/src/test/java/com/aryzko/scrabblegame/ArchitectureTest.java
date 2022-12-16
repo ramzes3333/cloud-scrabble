@@ -1,4 +1,4 @@
-package com.aryzko.scrabble.scrabbledictionary;
+package com.aryzko.scrabblegame;
 
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
@@ -30,9 +30,7 @@ public class ArchitectureTest {
             "org.mockito..",
             "org.slf4j..",
             "org.springframework..",
-            "org.aspectj..",
-            "com.fasterxml.jackson..",
-            "com.aryzko.scrabble.scrabbledictionary.common.."
+            "org.aspectj.."
     };
 
     @ArchTest

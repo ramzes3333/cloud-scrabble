@@ -30,11 +30,17 @@
   width: 450px;
 }
 
+.words-table .mat-mdc-row {
+  cursor: pointer;
+}
+.words-table .mat-mdc-row:hover {
+  background-color: #fcfcfc;
+}
+
 .word-container {
   padding: 2px;
   text-align: left;
   height: 30px;
-  cursor: pointer;
 }
 
 .letter {

@@ -18,20 +18,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
 
 @Slf4j
 @RequiredArgsConstructor
-@NonFinal
 @Service
 public class DawgService implements ApplicationListener<ApplicationReadyEvent> {
 
     private static final Character WILD_CARD = '*';
     private static final int MINIMUM_PATTERN_LENGTH = 2;
 
-    private Node root;
+    private static final AtomicReference<Node> root = new AtomicReference<>();
     private final DictionaryRepository dictionaryRepository;
 
     @Transactional
@@ -42,22 +42,18 @@ public class DawgService implements ApplicationListener<ApplicationReadyEvent> {
         try(Stream<DictionaryEntry> dictionaryEntryStream = dictionaryRepository.findAllInDefaultDictionary()) {
             dictionaryEntryStream.forEach(dictionaryEntry -> builder.insert(dictionaryEntry.getEntry()));
         }
-        root = builder.build();
-    }
-
-    private boolean isDawgReady() {
-        return root != null;
+        root.set(builder.build());
     }
 
     public Node getDawg() throws DawgIsNotReady {
-        return Optional.ofNullable(root).orElseThrow(() -> new DawgIsNotReady());
+        return Optional.ofNullable(root.get()).orElseThrow(DawgIsNotReady::new);
     }
 
     public boolean lookup(String word) throws DawgIsNotReady {
         return lookup(getDawg(), word);
     }
 
-    private boolean lookup(Node node, String word) throws DawgIsNotReady {
+    private boolean lookup(Node node, String word) {
         for (Character character : word.toCharArray()){
             node = node.getTransitions().get(character);
             if (node == null) {

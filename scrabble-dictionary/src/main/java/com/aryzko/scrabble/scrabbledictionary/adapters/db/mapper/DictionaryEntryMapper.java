@@ -1,4 +1,4 @@
-package com.aryzko.scrabble.scrabbledictionary.adapters.api.mapper;
+package com.aryzko.scrabble.scrabbledictionary.adapters.db.mapper;
 
 import com.aryzko.scrabble.scrabbledictionary.adapters.db.model.DictionaryEntryDb;
 import com.aryzko.scrabble.scrabbledictionary.domain.model.DictionaryEntry;

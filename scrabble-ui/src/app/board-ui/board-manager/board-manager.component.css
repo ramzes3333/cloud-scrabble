@@ -9,6 +9,13 @@
   width: 100%;
 }
 
+.boards-table td {
+  cursor: pointer;
+}
+.boards-table td:hover {
+  background-color: #fcfcfc;
+}
+
 .board-parameters {
   display: inline-block;
   vertical-align: top;

@@ -19,6 +19,7 @@ public class TileConfiguration {
 
     public record Tile(Character letter, Integer points, Integer number) { }
 
+
     public Map<Character, Integer> getPointsMap() {
         return tiles.stream().collect(Collectors.toMap(
                 tile -> Character.toLowerCase(tile.letter()),

@@ -6,22 +6,23 @@ import com.aryzko.scrabble.scrabbledictionary.domain.model.dawg.Node;
 import com.aryzko.scrabble.scrabbledictionary.domain.ports.DictionaryRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static java.lang.String.format;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
 class DawgServiceTest {
@@ -32,10 +33,13 @@ class DawgServiceTest {
     private DawgService dawgService;
 
     @BeforeEach
+    @SuppressWarnings("unchecked")
     void beforeAll() throws IOException {
         Node root = prepareDawg("sample-dawg.json");
         this.dawgService = new DawgService(dictionaryRepository);
-        ReflectionTestUtils.setField(dawgService, "root", root);
+        if (ReflectionTestUtils.getField(dawgService, "root") instanceof AtomicReference ar) {
+            ar.set(root);
+        }
     }
 
     @Test
