@@ -1,6 +1,6 @@
 <table mat-table [dataSource]="boards" class="boards-table mat-elevation-z1">
   <ng-container matColumnDef="id">
-    <th mat-header-cell *matHeaderCellDef> Boards </th>
+    <th mat-header-cell *matHeaderCellDef> Games </th>
     <td mat-cell *matCellDef="let element" (click)="getBoard(element.id)">
       <div class="board-parameters">
         Creation date: {{element.creationDate | date:'dd-MM-yyyy HH:mm:ss'}}<br>
@@ -28,7 +28,7 @@
 </table>
 <mat-toolbar>
   <mat-toolbar-row>
-    <button mat-raised-button [disabled]="createDisabled" (click)="createBoard()" [disabled]="false">Create board</button>
+    <button mat-raised-button [disabled]="createDisabled" (click)="createBoard()" [disabled]="false">Create game</button>
     <span class="example-spacer"></span>
   </mat-toolbar-row>
 </mat-toolbar>

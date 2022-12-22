@@ -8,8 +8,11 @@ import java.util.List;
 public class GameStartRequest {
 
     private List<BotPlayer> botPlayers;
+    private List<HumanPlayer> humanPlayers;
 
     public record BotPlayer(Level level) {}
+
+    public record HumanPlayer() {}
 
     public enum Level {
         NEWBIE,

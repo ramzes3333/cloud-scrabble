@@ -1,0 +1,29 @@
+.game-container {
+  margin: 30px;
+  width: 600px;
+}
+
+.player-container {
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.player-type-container {
+}
+
+.player-type {
+
+}
+
+.bot-level-container {
+}
+
+.bot-level {
+}
+
+.buttons {
+  text-align: right;
+  margin-top: 20px;
+}

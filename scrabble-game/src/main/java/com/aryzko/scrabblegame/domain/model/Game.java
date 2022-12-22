@@ -5,6 +5,7 @@ import lombok.Data;
 import org.springframework.data.annotation.Version;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,7 +15,7 @@ public class Game {
     private OffsetDateTime creationDate;
     private State state;
     private UUID boardId;
-    private List<Player> players;
-    private Integer currentId;
-    private Integer winnerId;
+    private List<Player> players = new ArrayList<>();
+    private String currentId;
+    private String winnerId;
 }

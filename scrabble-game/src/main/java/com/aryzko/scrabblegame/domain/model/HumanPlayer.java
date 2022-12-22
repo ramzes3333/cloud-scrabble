@@ -11,4 +11,9 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 public class HumanPlayer extends Player {
     private String login;
+
+    @Override
+    public Type getType() {
+        return Type.HUMAN;
+    }
 }

@@ -2,6 +2,7 @@ package com.aryzko.scrabblegame.domain.service;
 
 import com.aryzko.scrabblegame.domain.model.BotPlayer;
 import com.aryzko.scrabblegame.domain.model.Game;
+import com.aryzko.scrabblegame.domain.model.HumanPlayer;
 import com.aryzko.scrabblegame.domain.model.Level;
 import com.aryzko.scrabblegame.domain.model.Player;
 import com.aryzko.scrabblegame.domain.model.State;
@@ -15,9 +16,12 @@ import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static java.lang.String.format;
 
 @Service
 @RequiredArgsConstructor
@@ -30,9 +34,29 @@ public class GameCreator {
         game.setCreationDate(OffsetDateTime.now());
         game.setState(State.NOT_STARTED);
         game.setBoardId(UUID.fromString(command.getBoardId()));
-        game.setPlayers(prepareBotPlayers(command.getBotPlayers()));
+        game.getPlayers().addAll(prepareBotPlayers(command.getBotPlayers()));
+        game.getPlayers().addAll(prepareHumanPlayers(command.getHumanPlayers()));
+        game.setCurrentId(randomPlayer(game.getPlayers()));
 
         return gameRepository.create(game);
+    }
+
+    private static String randomPlayer(List<Player> players) {
+        return players.get((new Random()).nextInt(players.size())).getId();
+    }
+
+    private List<Player> prepareHumanPlayers(List<CreateGameCommand.HumanPlayer> humanPlayers) {
+        return IntStream
+                .range(0, humanPlayers.size())
+                .mapToObj(i -> {
+                    CreateGameCommand.HumanPlayer humanPlayer = humanPlayers.get(i);
+                    return HumanPlayer.builder()
+                            .id(format("H%d", i))
+                            .points(0)
+                            .login(humanPlayer.getLogin())
+                            .build();
+                })
+                .collect(Collectors.toList());
     }
 
     private List<Player> prepareBotPlayers(List<CreateGameCommand.BotPlayer> botPlayers) {
@@ -41,10 +65,9 @@ public class GameCreator {
                 .mapToObj(i -> {
                     CreateGameCommand.BotPlayer botPlayer = botPlayers.get(i);
                     return BotPlayer.builder()
-                            .id(i)
+                            .id(format("B%d", i))
                             .points(0)
-                            .type(Type.BOT)
-                            .level(Level.valueOf(botPlayer.level.name()))
+                            .level(Level.valueOf(botPlayer.getLevel().name()))
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -56,11 +79,19 @@ public class GameCreator {
         private String boardId;
         @Singular
         private List<BotPlayer> botPlayers;
+        @Singular
+        private List<HumanPlayer> humanPlayers;
 
         @Value
         @Builder
         public static class BotPlayer {
             private Level level;
+        }
+
+        @Value
+        @Builder
+        public static class HumanPlayer {
+            private String login;
         }
 
         public enum Level {

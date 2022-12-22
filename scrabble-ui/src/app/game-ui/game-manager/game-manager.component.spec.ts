@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BoardManagerComponent } from './board-manager.component';
+import { GameManagerComponent } from './game-manager.component';
 
 describe('BoardManagerComponent', () => {
-  let component: BoardManagerComponent;
-  let fixture: ComponentFixture<BoardManagerComponent>;
+  let component: GameManagerComponent;
+  let fixture: ComponentFixture<GameManagerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ BoardManagerComponent ]
+      declarations: [ GameManagerComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(BoardManagerComponent);
+    fixture = TestBed.createComponent(GameManagerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

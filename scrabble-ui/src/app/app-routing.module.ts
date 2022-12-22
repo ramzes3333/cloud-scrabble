@@ -1,10 +1,10 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {BoardComponent} from "./board-ui/board/board.component";
+import {BoardComponent} from "./game-ui/board/board.component";
 import {BoardResolver} from "./resolvers/board.resolver";
-import {RackComponent} from "./board-ui/rack/rack.component";
+import {RackComponent} from "./game-ui/rack/rack.component";
 import {AuthGuard} from "./guard/auth.guard";
-import {MainComponent} from "./board-ui/main/main.component";
+import {MainComponent} from "./game-ui/main/main.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'main', pathMatch: 'full'},

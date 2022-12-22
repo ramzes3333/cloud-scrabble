@@ -11,4 +11,9 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 public class BotPlayer extends Player {
     private Level level;
+
+    @Override
+    public Type getType() {
+        return Type.BOT;
+    }
 }

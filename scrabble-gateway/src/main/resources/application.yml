@@ -16,6 +16,12 @@ spring:
             - Path=/tile-manager-service/api/**
           filters:
             - RewritePath=/tile-manager-service/api/(?<segment>.*),/api/$\{segment}
+        - id: game-service
+          uri: http://localhost:8087/api/
+          predicates:
+            - Path=/game-service/api/**
+          filters:
+            - RewritePath=/game-service/api/(?<segment>.*),/api/$\{segment}
   security:
     oauth2:
       resourceserver:

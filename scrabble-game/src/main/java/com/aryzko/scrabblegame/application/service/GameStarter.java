@@ -1,5 +1,6 @@
 package com.aryzko.scrabblegame.application.service;
 
+import com.aryzko.scrabblegame.application.common.AuthenticationFacade;
 import com.aryzko.scrabblegame.application.request.GameStartRequest;
 import com.aryzko.scrabblegame.domain.model.BotPlayer;
 import com.aryzko.scrabblegame.domain.model.Game;
@@ -23,12 +24,14 @@ public class GameStarter {
 
     private final BoardProvider boardProvider;
     private final GameCreator gameCreator;
+    private final AuthenticationFacade authenticationFacade;
 
     public Either<GameStartSuccess, GameStartFailure> start(GameStartRequest request) {
         String boardId = boardProvider.createBoard();
         Game game = gameCreator.create(GameCreator.CreateGameCommand.builder()
                 .boardId(boardId)
                 .botPlayers(prepareBotPlayers(request.getBotPlayers()))
+                .humanPlayers(preparePlayerForCurrentUser(request.getHumanPlayers()))
                 .build());
 
         return Either.left(GameStartSuccess.builder()
@@ -37,7 +40,19 @@ public class GameStarter {
                 .build());
     }
 
-    private List<GameCreator.CreateGameCommand.BotPlayer> prepareBotPlayers(List<GameStartRequest.BotPlayer> botPlayers) {
+    private List<GameCreator.CreateGameCommand.HumanPlayer> preparePlayerForCurrentUser(
+            List<GameStartRequest.HumanPlayer> humanPlayers) {
+
+        return humanPlayers.stream()
+                .map(botPlayer -> GameCreator.CreateGameCommand.HumanPlayer.builder()
+                        .login(authenticationFacade.getName())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    private List<GameCreator.CreateGameCommand.BotPlayer> prepareBotPlayers(
+            List<GameStartRequest.BotPlayer> botPlayers) {
+
         return botPlayers.stream()
                 .map(botPlayer -> GameCreator.CreateGameCommand.BotPlayer.builder()
                         .level(GameCreator.CreateGameCommand.Level.valueOf(botPlayer.level().toString()))

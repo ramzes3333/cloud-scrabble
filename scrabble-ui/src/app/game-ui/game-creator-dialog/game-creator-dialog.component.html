@@ -1,0 +1,44 @@
+<div mat-dialog-content class="game-container">
+  <p>Game creator</p>
+  <mat-card class="player-container">
+    <p><mat-slide-toggle [(ngModel)]="gamePlayers[0].player">Player 1</mat-slide-toggle></p>
+    <div *ngIf="gamePlayers[0].player">
+      <div class="player-type-container">
+        Type:
+        <mat-radio-group [(ngModel)]="gamePlayers[0].playerType" aria-label="Select an option" class="player-type">
+          <mat-radio-button value="bot">Bot</mat-radio-button>
+          <mat-radio-button value="empty" disabled="true">Empty slot</mat-radio-button>
+          <mat-radio-button value="me">Me</mat-radio-button>
+        </mat-radio-group>
+      </div>
+      <div class="bot-level-container" *ngIf="gamePlayers[0].playerType=='bot'">
+        Bot level:
+        <mat-chip-listbox [(ngModel)]="gamePlayers[0].playerBotLevel" aria-label="Select an option" class="bot-level">
+          <mat-chip-option *ngFor="let level of eLevel" color="accent" [value]="level" [selected]="level == gamePlayers[0].playerBotLevel">{{capitalizeFirstLetter(level)}}</mat-chip-option>
+        </mat-chip-listbox>
+      </div>
+    </div>
+  </mat-card>
+  <mat-card class="player-container">
+    <p><mat-slide-toggle [(ngModel)]="gamePlayers[1].player">Player 2</mat-slide-toggle></p>
+    <div *ngIf="gamePlayers[1].player">
+      <div class="player-type-container">
+        Type:
+        <mat-radio-group [(ngModel)]="gamePlayers[1].playerType" aria-label="Select an option" class="player-type">
+          <mat-radio-button value="bot">Bot</mat-radio-button>
+          <mat-radio-button value="empty" disabled="true">Empty slot</mat-radio-button>
+          <mat-radio-button value="me">Me</mat-radio-button>
+        </mat-radio-group>
+      </div>
+      <div class="bot-level-container" *ngIf="gamePlayers[1].playerType=='bot'">
+        Bot level:
+        <mat-chip-listbox [(ngModel)]="gamePlayers[1].playerBotLevel" aria-label="Select an option" class="bot-level">
+          <mat-chip-option *ngFor="let level of eLevel" color="accent" [value]="level" [selected]="level == gamePlayers[1].playerBotLevel">{{capitalizeFirstLetter(level)}}</mat-chip-option>
+        </mat-chip-listbox>
+      </div>
+    </div>
+  </mat-card>
+  <div class="buttons">
+    <button mat-raised-button (click)="createGame()">Create game</button>
+  </div>
+</div>

@@ -6,7 +6,8 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 public abstract class Player {
-    private final Integer id;
-    private final Type type;
+    private final String id;
     private Integer points;
+
+    public abstract Type getType();
 }

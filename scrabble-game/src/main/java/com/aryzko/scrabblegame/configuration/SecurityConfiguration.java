@@ -1,4 +1,4 @@
-package com.aryzko.scrabblegame.infrastructure.configuration;
+package com.aryzko.scrabblegame.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
