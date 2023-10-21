@@ -1,8 +1,6 @@
 package com.aryzko.scrabblegame.domain.model;
 
-import jakarta.persistence.Id;
 import lombok.Data;
-import org.springframework.data.annotation.Version;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -16,6 +14,6 @@ public class Game {
     private State state;
     private UUID boardId;
     private List<Player> players = new ArrayList<>();
-    private String currentId;
+    private String actualPlayerId;
     private String winnerId;
 }

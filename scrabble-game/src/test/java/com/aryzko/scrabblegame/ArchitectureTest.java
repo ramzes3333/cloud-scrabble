@@ -17,7 +17,7 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.methods;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 
-@AnalyzeClasses(packages = "com.aryzko.scrabble.scrabbledictionary")
+@AnalyzeClasses(packages = "com.aryzko.scrabblegame")
 public class ArchitectureTest {
 
     private static final String[] STANDARD_PACKAGES = {
@@ -30,7 +30,8 @@ public class ArchitectureTest {
             "org.mockito..",
             "org.slf4j..",
             "org.springframework..",
-            "org.aspectj.."
+            "org.aspectj..",
+            "com.fasterxml.jackson.."
     };
 
     @ArchTest

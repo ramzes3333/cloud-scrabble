@@ -5,9 +5,13 @@ import {Router} from "@angular/router";
 import {GameCreatorDialogComponent} from "../game-creator-dialog/game-creator-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
 import {GamePlayer} from "../game-creator-dialog/model/game-player";
-import {BotPlayer, GameStartRequest, HumanPlayer, Level} from "../../clients/game-manager/model/game-start-request";
-import {GameManagerService} from "../../clients/game-manager/game-manager.service";
-import {GameStartResponse} from "../../clients/game-manager/model/game-start-response";
+import {
+  BotPlayer,
+  GameCreatorService,
+  GameStartResponse,
+  HumanPlayer,
+  Level
+} from "../../services/game-creator.service";
 
 @Component({
   selector: 'app-game-manager',
@@ -22,7 +26,7 @@ export class GameManagerComponent implements OnInit {
   boards: Board[] = [];
 
   constructor(private boardManager: BoardManagerService,
-              private gameManager: GameManagerService,
+              private gameCreatorService: GameCreatorService,
               private router: Router, private dialog: MatDialog) { }
 
   ngOnInit(): void {
@@ -30,10 +34,6 @@ export class GameManagerComponent implements OnInit {
   }
 
   createBoard() {
-    /*this.boardManager.createBoard().subscribe((result: Board) => {
-      this.refreshBoardsTable();
-      this.router.navigate(["main/board", result.id])
-    });*/
     const dialogRef = this.dialog.open(GameCreatorDialogComponent, {
       width: '650px',
       height: '570px'
@@ -46,15 +46,15 @@ export class GameManagerComponent implements OnInit {
       for (const player of players) {
         switch (player.playerType) {
           case 'me':
-            humanPlayers.push(new HumanPlayer());
+            humanPlayers.push({});
             break;
           case 'bot':
-            botPlayers.push(new BotPlayer(player.playerBotLevel as unknown as Level));
+            botPlayers.push({level: player.playerBotLevel as unknown as Level});
             break;
         }
       }
 
-      this.gameManager.createGame(new GameStartRequest(botPlayers, humanPlayers)).subscribe((response: GameStartResponse) => {
+      this.gameCreatorService.createGame({botPlayers, humanPlayers}).subscribe((response: GameStartResponse) => {
         this.refreshBoardsTable();
         this.router.navigate(["main/board", response.boardId])
       });

@@ -7,9 +7,12 @@ import com.aryzko.scrabble.scrabbleboardmanager.application.request.BoardRequest
 import com.aryzko.scrabble.scrabbleboardmanager.application.response.BoardResponse;
 import com.aryzko.scrabble.scrabbleboardmanager.application.response.BoardValidationResultResponse;
 import com.aryzko.scrabble.scrabbleboardmanager.application.response.Solution;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.command.CreateBoardCommand;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.service.BoardResolver;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.service.BoardService;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,8 +38,8 @@ public class BoardController {
     private final BoardValidationMapper boardValidationMapper;
 
     @PostMapping
-    public BoardResponse createBoard() {
-        return boardMapper.toBoardResponse(boardService.createEmptyBoard());
+    public BoardResponse createBoard(@RequestBody CreateBoardRequest request) {
+        return boardMapper.toBoardResponse(boardService.createEmptyBoard(request.toDomainCommand()));
     }
 
     @PutMapping
@@ -65,5 +68,14 @@ public class BoardController {
     @PostMapping(value = "resolve")
     public Solution resolve(@RequestBody @Valid BoardRequest board) {
         return solutionMapper.convert(resolver.resolve(boardMapper.toBoard(board)));
+    }
+
+    @Data
+    static class CreateBoardRequest {
+        List<String> playerIds;
+
+        public CreateBoardCommand toDomainCommand() {
+            return new CreateBoardCommand(playerIds.stream().toList());
+        }
     }
 }

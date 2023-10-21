@@ -6,23 +6,14 @@ export enum Level {
   LEGEND
 }
 
-export class BotPlayer {
-  private level: Level;
-
-  constructor(level: Level) {
-    this.level = level;
-  }
+export interface BotPlayer {
+  level: Level;
 }
 
-export class HumanPlayer {
+export interface HumanPlayer {
 }
 
-export class GameStartRequest {
-  private botPlayers: BotPlayer[];
-  private humanPlayers: HumanPlayer[];
-
-  constructor(botPlayers: BotPlayer[], humanPlayers: HumanPlayer[]) {
-    this.botPlayers = botPlayers;
-    this.humanPlayers = humanPlayers;
-  }
+export interface GameStartRequest {
+  botPlayers: BotPlayer[];
+  humanPlayers: HumanPlayer[];
 }

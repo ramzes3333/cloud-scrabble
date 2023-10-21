@@ -8,6 +8,7 @@ import lombok.experimental.SuperBuilder;
 public abstract class Player {
     private final String id;
     private Integer points;
+    private Integer order;
 
     public abstract Type getType();
 }

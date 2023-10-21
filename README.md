@@ -29,6 +29,13 @@ Preparation:
 docker run -d --network="host" --name mongo-express -e ME_CONFIG_MONGODB_SERVER=localhost -p 8081:8081 mongo-express
 ```
 
+### URLs:
+| App           | URL                                         |
+|---------------|---------------------------------------------|
+| ui            | http://localhost:4200/                      |
+| game-service  | http://localhost:8087/swagger-ui/index.html |
+| mongo-express | http://localhost:8081                       |
+
 ### Screen:
 
 ![](cloud-scrabble-v3.png)

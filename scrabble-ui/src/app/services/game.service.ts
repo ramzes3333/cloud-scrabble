@@ -2,9 +2,8 @@ import {EventEmitter, Injectable} from '@angular/core';
 import {BoardManagerService} from "../clients/board-manager/board-manager.service";
 import {TileManagerService} from "../clients/tile-manager/tile-manager.service";
 import {Board} from "../clients/board-manager/model/board";
-import {Letter as BoardLetter} from "../clients/board-manager/model/letter";
+import {Letter as BoardLetter, Letter as GuiLetter} from "../clients/board-manager/model/letter";
 import {Letter as TileLetter} from "../clients/tile-manager/model/letter";
-import {Letter as GuiLetter} from "../clients/board-manager/model/letter";
 import {Rack} from "../clients/board-manager/model/rack";
 import {Move} from "../game-ui/model/move";
 import {Element as GuiElement} from "../game-ui/model/element";
@@ -12,6 +11,10 @@ import {Word as GuiWord} from "../game-ui/model/word";
 import {BoardValidationResult} from "../clients/board-manager/model/board-validation-result";
 import {EMPTY, Observable} from "rxjs";
 import {Solution} from "../clients/board-manager/model/solution/solution";
+import {Store} from "@ngrx/store";
+import {GameState} from "../state/game-state/game-state";
+import {init} from "../state/game-state/game-state.actions";
+import {selectBoardUUID} from "../state/game-state/game-state.selectors";
 
 const maximumRackSize = 7;
 
@@ -29,13 +32,19 @@ export class GameService {
   private board?: Board;
   private started: boolean = false;
 
-  constructor(private boardManager: BoardManagerService, private tileManager: TileManagerService) {
+  gameState$: Observable<GameState>;
+
+  constructor(private boardManager: BoardManagerService, private tileManager: TileManagerService,
+              private store: Store<{ gameState: GameState }>) {
+
+    this.gameState$ = store.select('gameState');
   }
 
   init(boardUUID: string) {
     this.boardUUID = boardUUID;
     this.started = false;
     this.solutionEvent.emit(new Solution([]));
+    this.store.dispatch(init({boardUUID: boardUUID}));
   }
 
   getCharset(): Observable<string[]> {
@@ -47,6 +56,7 @@ export class GameService {
   }
 
   startGame() {
+    this.store.select(selectBoardUUID);
     if (this.boardUUID !== undefined) {
       this.boardManager.getBoard(this.boardUUID).subscribe(board => {
         this.board = board;
@@ -130,9 +140,7 @@ export class GameService {
     if (rackSize != maximumRackSize) {
       this.tileManager.getTiles(this.boardUUID!, maximumRackSize - rackSize).subscribe(value => {
         if (board.racks?.[0] == undefined) {
-          let rack = new Rack();
-          rack.letters = [];
-          board.racks[0] = rack;
+          board.racks[0] = new Rack("0", []); // TODO set proper playerId
         }
         board.racks[0].letters = board.racks[0].letters!.concat(this.convertTileLettersToBoardLetters(value));
         this.boardManager.updateBoard(board).subscribe();

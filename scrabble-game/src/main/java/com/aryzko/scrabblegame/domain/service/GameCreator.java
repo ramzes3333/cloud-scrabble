@@ -6,7 +6,6 @@ import com.aryzko.scrabblegame.domain.model.HumanPlayer;
 import com.aryzko.scrabblegame.domain.model.Level;
 import com.aryzko.scrabblegame.domain.model.Player;
 import com.aryzko.scrabblegame.domain.model.State;
-import com.aryzko.scrabblegame.domain.model.Type;
 import com.aryzko.scrabblegame.domain.repository.GameRepository;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -36,9 +35,17 @@ public class GameCreator {
         game.setBoardId(UUID.fromString(command.getBoardId()));
         game.getPlayers().addAll(prepareBotPlayers(command.getBotPlayers()));
         game.getPlayers().addAll(prepareHumanPlayers(command.getHumanPlayers()));
-        game.setCurrentId(randomPlayer(game.getPlayers()));
+        game.setActualPlayerId(randomPlayer(game.getPlayers()));
+
+        setPlayersOrder(game);
 
         return gameRepository.create(game);
+    }
+
+    private static void setPlayersOrder(Game game) {
+        for(int i = 0; i < game.getPlayers().size(); i++) {
+            game.getPlayers().get(i).setOrder(i);
+        }
     }
 
     private static String randomPlayer(List<Player> players) {

@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @EqualsAndHashCode
 @ToString
 public class Rack {
+    private String playerId;
     private List<Letter> letters;
 
     protected Rack clone() {

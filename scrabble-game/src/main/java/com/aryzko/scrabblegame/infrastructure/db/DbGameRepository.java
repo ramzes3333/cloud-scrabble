@@ -6,6 +6,8 @@ import com.aryzko.scrabblegame.infrastructure.db.model.GameEntryDb;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 @RequiredArgsConstructor
 public class DbGameRepository implements GameRepository {
@@ -19,6 +21,16 @@ public class DbGameRepository implements GameRepository {
         gameEntryDb.setVersion(1);
         gameEntryDb.setData(GameConverter.toData(game));
         return convert(gameRepository.save(gameEntryDb));
+    }
+
+    @Override
+    public Optional<Game> get(Long id) {
+        return convert(gameRepository.findById(id));
+    }
+
+    private Optional<Game> convert(Optional<GameEntryDb> gameEntryDb) {
+        return gameEntryDb
+                .map(this::convert);
     }
 
     private Game convert(GameEntryDb gameEntryDb) {

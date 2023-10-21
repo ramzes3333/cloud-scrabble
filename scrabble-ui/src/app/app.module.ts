@@ -32,6 +32,8 @@ import {MatRadioModule} from "@angular/material/radio";
 import {MatSelectModule} from "@angular/material/select";
 import {MatCardModule} from "@angular/material/card";
 import {MatChipsModule} from "@angular/material/chips";
+import { StoreModule } from '@ngrx/store';
+import {gameStateReducer} from "./state/game-state/game-state.reducer";
 
 @NgModule({
   declarations: [
@@ -66,7 +68,8 @@ import {MatChipsModule} from "@angular/material/chips";
     MatRadioModule,
     MatSelectModule,
     MatCardModule,
-    MatChipsModule
+    MatChipsModule,
+    StoreModule.forRoot({gameState: gameStateReducer}, {})
   ],
   providers: [
     {

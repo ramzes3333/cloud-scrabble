@@ -1,9 +1,17 @@
-export class GameStartResponse {
-  public id: number;
-  public boardId: string;
+export interface GameStartResponse {
+  id: number;
+  boardId: string;
+  players: Player[];
+}
 
-  constructor(id: number, boardId: string) {
-    this.id = id;
-    this.boardId = boardId;
-  }
+export interface Player {
+  id: string;
+  type: Type;
+  order: number;
+  parameters: Map<string, string>;
+}
+
+export enum Type {
+  HUMAN,
+  BOT,
 }
