@@ -21,7 +21,7 @@
     "@angular/platform-browser": "^16.2.10",
     "@angular/platform-browser-dynamic": "^16.2.10",
     "@angular/router": "^16.2.10",
-    "@ngrx/store": "^15.4.0",
+    "@ngrx/store": "^16.3.0",
     "keycloak-angular": "^13.0.0",
     "keycloak-js": "^20.0.1",
     "ng-table-virtual-scroll": "^1.4.1",
