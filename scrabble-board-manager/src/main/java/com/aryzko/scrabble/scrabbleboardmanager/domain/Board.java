@@ -1,6 +1,7 @@
 package com.aryzko.scrabble.scrabbleboardmanager.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -11,7 +12,6 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.apache.commons.lang.NotImplementedException;
 
-import javax.persistence.Id;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;

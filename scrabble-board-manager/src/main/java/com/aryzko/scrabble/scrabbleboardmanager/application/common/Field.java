@@ -1,9 +1,8 @@
 package com.aryzko.scrabble.scrabbleboardmanager.application.common;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 @Data
 public class Field {
