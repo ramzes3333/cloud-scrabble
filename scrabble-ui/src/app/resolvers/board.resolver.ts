@@ -1,9 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  Router, Resolve,
-  RouterStateSnapshot,
-  ActivatedRouteSnapshot
-} from '@angular/router';
+import { Router, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import {Board} from "../clients/board-manager/model/board";
 import {BoardManagerService} from "../clients/board-manager/board-manager.service";
@@ -11,7 +7,7 @@ import {BoardManagerService} from "../clients/board-manager/board-manager.servic
 @Injectable({
   providedIn: 'root'
 })
-export class BoardResolver implements Resolve<Board> {
+export class BoardResolver  {
 
   constructor(private boardManager: BoardManagerService) {
 
