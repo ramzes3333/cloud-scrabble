@@ -1,8 +1,8 @@
 package com.aryzko.scrabble.scrabbleboardmanager.domain.validator;
 
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Board;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.CharacterSequence;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.CharacterWithPosition;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Board;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.CharacterSequence;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.CharacterWithPosition;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.DictionaryProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

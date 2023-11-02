@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Data
 public class Game {
-    private Long id;
+    private UUID id;
     private OffsetDateTime creationDate;
     private State state;
     private UUID boardId;

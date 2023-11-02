@@ -1,16 +1,18 @@
 package com.aryzko.scrabble.scrabbleboardmanager.interfaces.external;
 
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Solution;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.DictionaryProvider;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface DictionaryMapper {
+interface DictionaryMapper {
 
-    @Mapping(target = "onBoard", source = "unmodifiableLetter")
-    Solution.Word.Element convert(DictionaryClient.Solution.Word.Element element);
+    DictionaryProvider.Solution.Word.Element convert(DictionaryClient.Solution.Word.Element element);
 
-    Solution.Word convert(DictionaryClient.Solution.Word word);
+    DictionaryProvider.Solution.Word convert(DictionaryClient.Solution.Word word);
 
-    Solution convert(DictionaryClient.Solution solution);
+    DictionaryProvider.Solution convert(DictionaryClient.Solution solution);
+
+    DictionaryClient.ResolveRequest.PreparedLine convert(DictionaryProvider.PreparedLine preparedLine);
+    DictionaryClient.ResolveRequest.PreparedLine.LineField convert(DictionaryProvider.PreparedLine.LineField lineField);
 }

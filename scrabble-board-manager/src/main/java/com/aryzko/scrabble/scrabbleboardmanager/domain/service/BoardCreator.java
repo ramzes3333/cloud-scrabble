@@ -1,7 +1,9 @@
 package com.aryzko.scrabble.scrabbleboardmanager.domain.service;
 
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Board;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Board;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.preview.BoardPreview;
 
-public interface BoardCreator {
+interface BoardCreator {
     Board prepareEmptyBoard();
+    BoardPreview prepareEmptyBoardPreview();
 }

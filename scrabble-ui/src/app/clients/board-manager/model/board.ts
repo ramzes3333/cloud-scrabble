@@ -1,6 +1,7 @@
 import {Field} from "./field";
 import {Rack} from "./rack";
 import {BoardParameters} from "./board-parameters";
+import {BoardPreview} from "./board-preview";
 
 export class Board {
   public id: string;

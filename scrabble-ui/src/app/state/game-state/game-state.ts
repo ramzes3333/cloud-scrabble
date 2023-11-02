@@ -1,7 +1,13 @@
-import {Board} from "../../clients/board-manager/model/board";
+import {Solution} from "../../clients/board-manager/model/solution/solution";
+import {CharacterWithPosition} from "../../clients/board-manager/model/board-validation-result";
+import {Board} from "../../model/board";
 
 export interface GameState {
-    boardUUID: string | null;
-    board: Board | null;
-    started: boolean;
+  started: boolean;
+  gameId?: number;
+  boardId?: string;
+  board?: Board;
+  solution?: Solution;
+
+  incorrectFields: CharacterWithPosition[];
 }

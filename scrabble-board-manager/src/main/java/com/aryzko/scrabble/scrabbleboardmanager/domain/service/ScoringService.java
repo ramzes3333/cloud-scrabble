@@ -1,9 +1,9 @@
 package com.aryzko.scrabble.scrabbleboardmanager.domain.service;
 
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Board;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Bonus;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Position;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Solution;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Board;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Bonus;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Position;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Solution;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.TileManagerProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static java.util.Optional.ofNullable;

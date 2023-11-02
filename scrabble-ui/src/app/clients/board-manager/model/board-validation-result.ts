@@ -8,7 +8,7 @@ export class BoardValidationResult {
   }
 }
 
-class CharacterSequence {
+export class CharacterSequence {
   public characters: CharacterWithPosition[];
 
   constructor(characters: CharacterWithPosition[]) {
@@ -16,7 +16,7 @@ class CharacterSequence {
   }
 }
 
-class CharacterWithPosition {
+export class CharacterWithPosition {
   public x: number;
   public y: number;
   public character: string;

@@ -7,6 +7,10 @@ import {Element as GuiElement} from "../model/element";
 import {Bonus} from "../../clients/board-manager/model/bonus";
 import {Bonus as GuiBonus} from "../model/bonus";
 import {TableVirtualScrollDataSource} from "ng-table-virtual-scroll";
+import {select, Store} from "@ngrx/store";
+import {GameState} from "../../state/game-state/game-state";
+import {selectSolution, selectStartedFlag} from "../../state/game-state/game-state.selectors";
+import {confirm, resolve, start} from "../../state/game-state/game-state.actions";
 
 @Component({
   selector: 'app-game-panel',
@@ -20,55 +24,52 @@ export class GamePanelComponent implements OnInit {
   words = new TableVirtualScrollDataSource<GuiWord>([]);
   isLoading: boolean = false;
 
-  constructor(private gameService: GameService) { }
+  solution$ = this.store.select(selectSolution);
+  gameStarted$ = this.store.pipe(select(selectStartedFlag));
+
+  constructor(private gameService: GameService,
+              private store: Store<{ gameState: GameState }>) { }
 
   ngOnInit(): void {
-    this.gameService.solutionEvent.subscribe(solution => {
+    this.solution$.subscribe(solution => {
       this.words = new TableVirtualScrollDataSource<GuiWord>([]);
-      for (const w of solution.words) {
-        let elements: Element[] = [];
-        let relatedWords: GuiWord[] = [];
-        let bonuses: GuiBonus[] = [];
-        let word: GuiWord = new GuiWord(w.points, elements, relatedWords, bonuses);
+      if(solution)
+        for (const w of solution.words) {
+          let elements: Element[] = [];
+          let relatedWords: GuiWord[] = [];
+          let bonuses: GuiBonus[] = [];
+          let word: GuiWord = new GuiWord(w.points, elements, relatedWords, bonuses);
 
-        for (const el of w.elements) {
-          elements.push(this.convertElement(el));
+          for (const el of w.elements) {
+            elements.push(this.convertElement(el));
+          }
+          for (const rw of w.relatedWords) {
+            relatedWords.push(this.convertRelatedWord(rw));
+          }
+          for (const b of w.bonuses) {
+            bonuses.push(this.convertBonus(b));
+          }
+          //this.words.push(word);
+          this.words.data.push(word);
         }
-        for (const rw of w.relatedWords) {
-          relatedWords.push(this.convertRelatedWord(rw));
-        }
-        for (const b of w.bonuses) {
-          bonuses.push(this.convertBonus(b));
-        }
-        //this.words.push(word);
-        this.words.data.push(word);
-      }
       this.isLoading = false;
     });
   }
 
   startGame() {
-    this.gameService.startGame();
     this.words = new TableVirtualScrollDataSource<GuiWord>([]);
+    this.store.dispatch(start());
   }
 
   confirmMove() {
-    this.gameService.confirmMove();
     this.words = new TableVirtualScrollDataSource<GuiWord>([]);
+    this.store.dispatch(confirm());
   }
 
   resolve() {
     this.words = new TableVirtualScrollDataSource<GuiWord>([]);
     this.isLoading = true;
-    this.gameService.resolve();
-  }
-
-  isNotStarted() {
-    return !this.gameService.isStarted();
-  }
-
-  isStarted() {
-    return this.gameService.isStarted();
+    this.store.dispatch(resolve());
   }
 
   private convertElement(el: Element): GuiElement {

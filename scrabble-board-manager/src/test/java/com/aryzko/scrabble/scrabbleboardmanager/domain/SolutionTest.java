@@ -1,5 +1,6 @@
 package com.aryzko.scrabble.scrabbleboardmanager.domain;
 
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Solution;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

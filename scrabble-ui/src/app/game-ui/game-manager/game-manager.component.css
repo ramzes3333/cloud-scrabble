@@ -5,18 +5,18 @@
   margin-right: 50px;
 }
 
-.boards-table {
+.games-table {
   width: 100%;
 }
 
-.boards-table td {
+.games-table td {
   cursor: pointer;
 }
-.boards-table td:hover {
+.games-table td:hover {
   background-color: #fcfcfc;
 }
 
-.board-parameters {
+.game-parameters {
   display: inline-block;
   vertical-align: top;
   width: 65%;

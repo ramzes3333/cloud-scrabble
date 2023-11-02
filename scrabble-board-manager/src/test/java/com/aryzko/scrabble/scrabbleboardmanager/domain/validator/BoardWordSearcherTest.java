@@ -1,12 +1,9 @@
 package com.aryzko.scrabble.scrabbleboardmanager.domain.validator;
 
 import com.aryzko.scrabble.scrabbleboardmanager.common.JsonUtils;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Board;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.BoardParameters;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.CharacterSequence;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.CharacterWithPosition;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Field;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Letter;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Board;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.CharacterSequence;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.CharacterWithPosition;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.String.format;

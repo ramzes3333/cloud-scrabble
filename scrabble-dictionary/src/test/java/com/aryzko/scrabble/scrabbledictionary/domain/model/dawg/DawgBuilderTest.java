@@ -4,13 +4,17 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.text.Collator;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class DawgBuilderTest {
+
+    private final Collator collator = Collator.getInstance(new Locale("pl", "PL"));
 
     private DawgBuilder builder;
 
@@ -23,7 +27,7 @@ class DawgBuilderTest {
     public void build() {
         //given
         List<String> words = List.of("ił", "iły", "iłżecku", "im", "ima", "imacie", "imać").stream()
-                .sorted()
+                .sorted(collator::compare)
                 .collect(Collectors.toList());
 
         //when

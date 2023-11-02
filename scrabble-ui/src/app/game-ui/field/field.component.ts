@@ -4,10 +4,15 @@ import {Letter} from "../model/letter";
 import {MovableField} from "../model/movable-field";
 import {Move} from "../model/move";
 import {MoveType} from "../model/move-type";
-import {GameService, GameUpdate, GameUpdateType} from "../../services/game.service";
+import {GameService, GameUpdateType} from "../../services/game.service";
 import {MatDialog} from "@angular/material/dialog";
 import {BlankDialogComponent} from "../blank-dialog/blank-dialog.component";
 import {Bonus} from "../model/bonus";
+import {select, Store} from "@ngrx/store";
+import {GameState} from "../../state/game-state/game-state";
+import {move} from "../../state/game-state/game-state.actions";
+import {selectValidationErrorsForCoordinates} from "../../state/game-state/game-state.selectors";
+import {Subject, takeUntil, tap} from "rxjs";
 
 @Component({
   selector: 'app-field',
@@ -22,25 +27,23 @@ export class FieldComponent implements OnInit {
   @Input() letter?: string;
   @Input() blank?: boolean;
   @Input() points?: number;
-  invalid: boolean = false;
+  @Input() movable?: boolean;
+  @Input() suggested?: boolean;
+  @Input() invalid?: boolean;
+
   movableFields!: MovableField[];
   potentialLetter: Letter | null = null;
 
-  constructor(private gameService: GameService, private dialog: MatDialog) { }
+  private readonly destroy$ = new Subject<void>();
+
+  constructor(private gameService: GameService, private store: Store<{ gameState: GameState }>, private dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.movableFields = [];
-    this.gameService.updateBoardEvent.subscribe(gameUpdate => {
-      if (gameUpdate.gameUpdateType == GameUpdateType.MOVE_CONFIRMED) {
-        this.moveConfirmed();
-      } else if (gameUpdate.gameUpdateType == GameUpdateType.MOVE_PERFORMED) {
-        this.movePerformed();
-      } else if (gameUpdate.gameUpdateType == GameUpdateType.INVALID_WORD) {
-        this.moveInvalid(gameUpdate);
-      } else if (gameUpdate.gameUpdateType == GameUpdateType.ORPHAN) {
-        this.moveInvalid(gameUpdate);
-      }
-    });
+    if(this.movable) {
+      this.addMovableField();
+    }
+
     this.gameService.potentialWordLetterEvent.subscribe(element => {
       if (element.x == this.x && element.y == this.y && !element.onBoard) {
         this.potentialLetter = new Letter(element.letter, false, element.points)
@@ -48,32 +51,36 @@ export class FieldComponent implements OnInit {
         this.potentialLetter = null;
       }
     });
+
+    this.store.pipe(
+      select(selectValidationErrorsForCoordinates(this.x, this.y)),
+      tap(errors => {
+        if (errors && errors.length > 0) {
+          this.setInvalidParam(true);
+        }
+      }),
+      takeUntil(this.destroy$)
+    ).subscribe();
   }
 
-  private moveInvalid(gameUpdate: GameUpdate) {
-    if (this.x == gameUpdate.x && this.y == gameUpdate.y) {
-      if (this.movableFields.length > 0) {
-        this.movableFields[0].invalid = true;
-      } else {
-        this.invalid = true;
-      }
+  private addMovableField() {
+    this.movableFields[0] = {
+      x: this.x,
+      y: this.y,
+      letter: {
+        letter: this.letter!,
+        blank: this.blank!,
+        points: this.points!
+      },
+      invalid: this.invalid!
     }
   }
 
-  private movePerformed() {
+  private setInvalidParam(value: boolean) {
     if (this.movableFields.length > 0) {
-      this.movableFields[0].invalid = false;
+      this.movableFields[0].invalid = value;
     } else {
-      this.invalid = false;
-    }
-  }
-
-  private moveConfirmed() {
-    if (this.movableFields.length > 0) {
-      this.letter = this.movableFields[0].letter.letter;
-      this.blank = this.movableFields[0].letter.blank;
-      this.points = this.movableFields[0].letter.points;
-      this.movableFields = [];
+      this.invalid = value;
     }
   }
 
@@ -115,7 +122,7 @@ export class FieldComponent implements OnInit {
     event.container.data[event.currentIndex].x = this.x;
     event.container.data[event.currentIndex].y = this.y;
 
-    this.gameService.move(this.extractMoveFromDropEvent(fromX, fromY, event));
+    this.store.dispatch(move(this.extractMoveFromDropEvent(fromX, fromY, event)));
   }
 
   private extractMoveFromDropEvent(fromX: number, fromY: number | null, event: CdkDragDrop<MovableField[]>) {
@@ -228,5 +235,10 @@ export class FieldComponent implements OnInit {
       return this.potentialLetter.points;
     }
     return null;
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

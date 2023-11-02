@@ -1,31 +1,27 @@
 package com.aryzko.scrabblegame.application.service.moveperformer;
 
-import com.aryzko.scrabblegame.application.model.board.Board;
 import com.aryzko.scrabblegame.application.model.MoveResult;
+import com.aryzko.scrabblegame.application.model.board.Board;
+import com.aryzko.scrabblegame.application.provider.BoardProvider;
 import com.aryzko.scrabblegame.application.request.GameMoveRequest;
 import com.aryzko.scrabblegame.application.response.GameFailure;
 import com.aryzko.scrabblegame.application.validator.MoveValidator;
 import com.aryzko.scrabblegame.domain.model.Game;
 import com.aryzko.scrabblegame.domain.model.Player;
 import com.aryzko.scrabblegame.domain.model.Type;
-import com.aryzko.scrabblegame.application.provider.BoardProvider;
-import com.aryzko.scrabblegame.domain.service.GameService;
+import com.aryzko.scrabblegame.domain.service.GameProvider;
 import io.vavr.control.Either;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import static com.aryzko.scrabblegame.application.response.GameFailure.INCORRECT_MOVE_REQUEST;
-import static com.aryzko.scrabblegame.application.response.GameFailure.PLAYER_ID_IS_EMPTY;
 
 @Service
 @RequiredArgsConstructor
 public class MovePerformer {
 
-    private final GameService gameService;
+    private final GameProvider gameService;
     private final BoardProvider boardProvider;
     private final HumanMovePerformer humanMovePerformer;
     private final BotMovePerformer botMovePerformer;

@@ -8,12 +8,16 @@
   text-align: left;
   width: 350px;
   height: 50px;
+  background-color: #f6f5f2;
+  border-radius: 10px;
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
+  background-image: linear-gradient(to right, #e6e9f0 0%, #eef1f5 100%);
 }
 
 .letter {
   position: relative;
   display: inline-block;
-  border: 1px solid chocolate;
+  border: 1px solid #e5e3e0;
   margin: 2px;
   width: 40px;
   height: 40px;
@@ -23,25 +27,27 @@
   font-size: 29px;
   vertical-align: top;
   text-align: center;
-  color: grey;
-  background-color: beige;
+  color: #6c6a67;
+  background-color: #ffffff;
 
   -webkit-user-select: none; /* Safari */
-  -ms-user-select: none; /* IE 10 and IE 11 */
-  user-select: none; /* Standard syntax */
+  -ms-user-select: none;     /* IE 10 and IE 11 */
+  user-select: none;         /* Standard syntax */
+  transition: background-color 0.15s ease-in-out;
 }
 
 .letter:hover {
-  background-color: aliceblue;
+  background-color: #e8e6e3;
   cursor: pointer;
+  transform: scale(1.05);
 }
 
 .points {
   position: absolute;
   top: 16px;
   right: 5px;
-
   font-size: 9px;
+  color: #6c6a67;            /* Kolor tekstu, bazując na .board-field-letter */
 }
 
 

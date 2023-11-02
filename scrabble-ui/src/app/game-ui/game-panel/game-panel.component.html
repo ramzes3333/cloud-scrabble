@@ -1,12 +1,12 @@
 <div>
   <div>
-      <button *ngIf="isNotStarted()" mat-raised-button (click)="startGame()">Start game!</button>
+      <button *ngIf="!(gameStarted$ | async)" mat-raised-button (click)="startGame()">Start game!</button>
   </div>
   <div>
-    <button *ngIf="isStarted()" color="primary" mat-raised-button (click)="confirmMove()" class="confirm-button">Confirm move!</button>
+    <button *ngIf="(gameStarted$ | async)" color="primary" mat-raised-button (click)="confirmMove()" class="confirm-button">Confirm move!</button>
   </div>
   <div>
-    <button *ngIf="isStarted()" color="accent" mat-raised-button (click)="resolve()" class="resolve-button">Resolve!</button>
+    <button *ngIf="(gameStarted$ | async)" color="accent" mat-raised-button (click)="resolve()" class="resolve-button">Resolve!</button>
   </div>
 </div>
 <div class="resolve-container">

@@ -1,7 +1,7 @@
 package com.aryzko.scrabble.scrabbleboardmanager.domain.service;
 
-import com.aryzko.scrabble.scrabbleboardmanager.common.JsonUtils;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Board;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Board;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.preview.BoardPreview;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
@@ -13,8 +13,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DefaultBoardCreatorTest {
 
-    private ObjectMapper objectMapper = new ObjectMapper();
-    private DefaultBoardCreator defaultBoardCreator = new DefaultBoardCreator();
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final DefaultBoardCreator defaultBoardCreator = new DefaultBoardCreator();
 
     @Test
     void prepareEmptyBoard() throws IOException {
@@ -29,6 +29,20 @@ class DefaultBoardCreatorTest {
         assertFalse(result.getId().toString().isBlank());
         assertEquals(result.getFields(), board.getFields());
         assertEquals(result.getRacks(), board.getRacks());
+        assertEquals(result.getBoardParameters(), board.getBoardParameters());
+    }
+
+    @Test
+    void prepareEmptyBoardPreview() throws IOException {
+        //given
+        BoardPreview board = loadObjectFromJson("/domain/validator/new-board-preview-15x15.json", BoardPreview.class);
+
+        //when
+        BoardPreview result = defaultBoardCreator.prepareEmptyBoardPreview();
+
+        //then
+        assertNotNull(result);
+        assertEquals(result.getFields(), board.getFields());
         assertEquals(result.getBoardParameters(), board.getBoardParameters());
     }
 }

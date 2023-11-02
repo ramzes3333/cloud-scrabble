@@ -1,10 +1,10 @@
 package com.aryzko.scrabble.scrabbleboardmanager.domain.service;
 
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Board;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.CharacterWithPosition;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Position;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.PreparedLine;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.PreparedLines;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Board;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.CharacterWithPosition;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Position;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.PreparedLine;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.PreparedLines;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.DictionaryProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -30,16 +30,21 @@ public class GameCreator {
 
     public Game create(CreateGameCommand command) {
         Game game = new Game();
+        game.setId(generateUUID());
         game.setCreationDate(OffsetDateTime.now());
         game.setState(State.NOT_STARTED);
         game.setBoardId(UUID.fromString(command.getBoardId()));
-        game.getPlayers().addAll(prepareBotPlayers(command.getBotPlayers()));
-        game.getPlayers().addAll(prepareHumanPlayers(command.getHumanPlayers()));
+        game.getPlayers().addAll(command.getBotPlayers());
+        game.getPlayers().addAll(command.getHumanPlayers());
         game.setActualPlayerId(randomPlayer(game.getPlayers()));
 
         setPlayersOrder(game);
 
         return gameRepository.create(game);
+    }
+
+    private static UUID generateUUID() {
+        return UUID.randomUUID();
     }
 
     private static void setPlayersOrder(Game game) {
@@ -52,61 +57,13 @@ public class GameCreator {
         return players.get((new Random()).nextInt(players.size())).getId();
     }
 
-    private List<Player> prepareHumanPlayers(List<CreateGameCommand.HumanPlayer> humanPlayers) {
-        return IntStream
-                .range(0, humanPlayers.size())
-                .mapToObj(i -> {
-                    CreateGameCommand.HumanPlayer humanPlayer = humanPlayers.get(i);
-                    return HumanPlayer.builder()
-                            .id(format("H%d", i))
-                            .points(0)
-                            .login(humanPlayer.getLogin())
-                            .build();
-                })
-                .collect(Collectors.toList());
-    }
-
-    private List<Player> prepareBotPlayers(List<CreateGameCommand.BotPlayer> botPlayers) {
-        return IntStream
-                .range(0, botPlayers.size())
-                .mapToObj(i -> {
-                    CreateGameCommand.BotPlayer botPlayer = botPlayers.get(i);
-                    return BotPlayer.builder()
-                            .id(format("B%d", i))
-                            .points(0)
-                            .level(Level.valueOf(botPlayer.getLevel().name()))
-                            .build();
-                })
-                .collect(Collectors.toList());
-    }
-
     @Value
     @Builder
     public static class CreateGameCommand {
-        private String boardId;
+        String boardId;
         @Singular
-        private List<BotPlayer> botPlayers;
+        List<BotPlayer> botPlayers;
         @Singular
-        private List<HumanPlayer> humanPlayers;
-
-        @Value
-        @Builder
-        public static class BotPlayer {
-            private Level level;
-        }
-
-        @Value
-        @Builder
-        public static class HumanPlayer {
-            private String login;
-        }
-
-        public enum Level {
-            NEWBIE,
-            BEGINNER,
-            ADVANCED,
-            EXPERT,
-            LEGEND;
-        }
+        List<HumanPlayer> humanPlayers;
     }
 }

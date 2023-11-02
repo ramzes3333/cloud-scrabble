@@ -1,7 +1,7 @@
 package com.aryzko.scrabble.scrabbleboardmanager.domain.service;
 
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Board;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Solution;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Board;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Solution;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

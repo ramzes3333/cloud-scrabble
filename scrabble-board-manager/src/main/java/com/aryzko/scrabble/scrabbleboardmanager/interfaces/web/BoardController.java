@@ -1,18 +1,23 @@
 package com.aryzko.scrabble.scrabbleboardmanager.interfaces.web;
 
-import com.aryzko.scrabble.scrabbleboardmanager.application.mapper.BoardMapper;
-import com.aryzko.scrabble.scrabbleboardmanager.application.mapper.BoardValidationMapper;
-import com.aryzko.scrabble.scrabbleboardmanager.application.mapper.SolutionMapper;
-import com.aryzko.scrabble.scrabbleboardmanager.application.request.BoardRequest;
-import com.aryzko.scrabble.scrabbleboardmanager.application.response.BoardResponse;
-import com.aryzko.scrabble.scrabbleboardmanager.application.response.BoardValidationResultResponse;
-import com.aryzko.scrabble.scrabbleboardmanager.application.response.Solution;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.validator.BoardValidationResult;
+import com.aryzko.scrabble.scrabbleboardmanager.interfaces.web.common.Bonus;
+import com.aryzko.scrabble.scrabbleboardmanager.interfaces.web.mapper.BoardMapper;
+import com.aryzko.scrabble.scrabbleboardmanager.interfaces.web.mapper.BoardValidationMapper;
+import com.aryzko.scrabble.scrabbleboardmanager.interfaces.web.mapper.SolutionMapper;
+import com.aryzko.scrabble.scrabbleboardmanager.interfaces.web.request.BoardRequest;
+import com.aryzko.scrabble.scrabbleboardmanager.interfaces.web.response.BoardResponse;
+import com.aryzko.scrabble.scrabbleboardmanager.interfaces.web.response.BoardValidationResultResponse;
+import com.aryzko.scrabble.scrabbleboardmanager.interfaces.web.response.Solution;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.command.CreateBoardCommand;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.service.BoardResolver;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.service.BoardService;
 import jakarta.validation.Valid;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,6 +40,11 @@ public class BoardController {
     private final BoardMapper boardMapper;
     private final SolutionMapper solutionMapper;
     private final BoardValidationMapper boardValidationMapper;
+
+    @GetMapping("preview")
+    public BoardPreviewResponse preview() {
+        return boardMapper.convert(boardService.prepareEmptyBoardPreview());
+    }
 
     @PostMapping
     public BoardResponse createBoard(@RequestBody CreateBoardRequest request) {
@@ -59,9 +69,14 @@ public class BoardController {
     }
 
     @PostMapping(value = "validate")
-    public BoardValidationResultResponse validate(@RequestBody @Valid BoardRequest board) {
-        return boardValidationMapper.toBoardValidationResultResponse(
-                boardService.validate(boardMapper.toBoard(board)));
+    public ResponseEntity<BoardValidationResultResponse> validate(@RequestBody @Valid BoardRequest board) {
+        BoardValidationResult validationResult = boardService.validate(boardMapper.toBoard(board));
+
+        if(validationResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(boardValidationMapper.toBoardValidationResultResponse(validationResult));
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
     }
 
     @PostMapping(value = "resolve")
@@ -70,11 +85,30 @@ public class BoardController {
     }
 
     @Data
-    static class CreateBoardRequest {
+    public static class CreateBoardRequest {
         List<String> playerIds;
 
         public CreateBoardCommand toDomainCommand() {
             return new CreateBoardCommand(playerIds.stream().toList());
+        }
+    }
+
+    @Data
+    public static class BoardPreviewResponse {
+        private List<Field> fields;
+        private BoardParameters boardParameters;
+
+        @Data
+        public static class Field {
+            private Integer x;
+            private Integer y;
+            private Bonus bonus;
+        }
+
+        @Data
+        public static class BoardParameters {
+            private Integer horizontalSize;
+            private Integer verticalSize;
         }
     }
 }

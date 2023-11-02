@@ -1,9 +1,8 @@
 package com.aryzko.scrabble.scrabbleboardmanager.domain.service;
 
-import com.aryzko.scrabble.scrabbleboardmanager.common.JsonUtils;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Board;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.PreparedLine;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.PreparedLines;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Board;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.PreparedLine;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.PreparedLines;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.DictionaryProvider;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.TileManagerProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;

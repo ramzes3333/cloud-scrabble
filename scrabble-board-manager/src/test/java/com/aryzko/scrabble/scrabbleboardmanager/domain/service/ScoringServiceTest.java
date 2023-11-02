@@ -1,8 +1,8 @@
 package com.aryzko.scrabble.scrabbleboardmanager.domain.service;
 
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Board;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Solution;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.TileConfiguration;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Board;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Solution;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.model.TileConfiguration;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.TileManagerProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,17 +41,17 @@ class ScoringServiceTest {
 
         //then
         assertEquals(solution.getWords().size(), result.getWords().size());
-        Solution.Word word1 = getWord(solution, "fok"); //(5+(2*2))*3 + 50 (bonus)
+        Solution.Word word1 = getWord(solution, "fok"); //(5+1+(2*2))*3 + 50 (bonus)
         assertNotNull(word1);
-        assertEquals(77, word1.getPoints());
+        assertEquals(80, word1.getPoints());
 
-        Solution.Word word2 = getWord(solution, "koc"); //(2+(2*3))*2 + 50 (bonus)
+        Solution.Word word2 = getWord(solution, "koc"); //(2+1+(2*3))*2 + 50 (bonus)
         assertNotNull(word2);
-        assertEquals(66, word2.getPoints());
+        assertEquals(68, word2.getPoints());
 
-        Solution.Word word3 = getWord(solution, "ok"); //2*2
+        Solution.Word word3 = getWord(solution, "ok"); //1+2*2
         assertNotNull(word3);
-        assertEquals(4, word3.getPoints());
+        assertEquals(5, word3.getPoints());
     }
 
     private static Solution.Word getWord(Solution solution, String word) {

@@ -1,21 +1,28 @@
 package com.aryzko.scrabblegame.interfaces.web;
 
 import com.aryzko.scrabblegame.application.request.GameMoveRequest;
-import com.aryzko.scrabblegame.application.request.GameStartRequest;
 import com.aryzko.scrabblegame.application.response.GameFailure;
-import com.aryzko.scrabblegame.application.response.GameStartResponse;
-import com.aryzko.scrabblegame.application.service.GameStarter;
+import com.aryzko.scrabblegame.application.service.GameService;
 import com.aryzko.scrabblegame.application.service.moveperformer.MovePerformer;
+import com.aryzko.scrabblegame.domain.model.Game;
+import com.aryzko.scrabblegame.domain.service.GameProvider;
 import com.aryzko.scrabblegame.interfaces.web.error.RestErrorResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
@@ -23,20 +30,33 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/api/game")
+@RequestMapping(value = "/api/games")
 @RequiredArgsConstructor
 public class GameController {
 
-    private final GameStarter gameStarter;
+    private final GameService gameService;
+    private final GameProvider gameProvider;
     private final MovePerformer movePerformer;
 
-    @PostMapping("start")
-    public ResponseEntity<?> start(@RequestBody @Valid GameStartRequest gameStartRequest) {
-        return gameStarter.start(gameStartRequest).fold(
-                success -> ResponseEntity.ok(GameStartResponse.builder()
+    @PostMapping("create")
+    public ResponseEntity<?> create(@RequestBody @Valid CreateGameRequest request) {
+        return gameService.create(request.toCommand()).fold(
+                success -> ResponseEntity.ok(GameResponse.builder()
                         .id(success.getId())
                         .boardId(success.getBoardId()).build()),
                 failure -> handleFailure(failure));
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<?> get(@PathVariable("id") String gameId) {
+        Game game = gameProvider.getGame(gameId);
+        return ResponseEntity.ok(GameResponse.of(game));
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getAll() {
+        List<Game> games = gameProvider.getAllGames();
+        return ResponseEntity.ok(games.stream().map(GameResponse::of).toList());
     }
 
     @PostMapping("move")
@@ -54,5 +74,52 @@ public class GameController {
                                 .map(error -> RestErrorResponse.RestError.of(error.code(), error.message()))
                                 .collect(Collectors.toList()))
                         .build());
+    }
+
+    @Value
+    public static class CreateGameRequest {
+
+        @Valid List<BotPlayer> botPlayers;
+        @Valid List<HumanPlayer> humanPlayers;
+
+        public GameService.CreateGameCommand toCommand() {
+            return GameService.CreateGameCommand.builder()
+                    .botPlayers(botPlayers.stream()
+                            .map(p -> GameService.CreateGameCommand.BotPlayer.builder()
+                                    .level(GameService.CreateGameCommand.Level.valueOf(p.level().toString()))
+                                    .build()).toList())
+                    .humanPlayers(humanPlayers.stream()
+                            .map(p -> GameService.CreateGameCommand.HumanPlayer.builder().build())
+                            .toList())
+                    .build();
+        }
+
+        public record BotPlayer(@NotNull Level level) {}
+
+        public record HumanPlayer() {}
+
+        public enum Level {
+            NEWBIE,
+            BEGINNER,
+            ADVANCED,
+            EXPERT,
+            LEGEND
+        }
+    }
+
+    @Value
+    @Builder
+    public static class GameResponse {
+        String id;
+        String boardId;
+        OffsetDateTime creationDate;
+
+        public static GameResponse of(Game game) {
+            return GameResponse.builder()
+                    .id(game.getId().toString())
+                    .boardId(game.getBoardId().toString())
+                    .creationDate(game.getCreationDate())
+                    .build();
+        }
     }
 }

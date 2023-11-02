@@ -24,7 +24,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {KeycloakAngularModule, KeycloakService} from "keycloak-angular";
 import {initializeKeycloak} from "./init/keycloak-init.factory";
 import {MainComponent} from './game-ui/main/main.component';
-import {HashLocationStrategy, LocationStrategy} from "@angular/common";
+import {LocationStrategy, PathLocationStrategy} from "@angular/common";
 import {GameCreatorDialogComponent} from './game-ui/game-creator-dialog/game-creator-dialog.component';
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {FormsModule} from "@angular/forms";
@@ -34,6 +34,8 @@ import {MatCardModule} from "@angular/material/card";
 import {MatChipsModule} from "@angular/material/chips";
 import { StoreModule } from '@ngrx/store';
 import {gameStateReducer} from "./state/game-state/game-state.reducer";
+import {GameEffects} from "./state/game-state/game-state.effects";
+import {EffectsModule} from "@ngrx/effects";
 
 @NgModule({
   declarations: [
@@ -69,7 +71,8 @@ import {gameStateReducer} from "./state/game-state/game-state.reducer";
     MatSelectModule,
     MatCardModule,
     MatChipsModule,
-    StoreModule.forRoot({gameState: gameStateReducer}, {})
+    StoreModule.forRoot({gameState: gameStateReducer}, {}),
+    EffectsModule.forRoot([GameEffects])
   ],
   providers: [
     {
@@ -78,9 +81,14 @@ import {gameStateReducer} from "./state/game-state/game-state.reducer";
       multi: true,
       deps: [KeycloakService]
     },
+    /*{
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    },*/
     {
       provide: LocationStrategy,
-      useClass: HashLocationStrategy
+      useClass: PathLocationStrategy
     }
   ],
   bootstrap: [AppComponent]

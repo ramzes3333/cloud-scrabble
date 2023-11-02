@@ -1,9 +1,26 @@
 import {AppState} from "../app.state";
 import {createSelector} from "@ngrx/store";
 import {GameState} from "./game-state";
+import {CharacterWithPosition} from "../../clients/board-manager/model/board-validation-result";
 
 export const selectGameState = (state: AppState) => state.gameState;
-export const selectBoardUUID = createSelector(
-  selectGameState,
-  (state: GameState) => state.boardUUID
-);
+
+export const selectBoard = createSelector(
+  selectGameState, (state: GameState) => state.board);
+
+export const selectStartedFlag = createSelector(
+  selectGameState, (state: GameState) => state.started);
+
+export const selectSolution = createSelector(
+  selectGameState, (state: GameState) => state.solution);
+
+export const selectIncorrectFields = createSelector(
+  selectGameState, (gameState: GameState) => gameState.incorrectFields);
+
+export const selectValidationErrorsForCoordinates = (x: number, y: number) => {
+  return createSelector(
+    selectIncorrectFields,
+    (incorrectFields: CharacterWithPosition[]) =>
+      incorrectFields.filter(incorrectField => incorrectField.x === x && incorrectField.y === y)
+  );
+};

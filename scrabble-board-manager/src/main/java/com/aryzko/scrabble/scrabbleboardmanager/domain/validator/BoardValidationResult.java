@@ -1,11 +1,10 @@
 package com.aryzko.scrabble.scrabbleboardmanager.domain.validator;
 
-import com.aryzko.scrabble.scrabbleboardmanager.application.response.BoardValidationResultResponse;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.CharacterSequence;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.CharacterWithPosition;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.CharacterSequence;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.CharacterWithPosition;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Value;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -37,5 +36,9 @@ public class BoardValidationResult {
         return w -> ofNullable(validationStatus.get(w.getCharacterSequenceAsString()))
                 .orElseThrow(() -> new IllegalStateException("There is no word in validation result"))
                 .equals(Boolean.FALSE);
+    }
+
+    public boolean hasErrors() {
+        return !CollectionUtils.isEmpty(incorrectWords) || !CollectionUtils.isEmpty(orphans);
     }
 }

@@ -1,7 +1,7 @@
 package com.aryzko.scrabble.scrabbleboardmanager.interfaces.external;
 
-import com.aryzko.scrabble.scrabbleboardmanager.domain.PreparedLine;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Solution;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.PreparedLine;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Solution;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.DictionaryProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -30,6 +30,6 @@ public class DefaultDictionaryProvider implements DictionaryProvider {
     public Solution resolve(PreparedLine preparedLine, List<Character> availableLetters) {
         return dictionaryMapper.convert(
                 dictionaryClient.resolve(
-                        new DictionaryClient.ResolveRequest(preparedLine, availableLetters)));
+                        new DictionaryClient.ResolveRequest(dictionaryMapper.convert(preparedLine), availableLetters)));
     }
 }

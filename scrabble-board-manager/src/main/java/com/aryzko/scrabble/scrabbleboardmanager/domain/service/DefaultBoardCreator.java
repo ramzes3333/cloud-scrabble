@@ -1,55 +1,85 @@
 package com.aryzko.scrabble.scrabbleboardmanager.domain.service;
 
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Board;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.BoardParameters;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Bonus;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Field;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Board;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.BoardParameters;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Bonus;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.EmptyField;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Field;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.common.DateTimeProvider;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.preview.BoardPreview;
 import lombok.Builder;
 import lombok.Value;
 import org.springframework.stereotype.Component;
 
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Component
-public class DefaultBoardCreator implements BoardCreator {
+class DefaultBoardCreator implements BoardCreator {
 
     public static final int BOARD_HORIZONTAL_SIZE = 15;
     public static final int BOARD_VERTICAL_SIZE = 15;
     public static final int BOARD_RACK_SIZE = 7;
 
+    @Override
     public Board prepareEmptyBoard() {
         Board board = new Board();
         board.setId(generateUUID());
         board.setCreationDate(DateTimeProvider.getActualOffsetDateTime());
-        board.setFields(
-                IntStream.range(0, BOARD_VERTICAL_SIZE)
-                        .mapToObj(y -> IntStream.range(0, BOARD_HORIZONTAL_SIZE)
-                                .mapToObj(x -> Field.builder()
-                                        .x(x)
-                                        .y(y)
-                                        .bonus(BonusPosition.getByPosition(x, y))
-                                        .build())
-                                .collect(Collectors.toList()))
-                        .flatMap(List::stream)
-                        .collect(Collectors.toList())
-        );
+        board.setFields(prepareFields(FieldFactory::createField));
         board.setRacks(new ArrayList<>());
-        board.setBoardParameters(
-                BoardParameters.builder()
-                        .horizontalSize(BOARD_HORIZONTAL_SIZE)
-                        .verticalSize(BOARD_VERTICAL_SIZE)
-                        .rackSize(BOARD_RACK_SIZE)
-                        .build());
+        board.setBoardParameters(prepareBoardParameters());
         return board;
+    }
+
+    @Override
+    public BoardPreview prepareEmptyBoardPreview() {
+        BoardPreview boardPreview = new BoardPreview();
+        boardPreview.setFields(prepareFields(FieldFactory::createEmptyField));
+        boardPreview.setBoardParameters(prepareBoardParameters());
+        return boardPreview;
+    }
+
+    public static class FieldFactory {
+        public static EmptyField createEmptyField(int x, int y) {
+            return EmptyField.builder()
+                    .x(x)
+                    .y(y)
+                    .bonus(BonusPosition.getByPosition(x, y))
+                    .build();
+        }
+
+        public static Field createField(int x, int y) {
+            return Field.builder()
+                    .x(x)
+                    .y(y)
+                    .bonus(BonusPosition.getByPosition(x, y))
+                    .build();
+        }
+    }
+
+    private static <T extends EmptyField> List<T> prepareFields(BiFunction<Integer, Integer, T> fieldCreator) {
+        return IntStream.range(0, BOARD_VERTICAL_SIZE)
+                .mapToObj(y -> IntStream.range(0, BOARD_HORIZONTAL_SIZE)
+                        .mapToObj(x -> fieldCreator.apply(x, y))
+                        .collect(Collectors.toList()))
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+    }
+
+    private static BoardParameters prepareBoardParameters() {
+        return BoardParameters.builder()
+                .horizontalSize(BOARD_HORIZONTAL_SIZE)
+                .verticalSize(BOARD_VERTICAL_SIZE)
+                .rackSize(BOARD_RACK_SIZE)
+                .build();
     }
 
     private static UUID generateUUID() {

@@ -39,7 +39,7 @@ public class GameConverter {
                         .build(),
                 ObjectMapper.DefaultTyping.OBJECT_AND_NON_CONCRETE);
         objectMapper.addMixIn(Player.class, PlayerMixIn.class);
-        objectMapper.addMixIn(Game.class, GameMixIn.class);
+        /*objectMapper.addMixIn(Game.class, GameMixIn.class);*/
 
         objectMapper.findAndRegisterModules();
 
@@ -47,10 +47,10 @@ public class GameConverter {
     }
 
     @JsonIgnoreProperties("type")
-    private abstract class PlayerMixIn {
+    private abstract static class PlayerMixIn {
     }
 
-    @JsonIgnoreProperties("id")
+    /*@JsonIgnoreProperties("id")
     private abstract class GameMixIn {
-    }
+    }*/
 }

@@ -10,12 +10,12 @@ export class GameCreatorService {
 
   constructor(private gameManagerService: GameManagerService) { }
 
-  createGame(req: GameStartRequest) : Observable<GameStartResponse> {
+  createGame(req: CreateGameRequest) : Observable<CreateGameResponse> {
     return this.gameManagerService.createGame(req);
   }
 }
 
-export interface GameStartRequest {
+export interface CreateGameRequest {
   botPlayers: BotPlayer[];
   humanPlayers: HumanPlayer[];
 }
@@ -35,7 +35,7 @@ export enum Level {
   LEGEND
 }
 
-export interface GameStartResponse {
+export interface CreateGameResponse {
   id: number;
   boardId: string;
   players: Player[];

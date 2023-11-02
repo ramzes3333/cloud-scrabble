@@ -1,7 +1,7 @@
 <div class="rack-container mat-elevation-z1" cdkDropList
      cdkDropListOrientation="horizontal"
      [cdkDropListData]="rack.movableFields"
-     [cdkDropListDisabled]="isGameNotStarted()"
+     [cdkDropListDisabled]="!(gameStarted$ | async)"
      (cdkDropListDropped)="dropped($event)">
   <ng-container *ngFor="let movableField of rack.movableFields; let i = index" >
     <div class="letter cdk-drag" cdkDrag>

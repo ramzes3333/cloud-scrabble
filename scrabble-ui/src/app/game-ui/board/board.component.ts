@@ -1,8 +1,10 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Board} from "../../clients/board-manager/model/board";
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import {GameService} from "../../services/game.service";
-import {Move} from "../model/move";
+import {select, Store} from "@ngrx/store";
+import {GameState} from "../../state/game-state/game-state";
+import {init, preview} from "../../state/game-state/game-state.actions";
+import {selectBoard} from "../../state/game-state/game-state.selectors";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-board',
@@ -11,18 +13,26 @@ import {Move} from "../model/move";
 })
 export class BoardComponent implements OnInit {
 
-  _board?: Board;
+  public board$ = this.store.select(selectBoard);
 
-  constructor(private route: ActivatedRoute, private gameService: GameService) { }
+  private routeSubscription?: Subscription;
+
+  constructor(private route: ActivatedRoute, private store: Store<{ gameState: GameState }>) { }
 
   ngOnInit(): void {
-    this.route.data.subscribe(data => {
-      this._board = data['board'];
-      this.gameService.init(data['board'].id);
+    this.routeSubscription = this.route.params.subscribe(params => {
+      const gameId = params['id'];
+      if(gameId) {
+        this.store.dispatch(init({ gameId: gameId }));
+      } else {
+        this.store.dispatch(preview());
+      }
     });
   }
 
-  get board(): Board | undefined {
-    return this._board;
+  ngOnDestroy() {
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
+    }
   }
 }

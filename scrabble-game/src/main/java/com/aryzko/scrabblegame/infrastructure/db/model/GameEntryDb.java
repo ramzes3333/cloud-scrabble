@@ -8,10 +8,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
-import org.springframework.data.annotation.Version;
 
 @Getter
 @Setter
@@ -24,8 +24,10 @@ public class GameEntryDb {
     @SequenceGenerator(name = "game_sequence", sequenceName = "game_sequence", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Long id;
+
     @Version
     private Integer version;
+
     @Type(JsonType.class)
     @Column(name = "data", columnDefinition = "jsonb")
     private String data;

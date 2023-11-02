@@ -1,10 +1,10 @@
-<table mat-table [dataSource]="boards" class="boards-table mat-elevation-z1">
+<table mat-table [dataSource]="games" class="games-table mat-elevation-z1">
   <ng-container matColumnDef="id">
     <th mat-header-cell *matHeaderCellDef> Games </th>
-    <td mat-cell *matCellDef="let element" (click)="getBoard(element.id)">
-      <div class="board-parameters">
-        Creation date: {{element.creationDate | date:'dd-MM-yyyy HH:mm:ss'}}<br>
-        Rack: <br>
+    <td mat-cell *matCellDef="let element" (click)="getGame(element.game.id)">
+      <div class="game-parameters">
+        Creation date: {{element.game.creationDate | date:'dd-MM-yyyy HH:mm:ss'}}<br>
+        <!--Rack: <br>
         <ng-container *ngIf="element.racks.length > 0">
           <ng-container *ngFor="let field of element.racks[0]!.letters">
             <div class="letter points-{{field.points}}">
@@ -12,12 +12,12 @@
               <div class="points">{{field.points}}</div>
             </div>
           </ng-container>
-        </ng-container>
+        </ng-container>-->
       </div>
-      <div class="board-preview">
-        <ng-container *ngFor="let field of element?.fields; let i = index" >
+      <div class="board-preview" *ngIf="element.board">
+        <ng-container *ngFor="let field of element.board?.fields; let i = index" >
           <div class="field-preview {{field.letter != null ? 'used' : ''}}"></div>
-          <br *ngIf="((i+1)%element!.boardParameters!.horizontalSize == 0)"/>
+          <br *ngIf="((i+1)%element.board!.boardParameters!.horizontalSize == 0)"/>
         </ng-container>
       </div>
     </td>
@@ -28,7 +28,7 @@
 </table>
 <mat-toolbar>
   <mat-toolbar-row>
-    <button mat-raised-button [disabled]="createDisabled" (click)="createBoard()" [disabled]="false">Create game</button>
+    <button mat-raised-button [disabled]="createDisabled" (click)="createGame()" [disabled]="false">Create game</button>
     <span class="example-spacer"></span>
   </mat-toolbar-row>
 </mat-toolbar>

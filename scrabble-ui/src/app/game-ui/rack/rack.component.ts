@@ -3,11 +3,15 @@ import {Letter as BoardLetter} from "../../clients/board-manager/model/letter";
 import {Letter as TileLetter} from "../../clients/tile-manager/model/letter";
 import {Letter as GuiLetter} from "../model/letter";
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
-import {ActivatedRoute} from "@angular/router";
 import {GameService} from "../../services/game.service";
 import {MovableField} from "../model/movable-field";
 import {Move} from "../model/move";
 import {MoveType} from "../model/move-type";
+import {select, Store} from "@ngrx/store";
+import {GameState} from "../../state/game-state/game-state";
+import {Subscription} from "rxjs";
+import {selectBoard, selectStartedFlag} from "../../state/game-state/game-state.selectors";
+import {move} from "../../state/game-state/game-state.actions";
 
 @Component({
   selector: 'app-rack',
@@ -16,21 +20,25 @@ import {MoveType} from "../model/move-type";
 })
 export class RackComponent implements OnInit {
 
-  private _rack: Rack = new Rack([]);
+  gameStarted$ = this.store.pipe(select(selectStartedFlag));
 
+  private _rack: Rack = new Rack([]);
   @Output() movePerformed = new EventEmitter<Move>();
 
-  constructor(private route: ActivatedRoute, private gameService: GameService) { }
+  private subscriptions: Subscription[] = [];
+
+  constructor(private gameService: GameService, private store: Store<{ gameState: GameState }>) { }
 
   ngOnInit(): void {
-    this.route.data
-      .subscribe((data) => {
-        if(data['board']['racks'].length > 0) {
-          this._rack = new Rack(this.convertBoardLettersToMovableFields(0, data['board']['racks'][0].letters));
+    this.subscriptions.push(
+      this.store.pipe(select(selectBoard)).subscribe((board) => {
+        if (board && board.racks && board.racks.length > 0 && board.racks[0].letters) {
+          this._rack = new Rack(this.convertBoardLettersToMovableFields(0, board.racks[0].letters));
         } else {
           this._rack = new Rack([]);
         }
-      });
+      })
+    );
 
     this.gameService.fillRackEvent.subscribe(letters => {
       this._rack.movableFields = this._rack.movableFields.concat(this.convertTileLettersToMovableFields(this._rack.movableFields.length, letters));
@@ -79,7 +87,7 @@ export class RackComponent implements OnInit {
       event.container.data[event.currentIndex].letter.letter = " ";
     }
 
-    this.gameService.move(this.extractMoveFromDropEvent(fromX, fromY, event));
+    this.store.dispatch(move(this.extractMoveFromDropEvent(fromX, fromY, event)));
   }
 
   private updateRackCoordinates() {
@@ -113,8 +121,9 @@ export class RackComponent implements OnInit {
     return this._rack;
   }
 
-  isGameNotStarted() {
-    return !this.gameService.isStarted();
+  ngOnDestroy() {
+    // Unsubscribe from the observables when the component is destroyed
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }
 

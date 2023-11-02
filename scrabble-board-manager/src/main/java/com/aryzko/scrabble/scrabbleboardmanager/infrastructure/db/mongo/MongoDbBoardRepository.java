@@ -1,6 +1,6 @@
 package com.aryzko.scrabble.scrabbleboardmanager.infrastructure.db.mongo;
 
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Board;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Board;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

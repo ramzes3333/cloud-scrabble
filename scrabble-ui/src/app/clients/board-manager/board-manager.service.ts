@@ -5,6 +5,7 @@ import {Board} from "./model/board";
 import {map} from 'rxjs/operators';
 import {BoardValidationResult} from "./model/board-validation-result";
 import {Solution} from "./model/solution/solution";
+import {BoardPreview} from "./model/board-preview";
 
 @Injectable({
   providedIn: 'root'
@@ -40,6 +41,16 @@ export class BoardManagerService {
 
   getBoard(uuid: string): Observable<Board> {
     return this.http.get<Board>(`board-manager-service/api/boards/${uuid}`,
+      {
+        observe: 'response'
+      }
+    ).pipe(
+      map(response => response.body!)
+    );
+  }
+
+  getBoardPreview(): Observable<BoardPreview> {
+    return this.http.get<Board>(`board-manager-service/api/boards/preview`,
       {
         observe: 'response'
       }

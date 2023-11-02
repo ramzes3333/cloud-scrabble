@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 public class GameMoveRequest {
     @NotNull
-    private Long gameId;
+    private String gameId;
     @NotBlank
     private String playerId;
     private List<Tile> tiles;

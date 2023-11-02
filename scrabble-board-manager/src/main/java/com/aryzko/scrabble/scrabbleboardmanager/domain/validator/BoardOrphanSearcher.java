@@ -1,9 +1,9 @@
 package com.aryzko.scrabble.scrabbleboardmanager.domain.validator;
 
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Board;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.BoardParameters;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.CharacterWithPosition;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Position;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Board;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.BoardParameters;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.CharacterWithPosition;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Position;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;

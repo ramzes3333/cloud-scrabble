@@ -46,12 +46,13 @@
 .letter {
   position: relative;
   display: inline-block;
-  border: 1px solid chocolate;
+  border: 1px solid #E1E2E3;
+  background-color: #FFFFFF;
   margin: 1px;
   width: 20px;
   height: 20px;
   line-height: 20px;
-  border-radius: 3px;
+  border-radius: 5px;
   padding: 2px;
   font-size: 14px;
   vertical-align: top;
@@ -63,43 +64,43 @@
 }
 
 .letter.points-0 {
-  color: grey;
-  background-color: beige;
+  color: #5A8DA1;
+  background-color: #E0F7FD; /* najjaśniejszy */
 }
 
 .letter.points-1 {
-  color: grey;
-  background-color: beige;
+  color: #5A8DA1;
+  background-color: #D5F0FC;
 }
 
 .letter.points-2 {
-  color: grey;
-  background-color: #c9f3f6;
+  color: #5A8DA1;
+  background-color: #C9E9FB;
 }
 
 .letter.points-3 {
-  color: grey;
-  background-color: #c6e4fc;
+  color: #5A8DA1;
+  background-color: #BDE3FA;
 }
 
 .letter.points-5 {
-  color: grey;
-  background-color: #ffe9ed;
+  color: #5A8DA1;
+  background-color: #A2D4F7;
 }
 
 .letter.points-6 {
-  color: grey;
-  background-color: #ffe9ed;
+  color: #5A8DA1;
+  background-color: #87C5F4;
 }
 
 .letter.points-7 {
-  color: grey;
-  background-color: #ffe9ed;
+  color: #5A8DA1;
+  background-color: #6CB5F1;
 }
 
 .letter.points-9 {
-  color: grey;
-  background-color: #ffe9ed;
+  color: #5A8DA1;
+  background-color: #509DEE; /* najciemniejszy */
 }
 
 .points {

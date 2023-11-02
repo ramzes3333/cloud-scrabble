@@ -1,9 +1,9 @@
 package com.aryzko.scrabble.scrabbleboardmanager.domain.common;
 
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Board;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.CharacterSequence;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.CharacterWithPosition;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Position;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Board;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.CharacterSequence;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.CharacterWithPosition;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Position;
 
 import java.util.ArrayList;
 import java.util.List;

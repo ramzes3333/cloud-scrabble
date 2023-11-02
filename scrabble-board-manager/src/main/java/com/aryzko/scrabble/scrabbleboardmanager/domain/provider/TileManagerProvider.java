@@ -1,15 +1,14 @@
 package com.aryzko.scrabble.scrabbleboardmanager.domain.provider;
 
-import com.aryzko.scrabble.scrabbleboardmanager.domain.TileConfiguration;
-import com.aryzko.scrabble.scrabbleboardmanager.interfaces.external.TileManagerClient;
-import org.springframework.web.bind.annotation.PathVariable;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.model.Tile;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.model.TileConfiguration;
 
 import java.util.List;
-import java.util.Map;
 
 public interface TileManagerProvider {
 
     List<Character> getCharset(String uuid);
+    List<Tile> getTiles(String uuid, Integer numberOfItems);
 
     TileConfiguration getTileConfiguration(String uuid);
 }

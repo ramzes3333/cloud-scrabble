@@ -1,10 +1,9 @@
 package com.aryzko.scrabble.scrabbleboardmanager.interfaces.external;
 
-import com.aryzko.scrabble.scrabbleboardmanager.domain.PreparedLine;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.PreparedLine;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.DictionaryProvider;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.Value;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +32,22 @@ public interface DictionaryClient {
     class ResolveRequest {
         private PreparedLine line;
         private List<Character> availableLetters;
+
+        @Value
+        static class PreparedLine {
+            List<LineField> fields;
+
+            @Value
+            static class LineField {
+                int x;
+                int y;
+                Character letter;
+                boolean anchor;
+                boolean anyLetter;
+                Integer leftLimit;
+                List<Character> availableLetters;
+            }
+        }
     }
 
     @Getter

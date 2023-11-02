@@ -1,8 +1,9 @@
 package com.aryzko.scrabble.scrabbleboardmanager.domain.service;
 
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Board;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Letter;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Solution;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.mapper.DictionaryProviderMapper;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Board;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Letter;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Solution;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.DictionaryProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class BoardResolver {
     private final LinePreparationService linePreparationService;
     private final ScoringService scoringService;
     private final RelatedWordsFillService relatedWordsSearchService;
+    private final DictionaryProviderMapper dictionaryMapper;
 
     public Solution resolve(final Board board) {
         Board boardFromDb = boardService.getBoard(board.getId());
@@ -45,9 +47,11 @@ public class BoardResolver {
     private Solution horizontalResolve(final Board board) {
         Solution solution = Solution.builder().words(
                         linePreparationService.prepareLines(board).getLines().stream()
+                                .map(dictionaryMapper::convert)
                                 .map(line -> dictionaryProvider.resolve(line, prepareAvailableLetters(board)))
-                                .map(Solution::getWords)
+                                .map(DictionaryProvider.Solution::getWords)
                                 .flatMap(Collection::stream)
+                                .map(dictionaryMapper::convert)
                                 .collect(Collectors.toList()))
                 .build();
 

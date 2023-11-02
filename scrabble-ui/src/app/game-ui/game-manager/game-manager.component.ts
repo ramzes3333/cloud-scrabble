@@ -8,10 +8,13 @@ import {GamePlayer} from "../game-creator-dialog/model/game-player";
 import {
   BotPlayer,
   GameCreatorService,
-  GameStartResponse,
+  CreateGameResponse,
   HumanPlayer,
   Level
 } from "../../services/game-creator.service";
+import {Game} from "../../clients/game-manager/model/game";
+import {GameManagerService} from "../../clients/game-manager/game-manager.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-game-manager',
@@ -23,9 +26,12 @@ export class GameManagerComponent implements OnInit {
   createDisabled: boolean = false;
 
   displayedColumns: string[] = ['id'];
-  boards: Board[] = [];
+  games: GameBoard[] = [];
+
+  private subscriptions: Subscription[] = [];
 
   constructor(private boardManager: BoardManagerService,
+              private gameManager: GameManagerService,
               private gameCreatorService: GameCreatorService,
               private router: Router, private dialog: MatDialog) { }
 
@@ -33,7 +39,7 @@ export class GameManagerComponent implements OnInit {
     this.refreshBoardsTable();
   }
 
-  createBoard() {
+  createGame() {
     const dialogRef = this.dialog.open(GameCreatorDialogComponent, {
       width: '650px',
       height: '570px'
@@ -44,31 +50,50 @@ export class GameManagerComponent implements OnInit {
       let botPlayers: BotPlayer[] = [];
       let humanPlayers: HumanPlayer[] = [];
       for (const player of players) {
-        switch (player.playerType) {
-          case 'me':
-            humanPlayers.push({});
-            break;
-          case 'bot':
-            botPlayers.push({level: player.playerBotLevel as unknown as Level});
-            break;
-        }
+        if(player.player)
+          switch (player.playerType) {
+            case 'me':
+              humanPlayers.push({});
+              break;
+            case 'bot':
+              botPlayers.push({level: player.playerBotLevel as unknown as Level});
+              break;
+          }
       }
 
-      this.gameCreatorService.createGame({botPlayers, humanPlayers}).subscribe((response: GameStartResponse) => {
+      this.gameCreatorService.createGame({botPlayers, humanPlayers}).subscribe((response: CreateGameResponse) => {
         this.refreshBoardsTable();
-        this.router.navigate(["main/board", response.boardId])
+        this.router.navigate(["game", response.id])
       });
     });
   }
 
-  getBoard(uuid: string) {
-    this.router.navigate(["main/board", uuid]);
+  getGame(id: string) {
+    this.router.navigate(["game", id]);
   }
 
   refreshBoardsTable() {
-    this.boardManager.getBoards().subscribe((result: Board[]) => {
-      this.boards = result;
+    this.gameManager.getAllGames().subscribe((result: Game[]) => {
+      this.games = result.map(game => ({
+        game: game,
+        board: undefined
+      }));
+      for (const game of this.games) {
+        this.loadBoardForGame(game);
+      }
     });
   }
 
+  private loadBoardForGame(game: GameBoard) {
+    this.subscriptions.push(this.boardManager.getBoard(game.game.boardId).subscribe(board => (game.board = board)));
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+}
+
+export interface GameBoard {
+  game: Game,
+  board?: Board
 }

@@ -1,6 +1,6 @@
 package com.aryzko.scrabble.scrabbleboardmanager.domain.repository;
 
-import com.aryzko.scrabble.scrabbleboardmanager.domain.Board;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Board;
 
 import java.util.Collection;
 import java.util.Optional;

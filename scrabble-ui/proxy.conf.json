@@ -1,6 +1,26 @@
 {
-  "*": {
-    "target": "http://localhost:8085/",
-    "secure": false
+  "/board-manager-service/*": {
+    "target": "http://localhost:8085",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/board-manager-service": "/board-manager-service"
+    }
+  },
+  "/game-service/*": {
+    "target": "http://localhost:8085",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/game-service": "/game-service"
+    }
+  },
+  "/tile-manager-service/*": {
+    "target": "http://localhost:8085",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/tile-manager-service": "/tile-manager-service"
+    }
   }
 }
