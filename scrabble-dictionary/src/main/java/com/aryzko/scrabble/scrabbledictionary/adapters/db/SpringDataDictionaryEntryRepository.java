@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.QueryHints;
+import org.springframework.data.repository.query.Param;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
@@ -45,5 +46,6 @@ public interface SpringDataDictionaryEntryRepository extends JpaRepository<Dicti
                     @QueryHint(name = HINT_CACHEABLE, value = "false"),
                     @QueryHint(name = HINT_READONLY, value = "true")
             })
-    Stream<DictionaryEntryDb> findAllByDictionaryIdOrderByIdAsc(Integer dictionaryId);
+    @Query("SELECT d.entry FROM DictionaryEntryDb d WHERE d.dictionary.id = :dictionaryId ORDER BY d.id ASC")
+    Stream<String> findAllByDictionaryIdOrderByIdAsc(@Param("dictionaryId") Integer dictionaryId);
 }

@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -18,12 +20,12 @@ import java.util.stream.Collectors;
 public class Node {
     private final int id;
     private boolean terminal;
-    private SortedMap<Character, Node> transitions = new TreeMap<>();
+    private Map<Character, Node> transitions = new TreeMap<>();
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public Node(@JsonProperty("id") int id,
                 @JsonProperty("terminal") boolean terminal,
-                @JsonProperty("transitions") SortedMap<Character, Node> transitions) {
+                @JsonProperty("transitions") Map<Character, Node> transitions) {
         this.id = id;
         this.terminal = terminal;
         this.transitions = transitions;

@@ -5,7 +5,6 @@ import com.aryzko.scrabble.scrabbledictionary.adapters.db.mapper.DictionaryMappe
 import com.aryzko.scrabble.scrabbledictionary.adapters.db.model.DictionaryDb;
 import com.aryzko.scrabble.scrabbledictionary.adapters.db.model.DictionaryEntryDb;
 import com.aryzko.scrabble.scrabbledictionary.domain.model.Dictionary;
-import com.aryzko.scrabble.scrabbledictionary.domain.model.DictionaryEntry;
 import com.aryzko.scrabble.scrabbledictionary.domain.ports.DictionaryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -52,12 +51,11 @@ public class DbDictionaryRepository implements DictionaryRepository {
     }
 
     @Override
-    public Stream<DictionaryEntry> findAllInDefaultDictionary() {
+    public Stream<String> findAllInDefaultDictionary() {
         DictionaryDb defaultDictionary = dictionaryRepository.findDefaultDictionary()
                 .orElseThrow(() -> new IllegalStateException("There is no default dictionary"));
 
-        return dictionaryEntryRepository.findAllByDictionaryIdOrderByIdAsc(defaultDictionary.getId())
-                .map(dictionaryEntryMapper::dictionaryEntryDbToDictionaryEntry);
+        return dictionaryEntryRepository.findAllByDictionaryIdOrderByIdAsc(defaultDictionary.getId());
     }
 
     @Override

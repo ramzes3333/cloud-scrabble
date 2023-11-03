@@ -336,7 +336,7 @@ class LineResolverTest {
                 .filter(w -> w.getWordAsString().equals(word)
                         && w.getElements().get(0).getX() == x
                         && w.getElements().get(0).getY() == y)
-                .collect(Collectors.toList());
+                .toList();
 
         assertEquals(1, words.size());
         return words.get(0);
@@ -347,7 +347,7 @@ class LineResolverTest {
                 .filter(w -> w.getWordAsString().equals(word)
                         && w.getElements().get(0).getX() == x
                         && w.getElements().get(0).getY() == y)
-                .collect(Collectors.toList());
+                .toList();
 
         assertEquals(0, words.size());
     }

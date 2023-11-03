@@ -1,6 +1,10 @@
 package com.aryzko.scrabble.scrabbledictionary.domain.model.dawg;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.text.Collator;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -13,14 +17,27 @@ import static java.lang.String.format;
  * Based on Steve Hanov python script
  * Please see https://gist.github.com/smhanov/94230b422c2100ae4218
  */
+@Slf4j
 public class DawgBuilder {
-    private int idSeq = 0;
-    private String previousWord = "";
+    private int idSeq;
+    private String previousWord;
 
-    private final Node root = new Node(0);
-    private final Map<Node, Node> minimizedNodes = new HashMap<>();
-    private final Stack<UncheckedNode> uncheckedNodes = new Stack<>();
-    private final Collator collator = Collator.getInstance(new Locale("pl", "PL"));
+    private final Node root;
+    private final Map<Node, Node> minimizedNodes;
+    private final Deque<UncheckedNode> uncheckedNodes;
+    private final Collator collator;
+
+    public DawgBuilder() {
+        this.idSeq = 0;
+        this.previousWord = "";
+
+        this.collator = Collator.getInstance(new Locale("pl", "PL"));
+        this.collator.setStrength(Collator.PRIMARY);
+
+        this.root = new Node(0);
+        this.minimizedNodes = new HashMap<>(150_000);
+        this.uncheckedNodes = new ArrayDeque<>();
+    }
 
     public DawgBuilder insert(List<String> words) {
         words.stream().forEach(this::insert);
@@ -39,7 +56,7 @@ public class DawgBuilder {
 
         Node node = uncheckedNodes.size() == 0 ? root : uncheckedNodes.peek().childNode();
 
-        for (Character character : word.substring(commonPrefix).toCharArray()) {
+        for (char character : word.substring(commonPrefix).toCharArray()) {
             var nextNode = new Node(++idSeq);
             node.getTransitions().put(character, nextNode);
             uncheckedNodes.push(new UncheckedNode(node, character, nextNode));
@@ -65,6 +82,7 @@ public class DawgBuilder {
         minimize(0);
         minimizedNodes.clear();
         uncheckedNodes.clear();
+        previousWord = null;
 
         return root;
     }
@@ -73,7 +91,7 @@ public class DawgBuilder {
         for (var i = uncheckedNodes.size() - 1; i > downTo - 1; i--) {
             UncheckedNode unNode = uncheckedNodes.pop();
             Node parent = unNode.parentNode();
-            Character character = unNode.character();
+            char character = unNode.character();
             Node child = unNode.childNode();
 
             if (minimizedNodes.containsKey(child)) {
@@ -84,6 +102,6 @@ public class DawgBuilder {
         }
     }
 
-    private record UncheckedNode(Node parentNode, Character character, Node childNode) {
+    private record UncheckedNode(Node parentNode, char character, Node childNode) {
     }
 }

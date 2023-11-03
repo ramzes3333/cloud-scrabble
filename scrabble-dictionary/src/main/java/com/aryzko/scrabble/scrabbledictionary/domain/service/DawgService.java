@@ -1,5 +1,6 @@
 package com.aryzko.scrabble.scrabbledictionary.domain.service;
 
+import com.aryzko.scrabble.scrabbledictionary.adapters.db.model.DictionaryEntryDb;
 import com.aryzko.scrabble.scrabbledictionary.domain.aspect.PerformanceLog;
 import com.aryzko.scrabble.scrabbledictionary.domain.exception.DawgIsNotReady;
 import com.aryzko.scrabble.scrabbledictionary.domain.model.DictionaryEntry;
@@ -9,6 +10,7 @@ import com.aryzko.scrabble.scrabbledictionary.domain.ports.DictionaryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.ScrollableResults;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
@@ -34,14 +36,16 @@ public class DawgService implements ApplicationListener<ApplicationReadyEvent> {
     private static final AtomicReference<Node> root = new AtomicReference<>();
     private final DictionaryRepository dictionaryRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     @PerformanceLog
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         DawgBuilder builder = new DawgBuilder();
-        try(Stream<DictionaryEntry> dictionaryEntryStream = dictionaryRepository.findAllInDefaultDictionary()) {
-            dictionaryEntryStream.forEach(dictionaryEntry -> builder.insert(dictionaryEntry.getEntry()));
+
+        try(Stream<String> dictionaryEntryStream = dictionaryRepository.findAllInDefaultDictionary()) {
+            dictionaryEntryStream.forEach(builder::insert);
         }
+
         root.set(builder.build());
     }
 

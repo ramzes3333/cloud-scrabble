@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -117,7 +116,7 @@ public class LineResolver {
 
     private static Solution.Word.WordBuilder initWordBuilder(LeftPart.LeftPartBuilder leftPartBuilder, Line.LineField field) {
         LeftPart leftPart = leftPartBuilder.build();
-        if(leftPart.getLetters().size() == 0) {
+        if(leftPart.getLetters().isEmpty()) {
             return Solution.Word.builder();
         } else {
             Solution.Word.WordBuilder wordBuilder = Solution.Word.builder();
@@ -188,7 +187,7 @@ public class LineResolver {
     }
 
     private static List<Character> intersection(final DynamicAvailableLetters letters,
-                                                final SortedMap<Character, Node> transitions,
+                                                final Map<Character, Node> transitions,
                                                 final Line.LineField field) {
         return getBase(letters, transitions)
                 .filter(character -> field.isAnyLetter() || field.getAvailableLetters().contains(character))
@@ -198,7 +197,7 @@ public class LineResolver {
     }
 
     private static Stream<Character> getBase(final DynamicAvailableLetters letters,
-                                             final SortedMap<Character, Node> transitions) {
+                                             final Map<Character, Node> transitions) {
         if(letters.isBlankAvailable()) {
             return transitions.keySet().stream();
         } else {
@@ -241,8 +240,7 @@ public class LineResolver {
         public boolean useLetter(Character character) {
             CharacterWithAvailability foundLetter = letters.stream()
                     .filter(ch -> (ch.getLetter().equals(character) || ch.isBlank) && ch.isAvailable())
-                    .sorted(Comparator.comparing(CharacterWithAvailability::isBlank))
-                    .findFirst()
+                    .min(Comparator.comparing(CharacterWithAvailability::isBlank))
                     .orElseThrow(() -> new IllegalArgumentException("There is no available letter"));
 
             foundLetter.isAvailable = false;
@@ -256,8 +254,7 @@ public class LineResolver {
         public void returnLetter(Character character) {
             CharacterWithAvailability foundLetter = letters.stream()
                     .filter(ch -> ch.getLetter().equals(character) && !ch.isAvailable())
-                    .sorted(Comparator.comparing(CharacterWithAvailability::isBlank).reversed())
-                    .findFirst()
+                    .max(Comparator.comparing(CharacterWithAvailability::isBlank))
                     .orElseThrow(() -> new IllegalArgumentException("Letter is not used"));
 
             foundLetter.isAvailable = true;

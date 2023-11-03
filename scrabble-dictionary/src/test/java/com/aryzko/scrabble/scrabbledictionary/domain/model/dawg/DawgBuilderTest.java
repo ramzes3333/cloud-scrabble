@@ -5,12 +5,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.text.Collator;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class DawgBuilderTest {
 
@@ -26,7 +26,7 @@ class DawgBuilderTest {
     @Test
     public void build() {
         //given
-        List<String> words = List.of("ił", "iły", "iłżecku", "im", "ima", "imacie", "imać").stream()
+        List<String> words = Stream.of("ił", "iły", "iłżecku", "im", "ima", "imacie", "imać")
                 .sorted(collator::compare)
                 .collect(Collectors.toList());
 

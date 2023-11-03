@@ -1,9 +1,6 @@
 package com.aryzko.scrabble.scrabbledictionary.domain.ports;
 
 import com.aryzko.scrabble.scrabbledictionary.domain.model.Dictionary;
-import com.aryzko.scrabble.scrabbledictionary.domain.model.DictionaryEntry;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Set;
@@ -18,7 +15,7 @@ public interface DictionaryRepository {
 
     boolean lookup(String language, String entry);
 
-    Stream<DictionaryEntry> findAllInDefaultDictionary();
+    Stream<String> findAllInDefaultDictionary();
 
     long count();
 }
