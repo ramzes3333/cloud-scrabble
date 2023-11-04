@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {Letter} from "../model/letter";
-import {MovableField} from "../model/movable-field";
+import {MovableField, MovableFieldSource} from "../model/movable-field";
 import {Move} from "../model/move";
 import {MoveType} from "../model/move-type";
 import {GameService, GameUpdateType} from "../../services/game.service";
@@ -30,6 +30,7 @@ export class FieldComponent implements OnInit {
   @Input() movable?: boolean;
   @Input() suggested?: boolean;
   @Input() invalid?: boolean;
+  @Input() movableFieldSource!: MovableFieldSource;
 
   movableFields!: MovableField[];
   potentialLetter: Letter | null = null;
@@ -72,7 +73,8 @@ export class FieldComponent implements OnInit {
         blank: this.blank!,
         points: this.points!
       },
-      invalid: this.invalid!
+      invalid: this.invalid!,
+      source: this.movableFieldSource
     }
   }
 
@@ -110,6 +112,7 @@ export class FieldComponent implements OnInit {
   private performMove(event: CdkDragDrop<MovableField[]>) {
     let fromX = event.previousContainer.data[event.previousIndex].x;
     let fromY = event.previousContainer.data[event.previousIndex].y;
+    let fromSource = event.previousContainer.data[event.previousIndex].source;
 
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
@@ -121,22 +124,26 @@ export class FieldComponent implements OnInit {
     }
     event.container.data[event.currentIndex].x = this.x;
     event.container.data[event.currentIndex].y = this.y;
+    event.container.data[event.currentIndex].source = this.movableFieldSource;
 
-    this.store.dispatch(move(this.extractMoveFromDropEvent(fromX, fromY, event)));
+    this.store.dispatch(move(this.extractMoveFromDropEvent(fromX, fromY, fromSource, event)));
   }
 
-  private extractMoveFromDropEvent(fromX: number, fromY: number | null, event: CdkDragDrop<MovableField[]>) {
+  private extractMoveFromDropEvent(fromX: number, fromY: number | null, fromSource: MovableFieldSource, event: CdkDragDrop<MovableField[]>) {
+
     return new Move(
       this.getMoveType(fromY),
       fromX,
       fromY,
+      fromSource,
       new MovableField(
-        this.x, this.y,
+        event.container.data[event.currentIndex].x, event.container.data[event.currentIndex].y,
         new Letter(
           event.container.data[event.currentIndex].letter.letter,
           event.container.data[event.currentIndex].letter.blank,
           event.container.data[event.currentIndex].letter.points
-        )
+        ),
+        event.container.data[event.currentIndex].source
       )
     );
   }

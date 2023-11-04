@@ -11,6 +11,7 @@ import {
 } from "./game-state.actions";
 import {Field, fromBoard, fromBoardPreview, Rack} from "../../model/board";
 import {Move} from "../../game-ui/model/move";
+import {MovableFieldSource} from "../../game-ui/model/movable-field";
 
 export const initialState : GameState = {
   started: false,
@@ -72,28 +73,47 @@ function updateFields(fields: Field[], move: Move): Field[] {
   });
 }
 
+function determineRackNumber(move: Move): number | null {
+  if (move.fromSource >= MovableFieldSource.RACK0 && move.fromSource <= MovableFieldSource.RACK3) {
+    return move.fromSource - MovableFieldSource.RACK0;
+  } else if (move.field.source >= MovableFieldSource.RACK0 && move.field.source <= MovableFieldSource.RACK3){
+    return move.field.source - MovableFieldSource.RACK0;
+  }
+  return null;
+}
+
 function updateRack(racks: Rack[], move: Move): Rack[] {
-  if (racks.length === 0) {
+  const rackNumber = determineRackNumber(move);
+  if (racks.length === 0 || rackNumber === null) {
     return racks;
   }
 
-  const rack = racks[0];
-  let updatedLetters = [...rack.letters];
+  const updatedRack = {
+    ...racks[rackNumber],
+    letters: [...racks[rackNumber].letters]
+  };
 
-  if (move.fromY === null && rack.letters?.at(move.fromX)?.letter === move.field.letter.letter) {
-    updatedLetters.splice(move.fromX, 1);
+  if (move.fromY === null && updatedRack.letters[move.fromX]?.letter === move.field.letter.letter) {
+    updatedRack.letters = [
+      ...updatedRack.letters.slice(0, move.fromX),
+      ...updatedRack.letters.slice(move.fromX + 1)
+    ];
   }
 
   if (move.field.y === null) {
-    updatedLetters.splice(move.field.x, 0, {
-      letter: move.field.letter.letter,
-      blank: move.field.letter.blank,
-      points: move.field.letter.points,
-      movable: true,
-      suggested: false,
-      invalid: false
-    });
+    updatedRack.letters = [
+      ...updatedRack.letters.slice(0, move.field.x),
+      {
+        letter: move.field.letter.letter,
+        blank: move.field.letter.blank,
+        points: move.field.letter.points,
+        movable: true,
+        suggested: false,
+        invalid: false
+      },
+      ...updatedRack.letters.slice(move.field.x)
+    ];
   }
 
-  return [{ ...rack, letters: updatedLetters }];
+  return racks.map((r, index) => index === rackNumber ? updatedRack : r);
 }

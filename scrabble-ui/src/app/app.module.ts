@@ -36,6 +36,7 @@ import { StoreModule } from '@ngrx/store';
 import {gameStateReducer} from "./state/game-state/game-state.reducer";
 import {GameEffects} from "./state/game-state/game-state.effects";
 import {EffectsModule} from "@ngrx/effects";
+import {MatSnackBarModule} from "@angular/material/snack-bar";
 
 @NgModule({
   declarations: [
@@ -72,7 +73,8 @@ import {EffectsModule} from "@ngrx/effects";
     MatCardModule,
     MatChipsModule,
     StoreModule.forRoot({gameState: gameStateReducer}, {}),
-    EffectsModule.forRoot([GameEffects])
+    EffectsModule.forRoot([GameEffects]),
+    MatSnackBarModule
   ],
   providers: [
     {

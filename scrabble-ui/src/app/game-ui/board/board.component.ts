@@ -1,10 +1,11 @@
 import {Component, Input, OnInit} from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
-import {select, Store} from "@ngrx/store";
+import { ActivatedRoute } from '@angular/router';
+import {Store} from "@ngrx/store";
 import {GameState} from "../../state/game-state/game-state";
 import {init, preview} from "../../state/game-state/game-state.actions";
 import {selectBoard} from "../../state/game-state/game-state.selectors";
 import {Subscription} from "rxjs";
+import {MovableFieldSource} from "../model/movable-field";
 
 @Component({
   selector: 'app-board',
@@ -35,4 +36,6 @@ export class BoardComponent implements OnInit {
       this.routeSubscription.unsubscribe();
     }
   }
+
+  protected readonly MovableFieldSource = MovableFieldSource;
 }

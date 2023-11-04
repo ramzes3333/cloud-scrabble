@@ -23,6 +23,8 @@ import {Subscription} from "rxjs";
 })
 export class GameManagerComponent implements OnInit {
 
+  title = 'Scrabble';
+
   createDisabled: boolean = false;
 
   displayedColumns: string[] = ['id'];

@@ -6,3 +6,9 @@ body { margin: 20px; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .multiline-tooltip {
   white-space: pre-line !important;
 }
+
+.background-red {
+  --mdc-snackbar-container-color: #D32F2F;
+  --mat-snack-bar-button-color: white;
+  --mdc-snackbar-supporting-text-color: white;
+}

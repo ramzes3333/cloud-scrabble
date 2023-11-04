@@ -17,8 +17,6 @@ const maximumRackSize = 7;
 })
 export class GameService {
 
-  public fillRackEvent = new EventEmitter<TileLetter[]>();
-  public updateBoardEvent = new EventEmitter<GameUpdate>();
   public potentialWordLetterEvent = new EventEmitter<GuiElement>();
 
   constructor(private boardManager: BoardManagerService, private tileManager: TileManagerService, private gameManagerService: GameManagerService) {
