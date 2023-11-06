@@ -11,6 +11,9 @@ export const selectBoard = createSelector(
 export const selectStartedFlag = createSelector(
   selectGameState, (state: GameState) => state.started);
 
+export const selectActualPlayerId = createSelector(
+  selectGameState, (state: GameState) => state.actualPlayerId);
+
 export const selectSolution = createSelector(
   selectGameState, (state: GameState) => state.solution);
 

@@ -4,7 +4,10 @@ import com.aryzko.scrabblegame.application.request.GameMoveRequest;
 import com.aryzko.scrabblegame.application.response.GameFailure;
 import com.aryzko.scrabblegame.application.service.GameService;
 import com.aryzko.scrabblegame.application.service.moveperformer.MovePerformer;
+import com.aryzko.scrabblegame.domain.model.BotPlayer;
 import com.aryzko.scrabblegame.domain.model.Game;
+import com.aryzko.scrabblegame.domain.model.HumanPlayer;
+import com.aryzko.scrabblegame.domain.model.Player;
 import com.aryzko.scrabblegame.domain.service.GameProvider;
 import com.aryzko.scrabblegame.interfaces.web.error.RestErrorResponse;
 import jakarta.validation.Valid;
@@ -22,7 +25,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.OffsetDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
@@ -113,13 +118,52 @@ public class GameController {
         String id;
         String boardId;
         OffsetDateTime creationDate;
+        String actualPlayerId;
+        List<Player> players;
 
         public static GameResponse of(Game game) {
             return GameResponse.builder()
                     .id(game.getId().toString())
                     .boardId(game.getBoardId().toString())
                     .creationDate(game.getCreationDate())
+                    .actualPlayerId(game.getActualPlayerId())
+                    .players(game.getPlayers().stream()
+                            .map(p -> Player.builder()
+                                    .id(p.getId())
+                                    .order(p.getOrder())
+                                    .type(Type.valueOf(p.getType().toString()))
+                                    .parameters(getParameters(p))
+                                    .build())
+                            .toList())
                     .build();
+        }
+
+        private static Map<String, String> getParameters(com.aryzko.scrabblegame.domain.model.Player player) {
+            Map<String, String> parameters = new HashMap<>();
+
+            switch (player.getType()) {
+                case HUMAN -> {
+                    parameters.put("login", ((HumanPlayer) player).getLogin());
+                }
+                case BOT -> {
+                    parameters.put("level", ((BotPlayer) player).getLevel().toString());
+                }
+            }
+            return parameters;
+        }
+
+        @Value
+        @Builder
+        static class Player {
+            String id;
+            Type type;
+            Integer order;
+            Map<String, String> parameters;
+        }
+
+        public enum Type {
+            HUMAN,
+            BOT
         }
     }
 }

@@ -6,6 +6,7 @@ export interface GameState {
   started: boolean;
   gameId?: number;
   boardId?: string;
+  actualPlayerId?: string;
   board?: Board;
   solution?: Solution;
 

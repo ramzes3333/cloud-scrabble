@@ -23,7 +23,7 @@ export const gameStateReducer = createReducer(initialState,
   on(resolveSuccess, (state, solution) => ({...state, solution: solution})),
   on(previewSuccess, (state, boardPreview) => ({...state, board: fromBoardPreview(boardPreview)})),
   on(initSuccess, (state, data) => (
-    {...state, board: fromBoard(data.board), boardId: data.board.id, gameId: data.game.id})),
+    {...state, board: fromBoard(data.board), boardId: data.board.id, gameId: data.game.id, actualPlayerId: data.game.actualPlayerId})),
   on(start, (state, action) => ({...state, started: true})),
   on(move, (state, move) => {
     if (!state.started || !state.board) {

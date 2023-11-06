@@ -3,6 +3,7 @@ export interface Game {
   boardId: string;
   creationDate: string;
   players: Player[];
+  actualPlayerId: string;
 }
 
 export interface Player {

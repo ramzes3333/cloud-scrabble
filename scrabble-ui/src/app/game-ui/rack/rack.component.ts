@@ -1,18 +1,17 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Letter as BoardLetter} from "../../clients/board-manager/model/letter";
-import {Letter as TileLetter} from "../../clients/tile-manager/model/letter";
 import {Letter as GuiLetter} from "../model/letter";
-import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
-import {GameService} from "../../services/game.service";
+import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {MovableField, MovableFieldSource} from "../model/movable-field";
 import {Move} from "../model/move";
 import {MoveType} from "../model/move-type";
 import {select, Store} from "@ngrx/store";
 import {GameState} from "../../state/game-state/game-state";
-import {from, Subscription} from "rxjs";
-import {selectBoard, selectStartedFlag} from "../../state/game-state/game-state.selectors";
+import {combineLatest, Subscription} from "rxjs";
+import {selectActualPlayerId, selectBoard, selectStartedFlag} from "../../state/game-state/game-state.selectors";
 import {move} from "../../state/game-state/game-state.actions";
-import {MatSnackBar, MatSnackBarHorizontalPosition} from "@angular/material/snack-bar";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {map} from "rxjs/operators";
 
 @Component({
   selector: 'app-rack',
@@ -25,8 +24,11 @@ export class RackComponent implements OnInit {
   @Input() movableFieldSource!: MovableFieldSource;
 
   gameStarted$ = this.store.pipe(select(selectStartedFlag));
+  actualPlayerId$ = this.store.pipe(select(selectActualPlayerId));
 
-  private _rack: Rack = new Rack([]);
+  isRackDisabled: boolean = true;
+  playerId?: string;
+  movableFields: MovableField[] = [];
   private subscriptions: Subscription[] = [];
 
   constructor(private snackBar: MatSnackBar, private store: Store<{ gameState: GameState }>) { }
@@ -35,23 +37,31 @@ export class RackComponent implements OnInit {
     this.subscriptions.push(
       this.store.pipe(select(selectBoard)).subscribe((board) => {
         if (board && board.racks && board.racks.length >= this.rackNumber && board.racks[this.rackNumber].letters) {
-          this._rack = new Rack(this.convertBoardLettersToMovableFields(0, board.racks[this.rackNumber].letters));
+          this.movableFields = this.convertBoardLettersToMovableFields(0, board.racks[this.rackNumber].letters);
+          this.playerId = board.racks[this.rackNumber].playerId;
         } else {
-          this._rack = new Rack([]);
+          this.movableFields = [];
         }
+      })
+    );
+    this.subscriptions.push(
+      this.isRackDisabled$.subscribe((value) => {
+        this.isRackDisabled = value;
       })
     );
   }
 
-  private convertTileLettersToMovableFields(startIndex: number, letters: TileLetter[]): MovableField[] {
-    let movableFields: MovableField[] = [];
-    for (const letter of letters) {
-      movableFields.push(new MovableField(startIndex++, null,
-        this.convert(letter.letter, letter.letter == ' ', letter.points),
-        this.movableFieldSource));
-    }
-    return movableFields;
-  }
+  isRackDisabled$ = combineLatest([this.gameStarted$, this.actualPlayerId$]).pipe(
+    map(([gameStarted, actualPlayerId]) => {
+      const isGameStarted = gameStarted !== null ? gameStarted : false;
+      const isActualPlayer = actualPlayerId !== null ? actualPlayerId === this.playerId : false;
+      return !isGameStarted || !isActualPlayer;
+    })
+  );
+
+  canDrop = (drag: CdkDrag, drop: CdkDropList) => {
+    return !this.isRackDisabled;
+  };
 
   private convertBoardLettersToMovableFields(startIndex: number, letters: BoardLetter[]): MovableField[] {
     let movableFields: MovableField[] = [];
@@ -72,7 +82,7 @@ export class RackComponent implements OnInit {
     let fromY = event.previousContainer.data[event.previousIndex].y;
     let fromSource = event.previousContainer.data[event.previousIndex].source;
 
-    if(fromSource > 0) {
+    if(fromSource > 0 && fromSource != this.movableFieldSource) {
       this.snackBar.open('Nie możesz przenosić liter między stojakami', 'Zamknij', {
         duration: 5000,
         panelClass: ['background-red'],
@@ -123,19 +133,7 @@ export class RackComponent implements OnInit {
     return fromY != null ? MoveType.FROM_BOARD : MoveType.FROM_RACK;
   }
 
-  get rack(): Rack {
-    return this._rack;
-  }
-
   ngOnDestroy() {
     this.subscriptions.forEach(sub => sub.unsubscribe());
-  }
-}
-
-export class Rack {
-  public movableFields: MovableField[];
-
-  constructor(movableFields: MovableField[]) {
-    this.movableFields = movableFields;
   }
 }
