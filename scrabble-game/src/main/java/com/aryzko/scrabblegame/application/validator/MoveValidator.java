@@ -3,10 +3,12 @@ package com.aryzko.scrabblegame.application.validator;
 import com.aryzko.scrabblegame.application.request.GameMoveRequest;
 import com.aryzko.scrabblegame.application.response.GameFailure;
 import com.aryzko.scrabblegame.domain.model.Game;
+import com.aryzko.scrabblegame.domain.model.State;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.aryzko.scrabblegame.application.response.GameFailure.GAME_IS_FINISHED;
 import static com.aryzko.scrabblegame.application.response.GameFailure.NO_GAME_WITH_ID;
 import static com.aryzko.scrabblegame.application.response.GameFailure.PLAYER_ID_IS_EMPTY;
 import static com.aryzko.scrabblegame.application.response.GameFailure.PLAYER_ID_IS_NOT_ACTUAL;
@@ -28,6 +30,10 @@ public class MoveValidator {
 
         if (game != null && !game.getActualPlayerId().equals(moveReq.getPlayerId())) {
             errors.add(new GameFailure.Error(PLAYER_ID_IS_NOT_ACTUAL, format("Player (id: %s) is not the first in queue", moveReq.getPlayerId())));
+        }
+
+        if (game != null && game.getState().equals(State.FINISHED)) {
+            errors.add(new GameFailure.Error(GAME_IS_FINISHED, "Game is finished"));
         }
 
         return errors;

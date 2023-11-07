@@ -1,18 +1,25 @@
-import {MovableField, MovableFieldSource} from "./movable-field";
-import {MoveType} from "./move-type";
+import {Letter} from "./letter";
+import {BoardElement} from "./board-element";
 
 export class Move {
-  public moveType: MoveType;
+  public letter: Letter;
+
   public fromX: number;
   public fromY: number | null;
-  public fromSource: MovableFieldSource;
-  public field: MovableField;
+  public from: BoardElement;
 
-  constructor(moveType: MoveType, fromX: number, fromY: number | null, fromSource: MovableFieldSource, field: MovableField) {
-    this.moveType = moveType;
+  public toX: number;
+  public toY: number | null;
+  public to: BoardElement;
+
+
+  constructor(letter: Letter, fromX: number, fromY: number | null, from: BoardElement, toX: number, toY: number | null, to: BoardElement) {
+    this.letter = letter;
     this.fromX = fromX;
     this.fromY = fromY;
-    this.fromSource = fromSource;
-    this.field = field;
+    this.from = from;
+    this.toX = toX;
+    this.toY = toY;
+    this.to = to;
   }
 }

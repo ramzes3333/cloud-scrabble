@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -17,8 +18,10 @@ import static java.util.Optional.ofNullable;
 @Builder
 public class BoardValidationResult {
 
-    private final List<CharacterSequence> incorrectWords;
-    private final List<CharacterWithPosition> orphans;
+    @Builder.Default
+    private final List<CharacterSequence> incorrectWords = new ArrayList<>();
+    @Builder.Default
+    private final List<CharacterWithPosition> orphans = new ArrayList<>();
 
     public static BoardValidationResult of(final List<CharacterWithPosition> orphans,
                                            final List<CharacterSequence> words,

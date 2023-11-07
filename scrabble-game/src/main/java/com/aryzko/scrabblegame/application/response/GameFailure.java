@@ -14,6 +14,7 @@ public class GameFailure {
     public static final String PLAYER_ID_IS_EMPTY = "E0001";
     public static final String PLAYER_ID_IS_NOT_ACTUAL = "E0002";
     public static final String INCORRECT_MOVE_REQUEST = "E0003";
+    public static final String GAME_IS_FINISHED = "E0004";
 
     @Singular
     private List<Error> errors;

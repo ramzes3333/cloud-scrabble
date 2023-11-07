@@ -29,13 +29,13 @@ public class BoardResolver {
     private final RelatedWordsFillService relatedWordsSearchService;
     private final DictionaryProviderMapper dictionaryMapper;
 
-    public Solution resolve(final Board board) {
+    public Solution resolve(final String playerId, final Board board) {
         Board boardFromDb = boardService.getBoard(board.getId());
         board.setBoardParameters(boardFromDb.getBoardParameters());
 
         List<Solution.Word> words = new ArrayList<>();
-        words.addAll(horizontalResolve(board).getWords());
-        words.addAll(verticalResolve(board).getWords());
+        words.addAll(horizontalResolve(playerId, board).getWords());
+        words.addAll(verticalResolve(playerId, board).getWords());
 
         words.sort(Comparator.comparing(Solution.Word::getPoints).reversed());
 
@@ -44,11 +44,11 @@ public class BoardResolver {
                 .build();
     }
 
-    private Solution horizontalResolve(final Board board) {
+    private Solution horizontalResolve(final String playerId, final Board board) {
         Solution solution = Solution.builder().words(
                         linePreparationService.prepareLines(board).getLines().stream()
                                 .map(dictionaryMapper::convert)
-                                .map(line -> dictionaryProvider.resolve(line, prepareAvailableLetters(board)))
+                                .map(line -> dictionaryProvider.resolve(line, prepareAvailableLetters(playerId, board)))
                                 .map(DictionaryProvider.Solution::getWords)
                                 .flatMap(Collection::stream)
                                 .map(dictionaryMapper::convert)
@@ -61,14 +61,18 @@ public class BoardResolver {
         return solution;
     }
 
-    private Solution verticalResolve(final Board board) {
+    private Solution verticalResolve(final String playerId, final Board board) {
         final Board transposedBoard = board.transpose(Board.TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_LEFT);
-        return horizontalResolve(transposedBoard)
+        return horizontalResolve(playerId, transposedBoard)
                 .transpose(Solution.TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_RIGHT);
     }
 
-    private List<Character> prepareAvailableLetters(Board board) {
-        return board.getRacks().get(0).getLetters().stream()
+    private List<Character> prepareAvailableLetters(final String playerId, Board board) {
+        return board.getRacks().stream()
+                .filter(r -> r.getPlayerId().equals(playerId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("No rack for player!"))
+                .getLetters().stream()
                 .map(Letter::getLetter)
                 .collect(Collectors.toList());
     }

@@ -10,8 +10,6 @@ import {EMPTY, Observable} from "rxjs";
 import {GameManagerService} from "../clients/game-manager/game-manager.service";
 import {Game} from "../clients/game-manager/model/game";
 
-const maximumRackSize = 7;
-
 @Injectable({
   providedIn: 'root'
 })
@@ -24,6 +22,10 @@ export class GameService {
 
   getGame(id: string): Observable<Game> {
     return this.gameManagerService.getGame(id);
+  }
+
+  makeMove(move: GameMoveRequest): Observable<MoveResult> {
+    return this.gameManagerService.makeMove(move);
   }
 
   getCharset(): Observable<string[]> {
@@ -85,22 +87,28 @@ export class GameService {
   }
 }
 
-export enum GameUpdateType {
-  MOVE_PERFORMED,
-  MOVE_CONFIRMED,
-  INVALID_WORD,
-  ORPHAN
+export interface GameMoveRequest {
+  gameId: string;
+  playerId: string;
+  tiles: Tile[];
 }
 
-export class GameUpdate {
-  public gameUpdateType: GameUpdateType;
+export interface Tile {
+  x: number;
+  y: number;
+  letter: string;
+  points: number;
+  blank: boolean;
+}
 
-  public x: number | null;
-  public y: number | null;
+export interface MoveResult {
+  actualPlayerId: string;
+  playerMoves: PlayerMove[];
+}
 
-  constructor(gameUpdateType: GameUpdateType, x: number | null, y: number | null) {
-    this.gameUpdateType = gameUpdateType;
-    this.x = x;
-    this.y = y;
-  }
+export interface PlayerMove {
+  playerId: string;
+  moveTiles: Tile[];
+  movePoints: number;
+  allPoints: number;
 }

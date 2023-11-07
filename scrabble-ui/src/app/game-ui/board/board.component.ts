@@ -5,7 +5,7 @@ import {GameState} from "../../state/game-state/game-state";
 import {init, preview} from "../../state/game-state/game-state.actions";
 import {selectBoard} from "../../state/game-state/game-state.selectors";
 import {Subscription} from "rxjs";
-import {MovableFieldSource} from "../model/movable-field";
+import {BoardElement} from "../model/board-element";
 
 @Component({
   selector: 'app-board',
@@ -37,5 +37,5 @@ export class BoardComponent implements OnInit {
     }
   }
 
-  protected readonly MovableFieldSource = MovableFieldSource;
+  protected readonly MovableFieldSource = BoardElement;
 }

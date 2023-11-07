@@ -8,8 +8,10 @@ import com.aryzko.scrabblegame.application.response.GameFailure;
 import com.aryzko.scrabblegame.application.validator.MoveValidator;
 import com.aryzko.scrabblegame.domain.model.Game;
 import com.aryzko.scrabblegame.domain.model.Player;
+import com.aryzko.scrabblegame.domain.model.State;
 import com.aryzko.scrabblegame.domain.model.Type;
 import com.aryzko.scrabblegame.domain.service.GameProvider;
+import com.aryzko.scrabblegame.domain.service.GameUpdater;
 import io.vavr.control.Either;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,14 +23,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MovePerformer {
 
-    private final GameProvider gameService;
+    private final GameProvider gameProvider;
+    private final GameUpdater gameUpdater;
     private final BoardProvider boardProvider;
     private final HumanMovePerformer humanMovePerformer;
     private final BotMovePerformer botMovePerformer;
 
     public Either<MoveResult, GameFailure> move(GameMoveRequest moveReq) {
-        Game game = gameService.getGame(moveReq.getGameId());
-        Board board = boardProvider.getBoard(game.getBoardId());
+        Game game = gameProvider.getGame(moveReq.getGameId());
+        Board board = boardProvider.getBoard(game.getBoardId().toString());
 
         List<GameFailure.Error> errors = MoveValidator.validate(game, moveReq);
 
@@ -36,11 +39,15 @@ public class MovePerformer {
             return prepareGameFailure(errors);
         }
 
+        if(game.getState().equals(State.NOT_STARTED)) {
+            game.setState(State.STARTED);
+        }
+
         MoveResult.MoveResultBuilder resultBuilder = MoveResult.builder();
 
-        Player nextPlayer = getActualPlayer(game);
+        Player actualPlayer = getActualPlayer(game);
 
-        if(nextPlayer.getType().equals(Type.HUMAN)) {
+        if(actualPlayer.getType().equals(Type.HUMAN)) {
             humanMovePerformer.perform(game, board, moveReq.getPlayerId(), moveReq.getTiles()).fold(
                     success -> resultBuilder.playerMove(success),
                     failure -> errors.addAll(failure.getErrors())
@@ -51,8 +58,8 @@ public class MovePerformer {
             return prepareGameFailure(errors);
         }
 
-        while ((nextPlayer = getNextPlayerAndUpdateGameActualPlayerId(game)).getType().equals(Type.BOT)) {
-            botMovePerformer.perform(game, board, nextPlayer.getId()).fold(
+        while ((actualPlayer = getNextPlayerAndUpdateGameActualPlayerId(game)).getType().equals(Type.BOT)) {
+            botMovePerformer.perform(game, board, actualPlayer.getId()).fold(
                     success -> resultBuilder.playerMove(success),
                     failure -> errors.addAll(failure.getErrors())
             );
@@ -62,8 +69,10 @@ public class MovePerformer {
             return prepareGameFailure(errors);
         }
 
+        gameUpdater.saveGame(game);
+        boardProvider.update(board);
 
-
+        resultBuilder.actualPlayerId(getActualPlayer(game).getId());
         return Either.left(resultBuilder.build());
     }
 

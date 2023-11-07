@@ -6,6 +6,7 @@ import {Board} from "../../clients/board-manager/model/board";
 import {BoardValidationResult} from "../../clients/board-manager/model/board-validation-result";
 import {Move} from "../../game-ui/model/move";
 import {Game} from "../../clients/game-manager/model/game";
+import {MoveResult} from "../../clients/game-manager/model/move-result";
 
 /* CREATE GAME ACTIONS */
 export const create = createAction('[Game State Component] Create game', props<CreateGameRequest>());
@@ -31,6 +32,9 @@ export const move = createAction('[Game State Component] Move', props<Move>());
 export const confirm = createAction('[Game State Component] Confirm');
 export const validateSuccess = createAction('[Game State Component] Confirm - board validation success');
 export const validateError = createAction('[Game State Component] Confirm - board validation error', props<BoardValidationResult>());
+export const makeMoveSuccess = createAction('[Game State Component] Confirm - make move success', props<MoveResult>());
+
+export const refreshBoard = createAction('[Game State Component] Refresh board', props<Board>());
 
 export const failure = createAction('[Game State Component] Common failure', props<{ error: string }>());
 

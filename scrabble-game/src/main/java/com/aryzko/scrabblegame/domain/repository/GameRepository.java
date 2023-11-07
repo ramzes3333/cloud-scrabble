@@ -9,6 +9,6 @@ import java.util.Optional;
 public interface GameRepository {
     Game create(Game game);
     Optional<Game> get(String id);
-
+    Game save(Game game);
     List<Game> getAll();
 }

@@ -36,7 +36,7 @@ export enum Level {
 }
 
 export interface CreateGameResponse {
-  id: number;
+  id: string;
   boardId: string;
   players: Player[];
 }

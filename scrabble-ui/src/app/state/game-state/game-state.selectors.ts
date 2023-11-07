@@ -8,6 +8,9 @@ export const selectGameState = (state: AppState) => state.gameState;
 export const selectBoard = createSelector(
   selectGameState, (state: GameState) => state.board);
 
+export const selectBoardId = createSelector(
+  selectGameState, (state: GameState) => state.boardId);
+
 export const selectStartedFlag = createSelector(
   selectGameState, (state: GameState) => state.started);
 

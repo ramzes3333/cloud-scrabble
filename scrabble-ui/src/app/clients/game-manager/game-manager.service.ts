@@ -4,6 +4,8 @@ import {map} from "rxjs/operators";
 import {CreateGameRequest} from "./model/create-game-request";
 import {HttpClient} from "@angular/common/http";
 import {Game} from "./model/game";
+import {GameMoveRequest} from "./model/move-request";
+import {MoveResult} from "./model/move-result";
 
 @Injectable({
   providedIn: 'root'
@@ -40,6 +42,17 @@ export class GameManagerService {
       }
     ).pipe(
       map(response => response.body ?? [])
+    );
+  }
+
+  makeMove(req: GameMoveRequest): Observable<MoveResult> {
+    return this.http.post<MoveResult>(`game-service/api/games/move`,
+      req,
+      {
+        observe: 'response'
+      }
+    ).pipe(
+      map(response => response.body!)
     );
   }
 }

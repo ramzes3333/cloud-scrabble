@@ -75,13 +75,13 @@ public class BoardController {
         if(validationResult.hasErrors()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(boardValidationMapper.toBoardValidationResultResponse(validationResult));
         } else {
-            return ResponseEntity.status(HttpStatus.OK).build();
+            return ResponseEntity.status(HttpStatus.OK).body(boardValidationMapper.toBoardValidationResultResponse(BoardValidationResult.builder().build()));
         }
     }
 
-    @PostMapping(value = "resolve")
-    public Solution resolve(@RequestBody @Valid BoardRequest board) {
-        return solutionMapper.convert(resolver.resolve(boardMapper.toBoard(board)));
+    @PostMapping(value = "resolve/{playerId}")
+    public Solution resolve(@PathVariable("playerId") String playerId, @RequestBody @Valid BoardRequest board) {
+        return solutionMapper.convert(resolver.resolve(playerId, boardMapper.toBoard(board)));
     }
 
     @Data

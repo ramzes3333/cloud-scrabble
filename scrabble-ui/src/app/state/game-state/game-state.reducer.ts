@@ -2,16 +2,16 @@ import { createReducer, on } from '@ngrx/store';
 import {GameState} from "./game-state";
 import {
   createSuccess,
-  initSuccess,
+  initSuccess, makeMoveSuccess,
   move,
-  previewSuccess,
+  previewSuccess, refreshBoard,
   resolveSuccess,
   start,
   validateError
 } from "./game-state.actions";
 import {Field, fromBoard, fromBoardPreview, Rack} from "../../model/board";
 import {Move} from "../../game-ui/model/move";
-import {MovableFieldSource} from "../../game-ui/model/movable-field";
+import {BoardElement} from "../../game-ui/model/board-element";
 
 export const initialState : GameState = {
   started: false,
@@ -48,7 +48,9 @@ export const gameStateReducer = createReducer(initialState,
       ...state,
       incorrectFields: combinedCharacters
     };
-  }));
+  }),
+  on(makeMoveSuccess, (state, moveResult) => ({...state, actualPlayerId: moveResult.actualPlayerId})),
+  on(refreshBoard, (state, board) => ({...state, board: fromBoard(board)})));
 
 function updateFields(fields: Field[], move: Move): Field[] {
   return fields.map(field => {
@@ -58,11 +60,11 @@ function updateFields(fields: Field[], move: Move): Field[] {
       modifiedField.letter = undefined;
     }
 
-    if (move.field.y !== null && field.x === move.field.x && field.y === move.field.y) {
+    if (move.toY !== null && field.x === move.toX && field.y === move.toY) {
       modifiedField.letter = {
-        letter: move.field.letter.letter,
-        blank: move.field.letter.blank,
-        points: move.field.letter.points,
+        letter: move.letter.letter,
+        blank: move.letter.blank,
+        points: move.letter.points,
         movable: true,
         suggested: false,
         invalid: false
@@ -74,10 +76,10 @@ function updateFields(fields: Field[], move: Move): Field[] {
 }
 
 function determineRackNumber(move: Move): number | null {
-  if (move.fromSource >= MovableFieldSource.RACK0 && move.fromSource <= MovableFieldSource.RACK3) {
-    return move.fromSource - MovableFieldSource.RACK0;
-  } else if (move.field.source >= MovableFieldSource.RACK0 && move.field.source <= MovableFieldSource.RACK3){
-    return move.field.source - MovableFieldSource.RACK0;
+  if (move.from >= BoardElement.RACK0 && move.from <= BoardElement.RACK3) {
+    return move.from - BoardElement.RACK0;
+  } else if (move.to >= BoardElement.RACK0 && move.to <= BoardElement.RACK3){
+    return move.to - BoardElement.RACK0;
   }
   return null;
 }
@@ -93,25 +95,25 @@ function updateRack(racks: Rack[], move: Move): Rack[] {
     letters: [...racks[rackNumber].letters]
   };
 
-  if (move.fromY === null && updatedRack.letters[move.fromX]?.letter === move.field.letter.letter) {
+  if (move.fromY === null && updatedRack.letters[move.fromX]?.letter === move.letter.letter) {
     updatedRack.letters = [
       ...updatedRack.letters.slice(0, move.fromX),
       ...updatedRack.letters.slice(move.fromX + 1)
     ];
   }
 
-  if (move.field.y === null) {
+  if (move.toY === null) {
     updatedRack.letters = [
-      ...updatedRack.letters.slice(0, move.field.x),
+      ...updatedRack.letters.slice(0, move.toX),
       {
-        letter: move.field.letter.letter,
-        blank: move.field.letter.blank,
-        points: move.field.letter.points,
+        letter: move.letter.letter,
+        blank: move.letter.blank,
+        points: move.letter.points,
         movable: true,
         suggested: false,
         invalid: false
       },
-      ...updatedRack.letters.slice(move.field.x)
+      ...updatedRack.letters.slice(move.toX)
     ];
   }
 

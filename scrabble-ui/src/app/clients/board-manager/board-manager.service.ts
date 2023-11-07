@@ -70,8 +70,8 @@ export class BoardManagerService {
     );
   }
 
-  resolve(board: Board): Observable<Solution> {
-    return this.http.post<Solution>(`board-manager-service/api/boards/resolve`,
+  resolve(playerId: string, board: Board): Observable<Solution> {
+    return this.http.post<Solution>(`board-manager-service/api/boards/resolve/${playerId}`,
       board,
       {
         observe: 'response'

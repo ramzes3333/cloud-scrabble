@@ -1,10 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Letter as BoardLetter} from "../../clients/board-manager/model/letter";
-import {Letter as GuiLetter} from "../model/letter";
+import {Letter, Letter as GuiLetter} from "../model/letter";
 import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
-import {MovableField, MovableFieldSource} from "../model/movable-field";
+import {MovableField} from "../model/movable-field";
 import {Move} from "../model/move";
-import {MoveType} from "../model/move-type";
 import {select, Store} from "@ngrx/store";
 import {GameState} from "../../state/game-state/game-state";
 import {combineLatest, Subscription} from "rxjs";
@@ -12,6 +11,7 @@ import {selectActualPlayerId, selectBoard, selectStartedFlag} from "../../state/
 import {move} from "../../state/game-state/game-state.actions";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {map} from "rxjs/operators";
+import {BoardElement} from "../model/board-element";
 
 @Component({
   selector: 'app-rack',
@@ -21,7 +21,7 @@ import {map} from "rxjs/operators";
 export class RackComponent implements OnInit {
 
   @Input() rackNumber!: number;
-  @Input() movableFieldSource!: MovableFieldSource;
+  @Input() movableFieldSource!: BoardElement;
 
   gameStarted$ = this.store.pipe(select(selectStartedFlag));
   actualPlayerId$ = this.store.pipe(select(selectActualPlayerId));
@@ -80,9 +80,9 @@ export class RackComponent implements OnInit {
   dropped(event: CdkDragDrop<MovableField[]>) {
     let fromX = event.previousContainer.data[event.previousIndex].x;
     let fromY = event.previousContainer.data[event.previousIndex].y;
-    let fromSource = event.previousContainer.data[event.previousIndex].source;
+    let from = event.previousContainer.data[event.previousIndex].source;
 
-    if(fromSource > 0 && fromSource != this.movableFieldSource) {
+    if(from > 0 && from != this.movableFieldSource) {
       this.snackBar.open('Nie możesz przenosić liter między stojakami', 'Zamknij', {
         duration: 5000,
         panelClass: ['background-red'],
@@ -107,30 +107,23 @@ export class RackComponent implements OnInit {
       event.container.data[event.currentIndex].letter.letter = " ";
     }
 
-    this.store.dispatch(move(this.extractMoveFromDropEvent(fromX, fromY, fromSource, event)));
+    this.store.dispatch(move(this.extractMoveFromDropEvent(fromX, fromY, from, event)));
   }
 
-  private extractMoveFromDropEvent(fromX: number, fromY: number | null, fromSource: MovableFieldSource, event: CdkDragDrop<MovableField[]>) {
-
+  private extractMoveFromDropEvent(fromX: number, fromY: number | null, from: BoardElement, event: CdkDragDrop<MovableField[]>) {
     return new Move(
-      this.getMoveType(fromY),
+      new Letter(
+        event.container.data[event.currentIndex].letter.letter,
+        event.container.data[event.currentIndex].letter.blank,
+        event.container.data[event.currentIndex].letter.points
+      ),
       fromX,
       fromY,
-      fromSource,
-      new MovableField(
-        event.container.data[event.currentIndex].x, null,
-        new GuiLetter(
-          event.container.data[event.currentIndex].letter.letter,
-          event.container.data[event.currentIndex].letter.blank,
-          event.container.data[event.currentIndex].letter.points
-        ),
-        event.container.data[event.currentIndex].source
-      )
+      from,
+      event.container.data[event.currentIndex].x,
+      null,
+      event.container.data[event.currentIndex].source
     );
-  }
-
-  private getMoveType(fromY: number | null) {
-    return fromY != null ? MoveType.FROM_BOARD : MoveType.FROM_RACK;
   }
 
   ngOnDestroy() {

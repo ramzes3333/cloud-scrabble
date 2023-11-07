@@ -11,9 +11,9 @@ export class GameResolverService {
 
   constructor(private boardManager: BoardManagerService) { }
 
-  resolve(board: Board | null) : Observable<Solution>{
+  resolve(playerId: string, board: Board | null) : Observable<Solution>{
     if(board != null) {
-      return this.boardManager.resolve(board);
+      return this.boardManager.resolve(playerId, board);
     } else {
       return EMPTY;
     }

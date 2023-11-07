@@ -22,6 +22,7 @@ public class Rack {
 
     protected Rack clone() {
         Rack clone = new Rack();
+        clone.setPlayerId(playerId);
         clone.setLetters(letters.stream()
                 .map(Letter::clone)
                 .collect(Collectors.toList()));

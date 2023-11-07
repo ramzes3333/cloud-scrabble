@@ -14,6 +14,7 @@ import io.vavr.control.Either;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class HumanMovePerformer {
                 .playerId(playerId);
 
         performRackChanges(board, playerId, tiles);
-        performFieldChanges(board, tiles);
+        playerMoveBuilder.moveTiles(performFieldChanges(board, tiles));
 
         BoardValidationResultResponse validationResponse = boardProvider.validateBoard(board);
         if(!validationResponse.getIncorrectWords().isEmpty() &&
@@ -51,12 +52,12 @@ public class HumanMovePerformer {
     }
 
     private static void removeTileFromRack(Rack playerRack, Tile tile) {
-        playerRack.getLetters().removeAll(
-                Collections.singletonList(
-                        playerRack.getLetters().stream()
-                                .filter(l -> tile.isBlank() && l.isBlank() || tile.getLetter().equals(l.getLetter()))
-                                .findFirst()
-                                .orElseThrow(() -> new IllegalStateException("No tile in player rack!"))));
+        playerRack.getLetters().remove(
+                playerRack.getLetters().stream()
+                        .filter(l -> tile.isBlank() && l.isBlank() || tile.getLetter().equals(l.getLetter()))
+                        .findFirst()
+                        .orElseThrow(() -> new IllegalStateException("No tile in player rack!"))
+        );
     }
 
     private static Rack getPlayerRack(Board board, String playerId) {
@@ -66,12 +67,17 @@ public class HumanMovePerformer {
                 .orElseThrow(() -> new IllegalStateException("No rack for playerId: %s".formatted(playerId)));
     }
 
-    private static void performFieldChanges(Board board, List<Tile> tiles) {
+    private static List<Tile> performFieldChanges(Board board, List<Tile> tiles) {
+        List<Tile> placedTiles = new ArrayList<>();
+
         for(Tile tile : tiles) {
             Field field = board.getField(tile.getX(), tile.getY());
             if(field.getLetter() == null) {
                 field.setLetter(new Letter(tile.getLetter(), tile.getPoints(), tile.isBlank()));
+                placedTiles.add(tile);
             }
         }
+
+        return placedTiles;
     }
 }

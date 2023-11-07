@@ -1,5 +1,5 @@
 export interface Game {
-  id: number;
+  id: string;
   boardId: string;
   creationDate: string;
   players: Player[];

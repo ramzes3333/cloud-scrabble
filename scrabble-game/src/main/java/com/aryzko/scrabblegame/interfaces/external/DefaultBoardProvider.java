@@ -21,12 +21,17 @@ public class DefaultBoardProvider implements BoardProvider {
         return boardClient.createBoard(new BoardClient.CreateBoardRequest(playerIds)).getId();
     }
 
-    public Board getBoard(UUID id) {
+    public Board getBoard(String id) {
         return boardMapper.toBoard(boardClient.getBoard(id));
     }
 
     @Override
     public BoardValidationResultResponse validateBoard(Board board) {
         return boardMapper.convert(boardClient.validateBoard(boardMapper.toBoardRequest(board)));
+    }
+
+    @Override
+    public Board update(Board board) {
+        return boardMapper.toBoard(boardClient.updateBoard(boardMapper.toBoardRequest(board)));
     }
 }

@@ -9,6 +9,7 @@ import java.util.List;
 @Value
 @Builder
 public class MoveResult {
+    private String actualPlayerId;
     @Singular
     private List<PlayerMove> playerMoves;
 

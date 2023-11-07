@@ -8,6 +8,7 @@ import java.util.UUID;
 
 public interface BoardProvider {
     String createBoard(List<String> playerIds);
-    Board getBoard(UUID id);
+    Board getBoard(String id);
     BoardValidationResultResponse validateBoard(Board board);
+    Board update(Board board);
 }

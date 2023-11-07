@@ -10,7 +10,6 @@
   background-color: #f6f5f2;
   border-radius: 10px;
   box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
-  background-image: linear-gradient(to right, #e6e9f0 0%, #eef1f5 100%);
 }
 
 .letter {
@@ -35,10 +34,18 @@
   transition: background-color 0.15s ease-in-out;
 }
 
-.letter:hover {
+.letter-active.letter:hover {
   background-color: #e8e6e3;
   cursor: pointer;
   transform: scale(1.05);
+}
+
+.letter-active {
+  color: #333;
+}
+
+.letter-disabled {
+  color: #bbb;
 }
 
 .points {
@@ -46,9 +53,16 @@
   top: 16px;
   right: 5px;
   font-size: 9px;
-  color: #6c6a67;            /* Kolor tekstu, bazując na .board-field-letter */
+  color: #6c6a67;
 }
 
+.rack-active {
+  background-image: linear-gradient(to right, #e6e9f0 0%, #eef1f5 100%);
+}
+
+.rack-disabled {
+  background-image: linear-gradient(to right, #b3b3b3 0%, #cccccc 100%);
+}
 
 /* Animate items as they're being sorted. */
 .cdk-drop-list-dragging .cdk-drag {

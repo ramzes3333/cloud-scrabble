@@ -4,7 +4,7 @@ import {Board} from "../../model/board";
 
 export interface GameState {
   started: boolean;
-  gameId?: number;
+  gameId?: string;
   boardId?: string;
   actualPlayerId?: string;
   board?: Board;

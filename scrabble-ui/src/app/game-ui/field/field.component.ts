@@ -1,10 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {Letter} from "../model/letter";
-import {MovableField, MovableFieldSource} from "../model/movable-field";
+import {MovableField} from "../model/movable-field";
 import {Move} from "../model/move";
-import {MoveType} from "../model/move-type";
-import {GameService, GameUpdateType} from "../../services/game.service";
+import {GameService} from "../../services/game.service";
 import {MatDialog} from "@angular/material/dialog";
 import {BlankDialogComponent} from "../blank-dialog/blank-dialog.component";
 import {Bonus} from "../model/bonus";
@@ -13,6 +12,7 @@ import {GameState} from "../../state/game-state/game-state";
 import {move} from "../../state/game-state/game-state.actions";
 import {selectValidationErrorsForCoordinates} from "../../state/game-state/game-state.selectors";
 import {Subject, takeUntil, tap} from "rxjs";
+import {BoardElement} from "../model/board-element";
 
 @Component({
   selector: 'app-field',
@@ -30,7 +30,7 @@ export class FieldComponent implements OnInit {
   @Input() movable?: boolean;
   @Input() suggested?: boolean;
   @Input() invalid?: boolean;
-  @Input() movableFieldSource!: MovableFieldSource;
+  @Input() movableFieldSource!: BoardElement;
 
   movableFields!: MovableField[];
   potentialLetter: Letter | null = null;
@@ -73,17 +73,12 @@ export class FieldComponent implements OnInit {
         blank: this.blank!,
         points: this.points!
       },
-      invalid: this.invalid!,
       source: this.movableFieldSource
     }
   }
 
   private setInvalidParam(value: boolean) {
-    if (this.movableFields.length > 0) {
-      this.movableFields[0].invalid = value;
-    } else {
       this.invalid = value;
-    }
   }
 
   canDropLetter = (): boolean => {
@@ -112,7 +107,7 @@ export class FieldComponent implements OnInit {
   private performMove(event: CdkDragDrop<MovableField[]>) {
     let fromX = event.previousContainer.data[event.previousIndex].x;
     let fromY = event.previousContainer.data[event.previousIndex].y;
-    let fromSource = event.previousContainer.data[event.previousIndex].source;
+    let from = event.previousContainer.data[event.previousIndex].source;
 
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
@@ -126,30 +121,23 @@ export class FieldComponent implements OnInit {
     event.container.data[event.currentIndex].y = this.y;
     event.container.data[event.currentIndex].source = this.movableFieldSource;
 
-    this.store.dispatch(move(this.extractMoveFromDropEvent(fromX, fromY, fromSource, event)));
+    this.store.dispatch(move(this.extractMoveFromDropEvent(fromX, fromY, from, event)));
   }
 
-  private extractMoveFromDropEvent(fromX: number, fromY: number | null, fromSource: MovableFieldSource, event: CdkDragDrop<MovableField[]>) {
-
+  private extractMoveFromDropEvent(fromX: number, fromY: number | null, from: BoardElement, event: CdkDragDrop<MovableField[]>) {
     return new Move(
-      this.getMoveType(fromY),
+      new Letter(
+        event.container.data[event.currentIndex].letter.letter,
+        event.container.data[event.currentIndex].letter.blank,
+        event.container.data[event.currentIndex].letter.points
+      ),
       fromX,
       fromY,
-      fromSource,
-      new MovableField(
-        event.container.data[event.currentIndex].x, event.container.data[event.currentIndex].y,
-        new Letter(
-          event.container.data[event.currentIndex].letter.letter,
-          event.container.data[event.currentIndex].letter.blank,
-          event.container.data[event.currentIndex].letter.points
-        ),
-        event.container.data[event.currentIndex].source
-      )
+      from,
+      event.container.data[event.currentIndex].x,
+      event.container.data[event.currentIndex].y,
+      event.container.data[event.currentIndex].source
     );
-  }
-
-  private getMoveType(fromY: number | null) {
-    return fromY != null ? MoveType.FROM_BOARD : MoveType.FROM_RACK;
   }
 
   getBackgroundColor(): string {
@@ -169,7 +157,7 @@ export class FieldComponent implements OnInit {
   }
 
   getLetterColor(): string {
-    if (this.movableFields.length > 0 && this.movableFields[0].invalid || this.invalid) {
+    if (this.movableFields.length > 0 && this.invalid) {
       return 'invalid';
     } else if (this.isBlankMovableField() || this.isBlankLetter()) {
       return 'blank';

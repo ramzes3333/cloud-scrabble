@@ -7,7 +7,9 @@ import lombok.Setter;
 import lombok.Value;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -19,8 +21,11 @@ public interface BoardClient {
     @PostMapping("/api/boards")
     BoardResponse createBoard(CreateBoardRequest createBoardRequest);
 
-    @GetMapping("/api/boards")
-    BoardResponse getBoard(UUID id);
+    @PutMapping("/api/boards")
+    BoardResponse updateBoard(BoardRequest boardRequest);
+
+    @GetMapping("/api/boards/{uuid}")
+    BoardResponse getBoard(@PathVariable("uuid") String id);
 
     @GetMapping("/api/boards/validate")
     BoardValidationResultResponse validateBoard(BoardRequest boardRequest);
@@ -61,7 +66,7 @@ public interface BoardClient {
         private BoardParameters boardParameters;
     }
 
-    @Getter
+    @Data
     class Field {
         private Integer x;
         private Integer y;
@@ -69,20 +74,20 @@ public interface BoardClient {
         private Letter letter;
     }
 
-    @Getter
+    @Data
     class Rack {
         private String playerId;
         private List<Letter> letters;
     }
 
-    @Getter
+    @Data
     class Letter {
         private Character letter;
         private Integer points;
         private boolean blank;
     }
 
-    @Getter
+    @Data
     class BoardParameters {
         private Integer horizontalSize;
         private Integer verticalSize;

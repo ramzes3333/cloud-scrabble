@@ -8,22 +8,22 @@ import {
   create,
   createSuccess,
   failure,
-  init, initGameLoaded, initSuccess,
+  init, initGameLoaded, initSuccess, makeMoveSuccess,
   preview,
-  previewSuccess,
+  previewSuccess, refreshBoard,
   resolve,
   resolveSuccess, validateError, validateSuccess
 } from './game-state.actions';
 import {catchError, from, of, switchMap, withLatestFrom} from "rxjs";
 import {map} from "rxjs/operators";
 import {GameResolverService} from "../../services/game-resolver.service";
-import {selectBoard} from "./game-state.selectors";
+import {selectActualPlayerId, selectBoard, selectBoardId, selectGameState} from "./game-state.selectors";
 import {BoardService} from "../../services/board.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {
   BoardValidationResult
 } from "../../clients/board-manager/model/board-validation-result";
-import {GameService} from "../../services/game.service";
+import {GameMoveRequest, GameService} from "../../services/game.service";
 
 @Injectable()
 export class GameEffects {
@@ -89,13 +89,17 @@ export class GameEffects {
   resolve$ = createEffect(() =>
     this.actions$.pipe(
       ofType(resolve),
-      withLatestFrom(this.store.select(selectBoard)),
-      switchMap(([action, board]) =>
-        from(this.gameResolverService.resolve(board!)).pipe(
-          map((solution) => resolveSuccess(solution)),
-          catchError((error) => of(failure({error})))
-        )
-      )
+      withLatestFrom(this.store.select(selectActualPlayerId), this.store.select(selectBoard)),
+      switchMap(([action, actualPlayerId, board]) => {
+        if (actualPlayerId && board) {
+          return from(this.gameResolverService.resolve(actualPlayerId!, board!)).pipe(
+            map((solution) => resolveSuccess(solution)),
+            catchError((error) => of(failure({error})))
+          )
+        } else {
+          return of(failure({error: 'Board or actual player is undefined'}));
+        }
+      })
     )
   );
 
@@ -111,11 +115,55 @@ export class GameEffects {
               const validationResult: BoardValidationResult = error.error;
               return of(validateError(validationResult));
             }
-            // Obsługa innych błędów, jeśli jest potrzebna
-            return of(failure({error: error.message}));  // Inna akcja dla innych błędów
+            return of(failure({error: error.message}));
           })
         )
       )
+    )
+  );
+
+  makeMove$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(validateSuccess),
+      withLatestFrom(this.store.select(selectGameState)),
+      switchMap(([action, gameState]) => {
+        const movableFields = gameState.board?.fields.filter(field => field.letter?.movable) || [];
+        const tiles = movableFields.map(field => ({
+          x: field.x,
+          y: field.y,
+          letter: field.letter!.letter,
+          points: field.letter!.points,
+          blank: field.letter!.blank
+        }));
+
+        const gameMoveRequest: GameMoveRequest = {
+          gameId: gameState.gameId!,
+          playerId: gameState.actualPlayerId!,
+          tiles: tiles
+        };
+
+        return this.gameService.makeMove(gameMoveRequest).pipe(
+          map(moveResult => makeMoveSuccess(moveResult)),
+          catchError(error => of(failure({error})))
+        );
+      })
+    )
+  );
+
+  makeMoveSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(makeMoveSuccess),
+      withLatestFrom(this.store.select(selectBoardId)),
+      switchMap(([moveResult, boardId]) => {
+        if (boardId) {
+          return from(this.boardService.getBoard(boardId)).pipe(
+            map((board) => refreshBoard(board)),
+            catchError((error) => of(failure({error})))
+          );
+        } else {
+          return of(failure({error: 'Board ID is undefined'}));
+        }
+      })
     )
   );
 }

@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
 
+import static java.lang.String.format;
+
 @Component
 @RequiredArgsConstructor
 public class DbGameRepository implements GameRepository {
@@ -25,6 +27,17 @@ public class DbGameRepository implements GameRepository {
     @Override
     public Optional<Game> get(String id) {
         return convert(gameRepository.getGameById(id));
+    }
+
+    public Game save(Game game) {
+        Optional<GameEntryDb> gameEntryDbOpt = gameRepository.getGameById(game.getId().toString());
+        if(gameEntryDbOpt.isEmpty()) {
+            throw new IllegalStateException(format("No game with id: %s", game.getId().toString()));
+        } else {
+            GameEntryDb gameEntryDb = gameEntryDbOpt.get();
+            gameEntryDb.setData(GameConverter.toData(game));
+            return convert(gameRepository.save(gameEntryDb));
+        }
     }
 
     public List<Game> getAll() {
