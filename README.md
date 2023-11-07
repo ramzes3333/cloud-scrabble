@@ -38,4 +38,4 @@ docker run -d --network="host" --name mongo-express -e ME_CONFIG_MONGODB_SERVER=
 
 ### Screen:
 
-![](cloud-scrabble-v4.png)
+![](cloud-scrabble-v5.png)
