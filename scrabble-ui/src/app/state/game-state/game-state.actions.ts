@@ -19,6 +19,7 @@ export const resolveSuccess = createAction('[Game State Component] Resolve board
 /* INIT */
 export const init = createAction('[Game State Component] Init game', props<{ gameId: string }>());
 export const initGameLoaded = createAction('[Game State Component] Init game - game loaded success', props<Game>());
+export const setCharset = createAction('[Game State Component] Init game - set charset', props<{charset: string[]}>());
 export const initSuccess = createAction('[Game State Component] Init game success', props<{game: Game, board: Board}>());
 
 /* PREVIEW */
@@ -28,6 +29,8 @@ export const previewSuccess = createAction('[Game State Component] Get board pre
 export const start = createAction('[Game State Component] Start game');
 
 export const move = createAction('[Game State Component] Move', props<Move>());
+
+export const updateBlankLetter = createAction('[Game State Component] Update blank letter', props<{x: number, y: number, letter: string}>());
 
 export const confirm = createAction('[Game State Component] Confirm');
 export const validateSuccess = createAction('[Game State Component] Confirm - board validation success');

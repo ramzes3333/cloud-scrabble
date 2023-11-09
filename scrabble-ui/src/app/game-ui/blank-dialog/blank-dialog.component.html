@@ -1,6 +1,6 @@
 <div mat-dialog-content>
-  <p>Which letter do you want?</p>
-  <ng-container *ngFor="let character of data.charset">
+  <p>Choose letter:</p>
+  <ng-container *ngFor="let character of charset">
     <div class="board-field-container">
       <div class="board-field-letter" [mat-dialog-close]="character">{{character}}</div>
     </div>

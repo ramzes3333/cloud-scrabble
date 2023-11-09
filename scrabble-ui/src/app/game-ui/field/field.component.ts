@@ -9,7 +9,7 @@ import {BlankDialogComponent} from "../blank-dialog/blank-dialog.component";
 import {Bonus} from "../model/bonus";
 import {select, Store} from "@ngrx/store";
 import {GameState} from "../../state/game-state/game-state";
-import {move} from "../../state/game-state/game-state.actions";
+import {move, updateBlankLetter} from "../../state/game-state/game-state.actions";
 import {selectValidationErrorsForCoordinates} from "../../state/game-state/game-state.selectors";
 import {Subject, takeUntil, tap} from "rxjs";
 import {BoardElement} from "../model/board-element";
@@ -87,17 +87,13 @@ export class FieldComponent implements OnInit {
 
   dropped(event: CdkDragDrop<MovableField[]>) {
     if (event.previousContainer.data[event.previousIndex].letter.letter == ' ') {
-      this.gameService.getCharset().subscribe(charset => {
-        const dialogRef = this.dialog.open(BlankDialogComponent, {
-          width: '400px',
-          disableClose: true,
-          data: {charset: charset},
-        });
+      const dialogRef = this.dialog.open(BlankDialogComponent, {
+        width: '400px',
+        disableClose: true
+      });
 
-        dialogRef.afterClosed().subscribe(result => {
-          this.movableFields[0].letter.letter = result;
-          this.gameService.selectedLetterForBlank(this.x, this.y, result);
-        });
+      dialogRef.afterClosed().subscribe(result => {
+        this.store.dispatch(updateBlankLetter({x: this.x, y: this.y, letter: result}));
       });
     }
 
@@ -159,7 +155,7 @@ export class FieldComponent implements OnInit {
   getLetterColor(): string {
     if (this.movableFields.length > 0 && this.invalid) {
       return 'invalid';
-    } else if (this.isBlankMovableField() || this.isBlankLetter()) {
+    } else if (this.isBlankLetter()) {
       return 'blank';
     } else {
       return '';

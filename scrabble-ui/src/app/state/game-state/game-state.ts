@@ -8,7 +8,8 @@ export interface GameState {
   boardId?: string;
   actualPlayerId?: string;
   board?: Board;
-  solution?: Solution;
 
+  charset?: string[];
+  solution?: Solution;
   incorrectFields: CharacterWithPosition[];
 }

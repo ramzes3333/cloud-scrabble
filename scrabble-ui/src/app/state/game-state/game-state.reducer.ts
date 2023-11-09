@@ -1,12 +1,12 @@
 import { createReducer, on } from '@ngrx/store';
 import {GameState} from "./game-state";
 import {
-  createSuccess,
+  createSuccess, init,
   initSuccess, makeMoveSuccess,
   move,
   previewSuccess, refreshBoard,
-  resolveSuccess,
-  start,
+  resolveSuccess, setCharset,
+  start, updateBlankLetter,
   validateError
 } from "./game-state.actions";
 import {Field, fromBoard, fromBoardPreview, Rack} from "../../model/board";
@@ -15,10 +15,12 @@ import {BoardElement} from "../../game-ui/model/board-element";
 
 export const initialState : GameState = {
   started: false,
+  charset: [],
   incorrectFields: []
 };
 
 export const gameStateReducer = createReducer(initialState,
+  on(init, (state, response) => (initialState)),
   on(createSuccess, (state, response) => ({...state, boardId: response.boardId})),
   on(resolveSuccess, (state, solution) => ({...state, solution: solution})),
   on(previewSuccess, (state, boardPreview) => ({...state, board: fromBoardPreview(boardPreview)})),
@@ -50,7 +52,23 @@ export const gameStateReducer = createReducer(initialState,
     };
   }),
   on(makeMoveSuccess, (state, moveResult) => ({...state, actualPlayerId: moveResult.actualPlayerId})),
-  on(refreshBoard, (state, board) => ({...state, board: fromBoard(board)})));
+  on(refreshBoard, (state, board) => ({...state, board: fromBoard(board)})),
+  on(setCharset, (state, data) => ({...state, charset: data.charset})),
+  on(updateBlankLetter, (state, data) => {
+    if (!state.started || !state.board) {
+      return state;
+    }
+
+    return {
+      ...state,
+      board: {
+        ...state.board,
+        fields: updateBlank(state.board.fields, data.x, data.y, data.letter),
+        racks: state.board.racks
+      }
+    };
+  }),
+);
 
 function updateFields(fields: Field[], move: Move): Field[] {
   return fields.map(field => {
@@ -118,4 +136,23 @@ function updateRack(racks: Rack[], move: Move): Rack[] {
   }
 
   return racks.map((r, index) => index === rackNumber ? updatedRack : r);
+}
+
+function updateBlank(fields: Field[], x: number, y: number, letter: string) {
+  return fields.map(field => {
+    let modifiedField = {...field};
+
+    if (field.x === x && field.y === y) {
+      modifiedField.letter = {
+        letter: letter,
+        blank: true,
+        points: 0,
+        movable: true,
+        suggested: false,
+        invalid: false
+      };
+    }
+
+    return modifiedField;
+  });
 }

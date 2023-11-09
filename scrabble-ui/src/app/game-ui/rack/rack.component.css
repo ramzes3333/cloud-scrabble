@@ -61,7 +61,8 @@
 }
 
 .rack-disabled {
-  background-image: linear-gradient(to right, #b3b3b3 0%, #cccccc 100%);
+  /*background-image: linear-gradient(to right, #b3b3b3 0%, #cccccc 100%);*/
+  background-image: linear-gradient(to right, #e6e9f0 0%, #eef1f5 100%);
 }
 
 /* Animate items as they're being sorted. */

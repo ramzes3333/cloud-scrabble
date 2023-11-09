@@ -12,9 +12,9 @@ import {
   preview,
   previewSuccess, refreshBoard,
   resolve,
-  resolveSuccess, validateError, validateSuccess
+  resolveSuccess, setCharset, validateError, validateSuccess
 } from './game-state.actions';
-import {catchError, from, of, switchMap, withLatestFrom} from "rxjs";
+import {catchError, from, mergeMap, of, switchMap, withLatestFrom} from "rxjs";
 import {map} from "rxjs/operators";
 import {GameResolverService} from "../../services/game-resolver.service";
 import {selectActualPlayerId, selectBoard, selectBoardId, selectGameState} from "./game-state.selectors";
@@ -68,6 +68,18 @@ export class GameEffects {
       switchMap((request) =>
         from(this.gameService.getGame(request.gameId)).pipe(
           map((game) => initGameLoaded(game)),
+          catchError((error) => of(failure({error})))
+        )
+      )
+    )
+  );
+
+  initCharset = createEffect(() =>
+    this.actions$.pipe(
+      ofType(initGameLoaded),
+      switchMap((game) =>
+        from(this.gameService.getCharset(game.boardId)).pipe(
+          map((charset) => setCharset({charset: charset})),
           catchError((error) => of(failure({error})))
         )
       )

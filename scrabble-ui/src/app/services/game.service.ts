@@ -17,7 +17,7 @@ export class GameService {
 
   public potentialWordLetterEvent = new EventEmitter<GuiElement>();
 
-  constructor(private boardManager: BoardManagerService, private tileManager: TileManagerService, private gameManagerService: GameManagerService) {
+  constructor(private tileManager: TileManagerService, private gameManagerService: GameManagerService) {
   }
 
   getGame(id: string): Observable<Game> {
@@ -28,15 +28,8 @@ export class GameService {
     return this.gameManagerService.makeMove(move);
   }
 
-  getCharset(): Observable<string[]> {
-    //TODO migrate to ngrx effect
-    /*if (this.boardUUID !== undefined) {
-      return this.tileManager.getCharset(this.boardUUID);
-    } else {
-      return EMPTY;
-    }*/
-
-    return EMPTY;
+  getCharset(boardId: string): Observable<string[]> {
+      return this.tileManager.getCharset(boardId);
   }
 
   selectedLetterForBlank(x: number, y: number, letter: string) {
