@@ -91,6 +91,7 @@ public interface BoardClient {
     class BoardParameters {
         private Integer horizontalSize;
         private Integer verticalSize;
+        private Integer rackSize;
     }
 
     enum Bonus {

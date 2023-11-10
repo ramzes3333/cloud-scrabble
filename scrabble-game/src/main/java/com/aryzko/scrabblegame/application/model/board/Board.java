@@ -23,6 +23,13 @@ public class Board {
                 .orElseThrow(() -> new IllegalStateException("No field with x: %d and y: %d".formatted(x, y)));
     }
 
+    public Rack getRack(String playerId) {
+        return getRacks().stream()
+                .filter(r -> r.getPlayerId().equals(playerId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("No rack for playerId: %s".formatted(playerId)));
+    }
+
     private static Predicate<Field> fieldCoordinatesPredicate(Integer x, Integer y) {
         return f -> f.getX().equals(x) && f.getY().equals(y);
     }

@@ -69,6 +69,7 @@ public class MovePerformer {
             return prepareGameFailure(errors);
         }
 
+        // TODO to migrate to async process
         gameUpdater.saveGame(game);
         boardProvider.update(board);
 

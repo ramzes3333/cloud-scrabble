@@ -1,8 +1,7 @@
 package com.aryzko.scrabblegame.application.request;
 
-import com.aryzko.scrabblegame.application.model.Tile;
+import com.aryzko.scrabblegame.application.model.BoardTile;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -14,5 +13,5 @@ public class GameMoveRequest {
     private String gameId;
     @NotBlank
     private String playerId;
-    private List<Tile> tiles;
+    private List<BoardTile> tiles;
 }

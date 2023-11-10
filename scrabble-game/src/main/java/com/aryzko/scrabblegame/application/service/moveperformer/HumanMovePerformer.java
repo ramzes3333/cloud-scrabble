@@ -1,13 +1,16 @@
 package com.aryzko.scrabblegame.application.service.moveperformer;
 
+import com.aryzko.scrabblegame.application.model.RackTile;
 import com.aryzko.scrabblegame.application.model.board.BoardValidationResultResponse;
 import com.aryzko.scrabblegame.application.model.board.Field;
 import com.aryzko.scrabblegame.application.model.board.Letter;
 import com.aryzko.scrabblegame.application.model.board.Board;
 import com.aryzko.scrabblegame.application.model.MoveResult;
-import com.aryzko.scrabblegame.application.model.Tile;
+import com.aryzko.scrabblegame.application.model.BoardTile;
 import com.aryzko.scrabblegame.application.model.board.Rack;
 import com.aryzko.scrabblegame.application.provider.BoardProvider;
+import com.aryzko.scrabblegame.application.provider.TileProvider;
+import com.aryzko.scrabblegame.application.provider.model.Tile;
 import com.aryzko.scrabblegame.application.response.GameFailure;
 import com.aryzko.scrabblegame.domain.model.Game;
 import io.vavr.control.Either;
@@ -25,13 +28,14 @@ import static com.aryzko.scrabblegame.application.response.GameFailure.INCORRECT
 public class HumanMovePerformer {
 
     private final BoardProvider boardProvider;
+    private final TileProvider tileProvider;
 
-    public Either<MoveResult.PlayerMove, GameFailure> perform(Game game, Board board, String playerId, List<Tile> tiles) {
+    public Either<MoveResult.PlayerMove, GameFailure> perform(Game game, Board board, String playerId, List<BoardTile> tiles) {
         MoveResult.PlayerMove.PlayerMoveBuilder playerMoveBuilder = MoveResult.PlayerMove.builder()
                 .playerId(playerId);
 
         performRackChanges(board, playerId, tiles);
-        playerMoveBuilder.moveTiles(performFieldChanges(board, tiles));
+        playerMoveBuilder.moveTiles(convertBoardTile(performFieldChanges(board, tiles)));
 
         BoardValidationResultResponse validationResponse = boardProvider.validateBoard(board);
         if(!validationResponse.getIncorrectWords().isEmpty() &&
@@ -41,17 +45,36 @@ public class HumanMovePerformer {
                     .build());
         }
 
+        List<Tile> newTiles = tileProvider.getTiles(board.getId(), tiles.size());
+        board.getRack(playerId).getLetters().addAll(convertTile(newTiles));
+
         return Either.left(playerMoveBuilder.build());
     }
 
-    private static void performRackChanges(Board board, String playerId, List<Tile> tiles) {
-        Rack playerRack = getPlayerRack(board, playerId);
-        for(Tile tile : tiles) {
+    public List<RackTile> convertBoardTile(List<BoardTile> tiles) {
+        return tiles.stream()
+                .map(t -> RackTile.builder()
+                        .letter(t.getLetter())
+                        .blank(t.isBlank())
+                        .points(t.getPoints())
+                        .build())
+                .toList();
+    }
+
+    public List<Letter> convertTile(List<Tile> tiles) {
+        return tiles.stream()
+                .map(t -> new Letter(t.getLetter(), t.getPoints(), t.getLetter().equals(' ')))
+                .toList();
+    }
+
+    private static void performRackChanges(Board board, String playerId, List<BoardTile> tiles) {
+        Rack playerRack = board.getRack(playerId);
+        for(BoardTile tile : tiles) {
             removeTileFromRack(playerRack, tile);
         }
     }
 
-    private static void removeTileFromRack(Rack playerRack, Tile tile) {
+    private static void removeTileFromRack(Rack playerRack, BoardTile tile) {
         playerRack.getLetters().remove(
                 playerRack.getLetters().stream()
                         .filter(l -> tile.isBlank() && l.isBlank() || tile.getLetter().equals(l.getLetter()))
@@ -60,22 +83,19 @@ public class HumanMovePerformer {
         );
     }
 
-    private static Rack getPlayerRack(Board board, String playerId) {
-        return board.getRacks().stream()
-                .filter(r -> r.getPlayerId().equals(playerId))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("No rack for playerId: %s".formatted(playerId)));
-    }
+    private static List<BoardTile> performFieldChanges(Board board, List<BoardTile> tiles) {
+        List<BoardTile> placedTiles = new ArrayList<>();
 
-    private static List<Tile> performFieldChanges(Board board, List<Tile> tiles) {
-        List<Tile> placedTiles = new ArrayList<>();
-
-        for(Tile tile : tiles) {
+        for(BoardTile tile : tiles) {
             Field field = board.getField(tile.getX(), tile.getY());
             if(field.getLetter() == null) {
                 field.setLetter(new Letter(tile.getLetter(), tile.getPoints(), tile.isBlank()));
                 placedTiles.add(tile);
             }
+        }
+
+        if(placedTiles.size() != tiles.size()) {
+            throw new IllegalStateException("Problem with placing tiles on board");
         }
 
         return placedTiles;

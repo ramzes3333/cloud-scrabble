@@ -6,4 +6,5 @@ import lombok.Value;
 public class BoardParameters {
     private Integer horizontalSize;
     private Integer verticalSize;
+    private Integer rackSize;
 }

@@ -46,6 +46,7 @@ public class GameController {
     @PostMapping("create")
     public ResponseEntity<?> create(@RequestBody @Valid CreateGameRequest request) {
         return gameService.create(request.toCommand()).fold(
+                //TODO fix response
                 success -> ResponseEntity.ok(GameResponse.builder()
                         .id(success.getId())
                         .boardId(success.getBoardId()).build()),
