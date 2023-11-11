@@ -329,6 +329,72 @@ class LineResolverTest {
         assertEquals(0, word1.getElements().get(0).getY());
         assertEquals(0, word1.getElements().get(1).getY());
         assertEquals(0, word1.getElements().get(2).getY());
+
+        assertFalse(word1.getElements().get(0).isBlank());
+        assertFalse(word1.getElements().get(1).isBlank());
+        assertTrue(word1.getElements().get(2).isBlank());
+    }
+
+    @Test
+    void resolve_blankInResponse() throws IOException, DawgIsNotReady {
+        //given
+        Node root = JsonUtils.loadObjectFromJson("/domain/service/dawg-for-resolver-blank-in-response.json", Node.class);
+        Line preparedLine = JsonUtils.loadObjectFromJson("/domain/service/prepared-lines-15x15-blank-in-response.json", Line.class);
+        AvailableLetters rack = AvailableLetters.builder()
+                .character('o').character('a').character('y')
+                .character(' ').character('m').character('n').character('z').build();
+
+        when(dawgService.getDawg()).thenReturn(root);
+
+        //when
+        Solution solution = resolver.resolve(preparedLine, rack);
+
+        //then
+        assertNotNull(solution);
+        assertNotNull(solution.getWords());
+        assertEquals(1, solution.getWords().size());
+
+        //fok
+        Solution.Word word1 = getWord(solution, "aśćkami", 3, 9);
+        assertEquals('a', word1.getElements().get(0).getLetter());
+        assertEquals('ś', word1.getElements().get(1).getLetter());
+        assertEquals('ć', word1.getElements().get(2).getLetter());
+        assertEquals('k', word1.getElements().get(3).getLetter());
+        assertEquals('a', word1.getElements().get(4).getLetter());
+        assertEquals('m', word1.getElements().get(5).getLetter());
+        assertEquals('i', word1.getElements().get(6).getLetter());
+
+        assertTrue(word1.getElements().get(0).isUnmodifiableLetter());
+        assertTrue(word1.getElements().get(1).isUnmodifiableLetter());
+        assertTrue(word1.getElements().get(2).isUnmodifiableLetter());
+        assertTrue(word1.getElements().get(3).isUnmodifiableLetter());
+        assertTrue(word1.getElements().get(4).isUnmodifiableLetter());
+        assertFalse(word1.getElements().get(5).isUnmodifiableLetter());
+        assertFalse(word1.getElements().get(6).isUnmodifiableLetter());
+
+        assertEquals(3, word1.getElements().get(0).getX());
+        assertEquals(4, word1.getElements().get(1).getX());
+        assertEquals(5, word1.getElements().get(2).getX());
+        assertEquals(6, word1.getElements().get(3).getX());
+        assertEquals(7, word1.getElements().get(4).getX());
+        assertEquals(8, word1.getElements().get(5).getX());
+        assertEquals(9, word1.getElements().get(6).getX());
+
+        assertEquals(9, word1.getElements().get(0).getY());
+        assertEquals(9, word1.getElements().get(1).getY());
+        assertEquals(9, word1.getElements().get(2).getY());
+        assertEquals(9, word1.getElements().get(3).getY());
+        assertEquals(9, word1.getElements().get(4).getY());
+        assertEquals(9, word1.getElements().get(5).getY());
+        assertEquals(9, word1.getElements().get(6).getY());
+
+        assertFalse(word1.getElements().get(0).isBlank());
+        assertFalse(word1.getElements().get(1).isBlank());
+        assertFalse(word1.getElements().get(2).isBlank());
+        assertFalse(word1.getElements().get(3).isBlank());
+        assertFalse(word1.getElements().get(4).isBlank());
+        assertFalse(word1.getElements().get(5).isBlank());
+        assertTrue(word1.getElements().get(6).isBlank());
     }
 
     private Solution.Word getWord(Solution solution, String word, Integer x, Integer y) {

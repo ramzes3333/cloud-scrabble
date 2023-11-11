@@ -1,0 +1,48 @@
+{
+  "id": 0,
+  "terminal": false,
+  "transitions": {
+    "a": {
+      "id": 1,
+      "terminal": false,
+      "transitions": {
+        "ś": {
+          "id": 2,
+          "terminal": false,
+          "transitions": {
+            "ć": {
+              "id": 3,
+              "terminal": false,
+              "transitions": {
+                "k": {
+                  "id": 4,
+                  "terminal": false,
+                  "transitions": {
+                    "a": {
+                      "id": 5,
+                      "terminal": true,
+                      "transitions": {
+                        "m": {
+                          "id": 6,
+                          "terminal": false,
+                          "transitions": {
+                            "i": {
+                              "id": 7,
+                              "terminal": true,
+                              "transitions": {
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

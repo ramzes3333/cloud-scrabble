@@ -80,15 +80,14 @@ public class Solution {
             throw new NotImplementedException();
         }
 
-        Solution.Word.Element transposed = Word.Element.builder()
+        return Word.Element.builder()
                 .x(element.getY())
                 .y(element.getX())
                 .letter(element.getLetter())
                 .points(element.getPoints())
+                .blank(element.isBlank())
                 .onBoard(element.isOnBoard())
                 .build();
-
-        return transposed;
     }
 
     public enum TransposeType {

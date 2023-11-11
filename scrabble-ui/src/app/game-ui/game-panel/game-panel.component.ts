@@ -10,7 +10,13 @@ import {TableVirtualScrollDataSource} from "ng-table-virtual-scroll";
 import {select, Store} from "@ngrx/store";
 import {GameState} from "../../state/game-state/game-state";
 import {selectSolution, selectStartedFlag} from "../../state/game-state/game-state.selectors";
-import {confirm, resolve, start} from "../../state/game-state/game-state.actions";
+import {
+  clearSuggestedWord,
+  makeMove,
+  resolve,
+  showSuggestedWord,
+  start
+} from "../../state/game-state/game-state.actions";
 
 @Component({
   selector: 'app-game-panel',
@@ -63,7 +69,7 @@ export class GamePanelComponent implements OnInit {
 
   confirmMove() {
     this.words = new TableVirtualScrollDataSource<GuiWord>([]);
-    this.store.dispatch(confirm());
+    this.store.dispatch(makeMove());
   }
 
   resolve() {
@@ -73,7 +79,7 @@ export class GamePanelComponent implements OnInit {
   }
 
   private convertElement(el: Element): GuiElement {
-    return new GuiElement(el.x, el.y, el.letter, el.points, el.onBoard);
+    return new GuiElement(el.x, el.y, el.letter, el.points, el.blank, el.onBoard);
   }
 
   private convertBonus(b: Bonus): GuiBonus {
@@ -97,10 +103,12 @@ export class GamePanelComponent implements OnInit {
 
   showPotentialWord(word: GuiWord) {
     this.gameService.showPotentialWord(word);
+    //this.store.dispatch(showSuggestedWord(word));
   }
 
   clearPotentialWord() {
     this.gameService.clearPotentialWord();
+    //this.store.dispatch(clearSuggestedWord());
   }
 
   relatedWordsTooltip(word: GuiWord): string {

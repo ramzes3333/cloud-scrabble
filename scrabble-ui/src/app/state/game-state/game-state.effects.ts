@@ -4,7 +4,7 @@ import {Store} from "@ngrx/store";
 import {AppState} from "../app.state";
 import {GameCreatorService} from "../../services/game-creator.service";
 import {
-  confirm,
+  makeMove,
   create,
   createSuccess,
   failure,
@@ -12,7 +12,7 @@ import {
   preview,
   previewSuccess, refreshBoard,
   resolve,
-  resolveSuccess, setCharset, validateError, validateSuccess
+  resolveSuccess, setCharset, moveValidateError, moveValidateSuccess
 } from './game-state.actions';
 import {catchError, from, mergeMap, of, switchMap, withLatestFrom} from "rxjs";
 import {map} from "rxjs/operators";
@@ -117,15 +117,15 @@ export class GameEffects {
 
   confirm$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(confirm),
+      ofType(makeMove),
       withLatestFrom(this.store.select(selectBoard)),
       switchMap(([action, board]) =>
         from(this.boardService.validateBoard(board!)).pipe(
-          map((validationResult) => validateSuccess()),
+          map((validationResult) => moveValidateSuccess()),
           catchError((error: HttpErrorResponse) => {
             if (error.status === 409) {
               const validationResult: BoardValidationResult = error.error;
-              return of(validateError(validationResult));
+              return of(moveValidateError(validationResult));
             }
             return of(failure({error: error.message}));
           })
@@ -136,7 +136,7 @@ export class GameEffects {
 
   makeMove$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(validateSuccess),
+      ofType(moveValidateSuccess),
       withLatestFrom(this.store.select(selectGameState)),
       switchMap(([action, gameState]) => {
         const movableFields = gameState.board?.fields.filter(field => field.letter?.movable) || [];

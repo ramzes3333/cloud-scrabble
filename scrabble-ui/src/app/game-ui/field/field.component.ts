@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {Letter} from "../model/letter";
 import {MovableField} from "../model/movable-field";
@@ -160,10 +160,6 @@ export class FieldComponent implements OnInit {
     } else {
       return '';
     }
-  }
-
-  private isBlankMovableField() {
-    return this.movableFields.length > 0 && this.movableFields[0].letter.blank;
   }
 
   private isBlankLetter() {

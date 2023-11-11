@@ -1,0 +1,143 @@
+{
+  "fields": [
+    {
+      "x": 0,
+      "y": 9,
+      "letter": null,
+      "anchor": false,
+      "anyLetter": true,
+      "leftLimit": null,
+      "availableLetters": null
+    },
+    {
+      "x": 1,
+      "y": 9,
+      "letter": null,
+      "anchor": false,
+      "anyLetter": true,
+      "leftLimit": null,
+      "availableLetters": null
+    },
+    {
+      "x": 2,
+      "y": 9,
+      "letter": null,
+      "anchor": true,
+      "anyLetter": false,
+      "leftLimit": 2,
+      "availableLetters": [
+        "e",
+        "i",
+        "o"
+      ]
+    },
+    {
+      "x": 3,
+      "y": 9,
+      "letter": "a",
+      "anchor": false,
+      "anyLetter": false,
+      "leftLimit": null,
+      "availableLetters": null
+    },
+    {
+      "x": 4,
+      "y": 9,
+      "letter": "ś",
+      "anchor": false,
+      "anyLetter": false,
+      "leftLimit": null,
+      "availableLetters": null
+    },
+    {
+      "x": 5,
+      "y": 9,
+      "letter": "ć",
+      "anchor": false,
+      "anyLetter": false,
+      "leftLimit": null,
+      "availableLetters": null
+    },
+    {
+      "x": 6,
+      "y": 9,
+      "letter": "k",
+      "anchor": false,
+      "anyLetter": false,
+      "leftLimit": null,
+      "availableLetters": null
+    },
+    {
+      "x": 7,
+      "y": 9,
+      "letter": "a",
+      "anchor": false,
+      "anyLetter": false,
+      "leftLimit": null,
+      "availableLetters": null
+    },
+    {
+      "x": 8,
+      "y": 9,
+      "letter": null,
+      "anchor": true,
+      "anyLetter": true,
+      "leftLimit": 0,
+      "availableLetters": null
+    },
+    {
+      "x": 9,
+      "y": 9,
+      "letter": null,
+      "anchor": false,
+      "anyLetter": true,
+      "leftLimit": null,
+      "availableLetters": null
+    },
+    {
+      "x": 10,
+      "y": 9,
+      "letter": null,
+      "anchor": false,
+      "anyLetter": true,
+      "leftLimit": null,
+      "availableLetters": null
+    },
+    {
+      "x": 11,
+      "y": 9,
+      "letter": null,
+      "anchor": false,
+      "anyLetter": true,
+      "leftLimit": null,
+      "availableLetters": null
+    },
+    {
+      "x": 12,
+      "y": 9,
+      "letter": null,
+      "anchor": false,
+      "anyLetter": true,
+      "leftLimit": null,
+      "availableLetters": null
+    },
+    {
+      "x": 13,
+      "y": 9,
+      "letter": null,
+      "anchor": false,
+      "anyLetter": true,
+      "leftLimit": null,
+      "availableLetters": null
+    },
+    {
+      "x": 14,
+      "y": 9,
+      "letter": null,
+      "anchor": false,
+      "anyLetter": true,
+      "leftLimit": null,
+      "availableLetters": null
+    }
+  ]
+}

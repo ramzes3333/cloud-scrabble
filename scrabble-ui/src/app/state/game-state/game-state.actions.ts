@@ -7,6 +7,7 @@ import {BoardValidationResult} from "../../clients/board-manager/model/board-val
 import {Move} from "../../game-ui/model/move";
 import {Game} from "../../clients/game-manager/model/game";
 import {MoveResult} from "../../clients/game-manager/model/move-result";
+import {Element} from "../../game-ui/model/element";
 
 /* CREATE GAME ACTIONS */
 export const create = createAction('[Game State Component] Create game', props<CreateGameRequest>());
@@ -15,6 +16,8 @@ export const createSuccess = createAction('[Game State Component] Create game su
 /* SOLUTIONS */
 export const resolve = createAction('[Game State Component] Resolve board');
 export const resolveSuccess = createAction('[Game State Component] Resolve board success', props<Solution>());
+export const showSuggestedWord = createAction('[Game State Component] Show suggested word', props<{elements: Element[]}>());
+export const clearSuggestedWord = createAction('[Game State Component] Clear suggested word');
 
 /* INIT */
 export const init = createAction('[Game State Component] Init game', props<{ gameId: string }>());
@@ -32,9 +35,9 @@ export const move = createAction('[Game State Component] Move', props<Move>());
 
 export const updateBlankLetter = createAction('[Game State Component] Update blank letter', props<{x: number, y: number, letter: string}>());
 
-export const confirm = createAction('[Game State Component] Confirm');
-export const validateSuccess = createAction('[Game State Component] Confirm - board validation success');
-export const validateError = createAction('[Game State Component] Confirm - board validation error', props<BoardValidationResult>());
+export const makeMove = createAction('[Game State Component] Confirm');
+export const moveValidateSuccess = createAction('[Game State Component] Confirm - board validation success');
+export const moveValidateError = createAction('[Game State Component] Confirm - board validation error', props<BoardValidationResult>());
 export const makeMoveSuccess = createAction('[Game State Component] Confirm - make move success', props<MoveResult>());
 
 export const refreshBoard = createAction('[Game State Component] Refresh board', props<Board>());

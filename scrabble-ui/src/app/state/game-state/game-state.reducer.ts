@@ -7,11 +7,12 @@ import {
   previewSuccess, refreshBoard,
   resolveSuccess, setCharset,
   start, updateBlankLetter,
-  validateError
+  moveValidateError, showSuggestedWord, clearSuggestedWord
 } from "./game-state.actions";
 import {Field, fromBoard, fromBoardPreview, Rack} from "../../model/board";
 import {Move} from "../../game-ui/model/move";
 import {BoardElement} from "../../game-ui/model/board-element";
+import {Element} from "../../game-ui/model/element";
 
 export const initialState : GameState = {
   started: false,
@@ -24,9 +25,42 @@ export const gameStateReducer = createReducer(initialState,
   on(createSuccess, (state, response) => ({...state, boardId: response.boardId})),
   on(resolveSuccess, (state, solution) => ({...state, solution: solution})),
   on(previewSuccess, (state, boardPreview) => ({...state, board: fromBoardPreview(boardPreview)})),
-  on(initSuccess, (state, data) => (
-    {...state, board: fromBoard(data.board), boardId: data.board.id, gameId: data.game.id, actualPlayerId: data.game.actualPlayerId})),
+  on(initSuccess, (state, data) => ({
+    ...state,
+    board: fromBoard(data.board),
+    boardId: data.board.id,
+    gameId: data.game.id,
+    actualPlayerId: data.game.actualPlayerId
+  })),
   on(start, (state, action) => ({...state, started: true})),
+  on(showSuggestedWord, (state, data) => {
+    if (!state.started || !state.board) {
+      return state;
+    }
+
+    return {
+      ...state,
+      board: {
+        ...state.board,
+        fields: setSuggestedWord(state.board.fields, data.elements),
+        racks: state.board.racks
+      }
+    };
+  }),
+  on(clearSuggestedWord, (state, action) => {
+    if (!state.started || !state.board) {
+      return state;
+    }
+
+    return {
+      ...state,
+      board: {
+        ...state.board,
+        fields: removeSuggestedWord(state.board.fields),
+        racks: state.board.racks
+      }
+    };
+  }),
   on(move, (state, move) => {
     if (!state.started || !state.board) {
       return state;
@@ -42,7 +76,7 @@ export const gameStateReducer = createReducer(initialState,
       incorrectFields: []
     };
   }),
-  on(validateError, (state, validationResult) => {
+  on(moveValidateError, (state, validationResult) => {
     const incorrectCharacters = validationResult.incorrectWords.flatMap(sequence => sequence.characters);
     const combinedCharacters = [...incorrectCharacters, ...validationResult.orphans];
 
@@ -69,6 +103,7 @@ export const gameStateReducer = createReducer(initialState,
     };
   }),
 );
+
 
 function updateFields(fields: Field[], move: Move): Field[] {
   return fields.map(field => {
@@ -151,6 +186,39 @@ function updateBlank(fields: Field[], x: number, y: number, letter: string) {
         suggested: false,
         invalid: false
       };
+    }
+
+    return modifiedField;
+  });
+}
+
+function setSuggestedWord(fields: Field[], elements: Element[]) {
+  return fields.map(field => {
+    let modifiedField = {...field};
+
+    const matchingElement = elements.find(element => element.x === field.x && element.y === field.y);
+
+    if (matchingElement) {
+      modifiedField.letter = {
+        letter: matchingElement.letter,
+        points: matchingElement.points,
+        suggested: true,
+        movable: false,
+        blank: matchingElement.blank,
+        invalid: false
+      };
+    }
+
+    return modifiedField;
+  });
+}
+
+function removeSuggestedWord(fields: Field[]) {
+  return fields.map(field => {
+    let modifiedField = {...field};
+
+    if (modifiedField.letter?.suggested) {
+      modifiedField.letter = undefined;
     }
 
     return modifiedField;
