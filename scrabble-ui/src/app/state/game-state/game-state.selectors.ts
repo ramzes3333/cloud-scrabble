@@ -5,14 +5,45 @@ import {CharacterWithPosition} from "../../clients/board-manager/model/board-val
 
 export const selectGameState = (state: AppState) => state.gameState;
 
+export const selectBoardId = createSelector(
+  selectGameState, (state: GameState) => state.boardId);
+
+export const selectFields = createSelector(
+  selectGameState, (state: GameState) => state.fields);
+
+export const selectRacks = createSelector(
+  selectGameState, (state: GameState) => state.racks);
+
+export const selectBoardParameters = createSelector(
+  selectGameState, (state: GameState) => state.boardParameters);
+
 export const selectBoard = createSelector(
-  selectGameState, (state: GameState) => state.board);
+  selectBoardId, selectFields, selectRacks, selectBoardParameters, (id, fields, racks, boardParameters) => {
+    if (id && fields && racks && boardParameters) {
+      return {
+        id,
+        fields,
+        racks,
+        boardParameters
+      }
+    } else {
+      return undefined;
+    }
+  }
+);
+
+export const selectField = (x: number, y: number) => createSelector(
+  selectGameState,
+  (state: GameState) => {
+    if (state.fields) {
+      return state.fields.find(field => field.x === x && field.y === y);
+    }
+    return undefined;
+  }
+);
 
 export const selectCharset = createSelector(
   selectGameState, (state: GameState) => state.charset);
-
-export const selectBoardId = createSelector(
-  selectGameState, (state: GameState) => state.boardId);
 
 export const selectStartedFlag = createSelector(
   selectGameState, (state: GameState) => state.started);

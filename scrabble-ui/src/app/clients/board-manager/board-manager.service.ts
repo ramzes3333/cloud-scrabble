@@ -6,6 +6,7 @@ import {map} from 'rxjs/operators';
 import {BoardValidationResult} from "./model/board-validation-result";
 import {Solution} from "./model/solution/solution";
 import {BoardPreview} from "./model/board-preview";
+import {BoardReqest} from "./model/board-request";
 
 @Injectable({
   providedIn: 'root'
@@ -59,7 +60,7 @@ export class BoardManagerService {
     );
   }
 
-  validateBoard(board: Board): Observable<BoardValidationResult> {
+  validateBoard(board: BoardReqest): Observable<BoardValidationResult> {
     return this.http.post<BoardValidationResult>(`board-manager-service/api/boards/validate`,
       board,
       {
@@ -70,7 +71,7 @@ export class BoardManagerService {
     );
   }
 
-  resolve(playerId: string, board: Board): Observable<Solution> {
+  resolve(playerId: string, board: BoardReqest): Observable<Solution> {
     return this.http.post<Solution>(`board-manager-service/api/boards/resolve/${playerId}`,
       board,
       {

@@ -7,9 +7,5 @@
     {{getLetter()}}
     <div class="board-field-points">{{getLetterPoints()}}</div>
   </div>
-  <div *ngIf="isPotentialLetter()" class="board-field-letter potential">
-    {{getPotentialLetter()}}
-    <div class="board-field-points">{{getPotentialLetterPoints()}}</div>
-  </div>
   <div class="board-field-background {{getBackgroundColor()}}">{{getBackgroundContent()}}</div>
 </div>

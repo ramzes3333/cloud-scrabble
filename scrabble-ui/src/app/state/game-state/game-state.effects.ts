@@ -104,7 +104,7 @@ export class GameEffects {
       withLatestFrom(this.store.select(selectActualPlayerId), this.store.select(selectBoard)),
       switchMap(([action, actualPlayerId, board]) => {
         if (actualPlayerId && board) {
-          return from(this.gameResolverService.resolve(actualPlayerId!, board!)).pipe(
+          return from(this.gameResolverService.resolve(actualPlayerId!, board)).pipe(
             map((solution) => resolveSuccess(solution)),
             catchError((error) => of(failure({error})))
           )
@@ -118,19 +118,23 @@ export class GameEffects {
   confirm$ = createEffect(() =>
     this.actions$.pipe(
       ofType(makeMove),
-      withLatestFrom(this.store.select(selectBoard)),
-      switchMap(([action, board]) =>
-        from(this.boardService.validateBoard(board!)).pipe(
-          map((validationResult) => moveValidateSuccess()),
-          catchError((error: HttpErrorResponse) => {
-            if (error.status === 409) {
-              const validationResult: BoardValidationResult = error.error;
-              return of(moveValidateError(validationResult));
-            }
-            return of(failure({error: error.message}));
-          })
-        )
-      )
+      withLatestFrom(this.store.select(selectActualPlayerId), this.store.select(selectBoard)),
+      switchMap(([action, actualPlayerId, board]) => {
+        if (actualPlayerId && board) {
+          return from(this.boardService.validateBoard(board)).pipe(
+            map((validationResult) => moveValidateSuccess()),
+            catchError((error: HttpErrorResponse) => {
+              if (error.status === 409) {
+                const validationResult: BoardValidationResult = error.error;
+                return of(moveValidateError(validationResult));
+              }
+              return of(failure({error: error.message}));
+            })
+          )
+        } else {
+          return of(failure({error: 'Board or actual player is undefined'}));
+        }
+      })
     )
   );
 
@@ -139,7 +143,7 @@ export class GameEffects {
       ofType(moveValidateSuccess),
       withLatestFrom(this.store.select(selectGameState)),
       switchMap(([action, gameState]) => {
-        const movableFields = gameState.board?.fields.filter(field => field.letter?.movable) || [];
+        const movableFields = gameState.fields?.filter(field => field.letter?.movable) || [];
         const tiles = movableFields.map(field => ({
           x: field.x,
           y: field.y,

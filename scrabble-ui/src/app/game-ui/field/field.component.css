@@ -37,7 +37,6 @@
   cursor: default;
 }
 
-
 .board-field-letter {
   position: relative;
   display: inline-block;
@@ -62,11 +61,6 @@
 }
 
 .board-field-letter.potential {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 100;
-  /*background-color: #e8e6e3;*/
   background-color: #AED6F1;
   color: #5A8DA1;
 }

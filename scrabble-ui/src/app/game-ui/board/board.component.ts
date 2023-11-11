@@ -3,9 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import {Store} from "@ngrx/store";
 import {GameState} from "../../state/game-state/game-state";
 import {init, preview} from "../../state/game-state/game-state.actions";
-import {selectBoard} from "../../state/game-state/game-state.selectors";
 import {Subscription} from "rxjs";
 import {BoardElement} from "../model/board-element";
+import {selectBoard, selectBoardParameters} from "../../state/game-state/game-state.selectors";
 
 @Component({
   selector: 'app-board',
@@ -14,7 +14,7 @@ import {BoardElement} from "../model/board-element";
 })
 export class BoardComponent implements OnInit {
 
-  public board$ = this.store.select(selectBoard);
+  public boardParameters$ = this.store.select(selectBoardParameters);
 
   private routeSubscription?: Subscription;
 

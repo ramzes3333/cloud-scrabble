@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import {BoardManagerService} from "../clients/board-manager/board-manager.service";
-import {Board} from "../clients/board-manager/model/board";
 import {EMPTY, Observable} from "rxjs";
 import {Solution} from "../clients/board-manager/model/solution/solution";
+import {Board} from "../model/board";
 
 @Injectable({
   providedIn: 'root'

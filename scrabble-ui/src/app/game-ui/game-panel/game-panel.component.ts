@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import {GameService} from "../../services/game.service";
 import {Word} from "../../clients/board-manager/model/solution/word";
 import {Word as GuiWord} from "../model/word";
 import {Element} from "../../clients/board-manager/model/solution/element";
@@ -26,15 +25,13 @@ import {
 export class GamePanelComponent implements OnInit {
 
   displayedColumns: string[] = ['words', 'points'];
-  //words: GuiWord[] = [];
   words = new TableVirtualScrollDataSource<GuiWord>([]);
   isLoading: boolean = false;
 
   solution$ = this.store.select(selectSolution);
   gameStarted$ = this.store.pipe(select(selectStartedFlag));
 
-  constructor(private gameService: GameService,
-              private store: Store<{ gameState: GameState }>) { }
+  constructor(private store: Store<{ gameState: GameState }>) { }
 
   ngOnInit(): void {
     this.solution$.subscribe(solution => {
@@ -102,13 +99,11 @@ export class GamePanelComponent implements OnInit {
   }
 
   showPotentialWord(word: GuiWord) {
-    this.gameService.showPotentialWord(word);
-    //this.store.dispatch(showSuggestedWord(word));
+    this.store.dispatch(showSuggestedWord(word));
   }
 
   clearPotentialWord() {
-    this.gameService.clearPotentialWord();
-    //this.store.dispatch(clearSuggestedWord());
+    this.store.dispatch(clearSuggestedWord());
   }
 
   relatedWordsTooltip(word: GuiWord): string {

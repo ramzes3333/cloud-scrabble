@@ -3,6 +3,7 @@ import {Observable} from "rxjs";
 import {BoardManagerService} from "../clients/board-manager/board-manager.service";
 import {BoardValidationResult} from "../clients/board-manager/model/board-validation-result";
 import {Board} from "../model/board";
+import {Board as ClientBoard} from "../clients/board-manager/model/board";
 import {map} from "rxjs/operators";
 
 @Injectable({
@@ -12,9 +13,9 @@ export class BoardService {
 
   constructor(private boardManager: BoardManagerService) { }
 
-  getBoard(uuid: string) : Observable<Board>{
+  getBoard(uuid: string) : Observable<ClientBoard>{
     return this.boardManager.getBoard(uuid).pipe(
-      map(response => response as Board)
+      map(response => response as ClientBoard)
     );
   }
 
@@ -41,4 +42,5 @@ export interface EmptyField {
 export interface BoardParameters {
   horizontalSize: number;
   verticalSize: number;
+  rackSize: number;
 }

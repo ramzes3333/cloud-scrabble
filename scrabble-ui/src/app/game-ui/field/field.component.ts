@@ -1,17 +1,16 @@
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {Letter} from "../model/letter";
 import {MovableField} from "../model/movable-field";
 import {Move} from "../model/move";
-import {GameService} from "../../services/game.service";
 import {MatDialog} from "@angular/material/dialog";
 import {BlankDialogComponent} from "../blank-dialog/blank-dialog.component";
 import {Bonus} from "../model/bonus";
-import {select, Store} from "@ngrx/store";
+import {Store} from "@ngrx/store";
 import {GameState} from "../../state/game-state/game-state";
 import {move, updateBlankLetter} from "../../state/game-state/game-state.actions";
-import {selectValidationErrorsForCoordinates} from "../../state/game-state/game-state.selectors";
-import {Subject, takeUntil, tap} from "rxjs";
+import {selectField, selectValidationErrorsForCoordinates} from "../../state/game-state/game-state.selectors";
+import {Subscription} from "rxjs";
 import {BoardElement} from "../model/board-element";
 
 @Component({
@@ -23,21 +22,21 @@ export class FieldComponent implements OnInit {
 
   @Input() x!: number;
   @Input() y!: number;
-  @Input() bonus!: string;
-  @Input() letter?: string;
-  @Input() blank?: boolean;
-  @Input() points?: number;
-  @Input() movable?: boolean;
-  @Input() suggested?: boolean;
-  @Input() invalid?: boolean;
-  @Input() movableFieldSource!: BoardElement;
+
+  bonus!: string;
+  letter?: string;
+  blank?: boolean;
+  points?: number;
+  movable?: boolean;
+  suggested?: boolean;
+  invalid?: boolean;
+  movableFieldSource!: BoardElement;
 
   movableFields!: MovableField[];
-  potentialLetter: Letter | null = null;
 
-  private readonly destroy$ = new Subject<void>();
+  private subscriptions: Subscription[] = [];
 
-  constructor(private gameService: GameService, private store: Store<{ gameState: GameState }>, private dialog: MatDialog) { }
+  constructor(private store: Store<{ gameState: GameState }>, private dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.movableFields = [];
@@ -45,23 +44,32 @@ export class FieldComponent implements OnInit {
       this.addMovableField();
     }
 
-    this.gameService.potentialWordLetterEvent.subscribe(element => {
-      if (element.x == this.x && element.y == this.y && !element.onBoard) {
-        this.potentialLetter = new Letter(element.letter, false, element.points)
-      } else if (element.x == -1 && element.y == -1) {
-        this.potentialLetter = null;
+    this.subscriptions.push(this.store.select(selectValidationErrorsForCoordinates(this.x, this.y)).subscribe(errors => {
+      if (errors && errors.length > 0) {
+        this.setInvalidParam(true);
       }
-    });
+    }));
 
-    this.store.pipe(
-      select(selectValidationErrorsForCoordinates(this.x, this.y)),
-      tap(errors => {
-        if (errors && errors.length > 0) {
-          this.setInvalidParam(true);
+    this.subscriptions.push(this.store.select(selectField(this.x, this.y)).subscribe(field => {
+      if (field) {
+        this.bonus = field.bonus;
+        if (field.letter) {
+          this.letter = field.letter.letter;
+          this.blank = field.letter.blank;
+          this.points = field.letter.points;
+          this.movable = field.letter.movable;
+          this.suggested = field.letter.suggested;
+          this.invalid = field.letter.invalid;
+        } else {
+          this.letter = undefined;
+          this.blank = undefined;
+          this.points = undefined;
+          this.movable = undefined;
+          this.suggested = undefined;
+          this.invalid = undefined;
         }
-      }),
-      takeUntil(this.destroy$)
-    ).subscribe();
+      }
+    }));
   }
 
   private addMovableField() {
@@ -155,15 +163,13 @@ export class FieldComponent implements OnInit {
   getLetterColor(): string {
     if (this.movableFields.length > 0 && this.invalid) {
       return 'invalid';
-    } else if (this.isBlankLetter()) {
+    } else if (this.suggested) {
+      return 'potential';
+    } else if (this.blank) {
       return 'blank';
     } else {
       return '';
     }
-  }
-
-  private isBlankLetter() {
-    return this.blank;
   }
 
   getBackgroundContent(): string {
@@ -196,10 +202,6 @@ export class FieldComponent implements OnInit {
     return this.letter != undefined || this.movableFields.length > 0;
   }
 
-  isPotentialLetter() {
-    return this.potentialLetter != null;
-  }
-
   getLetterPoints() {
     return this.points != undefined
       ? this.points : this.movableFields.length > 0
@@ -210,22 +212,7 @@ export class FieldComponent implements OnInit {
     return this.movableFields.length == 0;
   }
 
-  getPotentialLetter() {
-    if(this.potentialLetter != null) {
-      return this.potentialLetter.letter.toUpperCase();
-    }
-    return null;
-  }
-
-  getPotentialLetterPoints() {
-    if(this.potentialLetter != null) {
-      return this.potentialLetter.points;
-    }
-    return null;
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }

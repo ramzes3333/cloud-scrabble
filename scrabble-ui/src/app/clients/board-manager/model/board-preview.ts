@@ -14,4 +14,5 @@ export interface EmptyField {
 export interface BoardParameters {
   horizontalSize: number;
   verticalSize: number;
+  rackSize: number;
 }

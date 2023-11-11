@@ -11,8 +11,6 @@ import {Game} from "../clients/game-manager/model/game";
 })
 export class GameService {
 
-  public potentialWordLetterEvent = new EventEmitter<GuiElement>();
-
   constructor(private tileManager: TileManagerService, private gameManagerService: GameManagerService) {
   }
 
@@ -26,17 +24,6 @@ export class GameService {
 
   getCharset(boardId: string): Observable<string[]> {
       return this.tileManager.getCharset(boardId);
-  }
-
-  showPotentialWord(word: GuiWord) {
-    this.clearPotentialWord();
-    for (const element of word.elements) {
-      this.potentialWordLetterEvent.emit(element);
-    }
-  }
-
-  clearPotentialWord() {
-    this.potentialWordLetterEvent.emit(new GuiElement(-1, -1, "", -1, false, false));
   }
 }
 

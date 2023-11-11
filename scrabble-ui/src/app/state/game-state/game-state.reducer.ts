@@ -9,7 +9,13 @@ import {
   start, updateBlankLetter,
   moveValidateError, showSuggestedWord, clearSuggestedWord
 } from "./game-state.actions";
-import {Field, fromBoard, fromBoardPreview, Rack} from "../../model/board";
+import {
+  Field,
+  fieldsFromBoard,
+  fieldsFromBoardPreview,
+  Rack,
+  racksFromBoard
+} from "../../model/board";
 import {Move} from "../../game-ui/model/move";
 import {BoardElement} from "../../game-ui/model/board-element";
 import {Element} from "../../game-ui/model/element";
@@ -24,55 +30,51 @@ export const gameStateReducer = createReducer(initialState,
   on(init, (state, response) => (initialState)),
   on(createSuccess, (state, response) => ({...state, boardId: response.boardId})),
   on(resolveSuccess, (state, solution) => ({...state, solution: solution})),
-  on(previewSuccess, (state, boardPreview) => ({...state, board: fromBoardPreview(boardPreview)})),
+  on(previewSuccess, (state, boardPreview) => ({
+    ...state,
+    fields: fieldsFromBoardPreview(boardPreview),
+    racks: [],
+    boardParameters: boardPreview.boardParameters
+  })),
   on(initSuccess, (state, data) => ({
     ...state,
-    board: fromBoard(data.board),
+    fields: fieldsFromBoard(data.board),
+    racks: racksFromBoard(data.board),
+    boardParameters: data.board.boardParameters,
     boardId: data.board.id,
     gameId: data.game.id,
     actualPlayerId: data.game.actualPlayerId
   })),
   on(start, (state, action) => ({...state, started: true})),
   on(showSuggestedWord, (state, data) => {
-    if (!state.started || !state.board) {
+    if (!state.started || !state.fields) {
       return state;
     }
 
     return {
       ...state,
-      board: {
-        ...state.board,
-        fields: setSuggestedWord(state.board.fields, data.elements),
-        racks: state.board.racks
-      }
+      fields: setSuggestedWord(state.fields, data.elements)
     };
   }),
   on(clearSuggestedWord, (state, action) => {
-    if (!state.started || !state.board) {
+    if (!state.started || !state.fields) {
       return state;
     }
 
     return {
       ...state,
-      board: {
-        ...state.board,
-        fields: removeSuggestedWord(state.board.fields),
-        racks: state.board.racks
-      }
+      fields: removeSuggestedWord(state.fields)
     };
   }),
   on(move, (state, move) => {
-    if (!state.started || !state.board) {
+    if (!state.started || !state.fields || !state.racks) {
       return state;
     }
 
     return {
       ...state,
-      board: {
-        ...state.board,
-        fields: updateFields(state.board.fields, move),
-        racks: updateRack(state.board.racks, move)
-      },
+      fields: updateFields(state.fields, move),
+      racks: updateRack(state.racks, move),
       incorrectFields: []
     };
   }),
@@ -86,20 +88,20 @@ export const gameStateReducer = createReducer(initialState,
     };
   }),
   on(makeMoveSuccess, (state, moveResult) => ({...state, actualPlayerId: moveResult.actualPlayerId})),
-  on(refreshBoard, (state, board) => ({...state, board: fromBoard(board)})),
+  on(refreshBoard, (state, board) => ({
+    ...state,
+    fields: fieldsFromBoard(board),
+    racks: racksFromBoard(board),
+  })),
   on(setCharset, (state, data) => ({...state, charset: data.charset})),
   on(updateBlankLetter, (state, data) => {
-    if (!state.started || !state.board) {
+    if (!state.started || !state.fields) {
       return state;
     }
 
     return {
       ...state,
-      board: {
-        ...state.board,
-        fields: updateBlank(state.board.fields, data.x, data.y, data.letter),
-        racks: state.board.racks
-      }
+      fields: updateBlank(state.fields, data.x, data.y, data.letter)
     };
   }),
 );
@@ -196,17 +198,23 @@ function setSuggestedWord(fields: Field[], elements: Element[]) {
   return fields.map(field => {
     let modifiedField = {...field};
 
-    const matchingElement = elements.find(element => element.x === field.x && element.y === field.y);
+    const matchingElement = elements.find(element =>
+      element.x === field.x &&
+      element.y === field.y &&
+      !element.onBoard
+    );
 
     if (matchingElement) {
       modifiedField.letter = {
-        letter: matchingElement.letter,
+        letter: matchingElement.letter.toUpperCase(),
         points: matchingElement.points,
         suggested: true,
-        movable: false,
+        movable: modifiedField.letter?.movable || false,
         blank: matchingElement.blank,
-        invalid: false
+        invalid: modifiedField.letter?.invalid || false
       };
+    } else if(modifiedField.letter?.suggested) {
+      modifiedField.letter = undefined;
     }
 
     return modifiedField;
