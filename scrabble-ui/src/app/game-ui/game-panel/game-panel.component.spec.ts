@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { GamePanelComponent } from './game-panel.component';
+import {GamePanelComponent} from './game-panel.component';
 
 describe('GamePanelComponent', () => {
   let component: GamePanelComponent;

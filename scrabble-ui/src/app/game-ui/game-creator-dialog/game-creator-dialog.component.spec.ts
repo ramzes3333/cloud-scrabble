@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { GameCreatorDialogComponent } from './game-creator-dialog.component';
+import {GameCreatorDialogComponent} from './game-creator-dialog.component';
 
 describe('GameCreatorDialogComponent', () => {
   let component: GameCreatorDialogComponent;

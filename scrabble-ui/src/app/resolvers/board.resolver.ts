@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { Router, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {ActivatedRouteSnapshot, RouterStateSnapshot} from '@angular/router';
+import {Observable} from 'rxjs';
 import {Board} from "../clients/board-manager/model/board";
 import {BoardManagerService} from "../clients/board-manager/board-manager.service";
 

@@ -1,11 +1,11 @@
 package com.aryzko.scrabble.scrabbleboardmanager.domain.service;
 
+import com.aryzko.scrabble.scrabbleboardmanager.domain.common.DateTimeProvider;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Board;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.BoardParameters;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Bonus;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.EmptyField;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Field;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.common.DateTimeProvider;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.preview.BoardPreview;
 import lombok.Builder;
 import lombok.Value;
@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 

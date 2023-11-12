@@ -3,8 +3,8 @@ package com.aryzko.scrabble.scrabbledictionary.domain.service;
 import com.aryzko.scrabble.scrabbledictionary.common.JsonUtils;
 import com.aryzko.scrabble.scrabbledictionary.domain.exception.DawgIsNotReady;
 import com.aryzko.scrabble.scrabbledictionary.domain.model.dawg.Node;
-import com.aryzko.scrabble.scrabbledictionary.domain.model.resolver.Line;
 import com.aryzko.scrabble.scrabbledictionary.domain.model.resolver.AvailableLetters;
+import com.aryzko.scrabble.scrabbledictionary.domain.model.resolver.Line;
 import com.aryzko.scrabble.scrabbledictionary.domain.model.resolver.Solution;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,9 +14,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)

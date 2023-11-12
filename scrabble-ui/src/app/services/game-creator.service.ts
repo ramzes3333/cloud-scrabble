@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Observable} from "rxjs";
 import {GameManagerService} from "../clients/game-manager/game-manager.service";
 import {Player} from "../model/player";

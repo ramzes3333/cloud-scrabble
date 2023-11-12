@@ -1,7 +1,6 @@
 package com.aryzko.scrabblegame.domain.repository;
 
 import com.aryzko.scrabblegame.domain.model.Game;
-import io.vavr.control.Either;
 
 import java.util.List;
 import java.util.Optional;

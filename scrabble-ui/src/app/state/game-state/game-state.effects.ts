@@ -1,28 +1,33 @@
-import { Injectable } from '@angular/core';
-import { Actions, createEffect, ofType } from "@ngrx/effects";
+import {Injectable} from '@angular/core';
+import {Actions, createEffect, ofType} from "@ngrx/effects";
 import {Store} from "@ngrx/store";
 import {AppState} from "../app.state";
 import {GameCreatorService} from "../../services/game-creator.service";
 import {
-  makeMove,
   create,
   createSuccess,
   failure,
-  init, initGameLoaded, initSuccess, makeMoveSuccess,
+  init,
+  initGameLoaded,
+  initSuccess,
+  makeMove,
+  makeMoveSuccess,
+  moveValidateError,
+  moveValidateSuccess,
   preview,
-  previewSuccess, refreshBoard,
+  previewSuccess,
+  refreshBoard,
   resolve,
-  resolveSuccess, setCharset, moveValidateError, moveValidateSuccess
+  resolveSuccess,
+  setCharset
 } from './game-state.actions';
-import {catchError, from, mergeMap, of, switchMap, tap, withLatestFrom} from "rxjs";
+import {catchError, from, of, switchMap, tap, withLatestFrom} from "rxjs";
 import {map} from "rxjs/operators";
 import {GameResolverService} from "../../services/game-resolver.service";
 import {selectActualPlayerId, selectBoard, selectBoardId, selectGameState} from "./game-state.selectors";
 import {BoardService} from "../../services/board.service";
 import {HttpErrorResponse} from "@angular/common/http";
-import {
-  BoardValidationResult
-} from "../../clients/board-manager/model/board-validation-result";
+import {BoardValidationResult} from "../../clients/board-manager/model/board-validation-result";
 import {GameMoveRequest, GameService} from "../../services/game.service";
 
 @Injectable()

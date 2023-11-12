@@ -7,11 +7,7 @@ import {Move} from "../model/move";
 import {select, Store} from "@ngrx/store";
 import {GameState} from "../../state/game-state/game-state";
 import {combineLatest, Subscription} from "rxjs";
-import {
-  selectActualPlayerId,
-  selectRacks,
-  selectStartedFlag
-} from "../../state/game-state/game-state.selectors";
+import {selectActualPlayerId, selectRacks, selectStartedFlag} from "../../state/game-state/game-state.selectors";
 import {move} from "../../state/game-state/game-state.actions";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {map} from "rxjs/operators";

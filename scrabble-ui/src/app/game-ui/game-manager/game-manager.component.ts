@@ -7,8 +7,8 @@ import {MatDialog} from "@angular/material/dialog";
 import {GamePlayer} from "../game-creator-dialog/model/game-player";
 import {
   BotPlayer,
-  GameCreatorService,
   CreateGameResponse,
+  GameCreatorService,
   HumanPlayer,
   Level
 } from "../../services/game-creator.service";

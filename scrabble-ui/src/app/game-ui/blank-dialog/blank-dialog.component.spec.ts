@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { BlankDialogComponent } from './blank-dialog.component';
+import {BlankDialogComponent} from './blank-dialog.component';
 
 describe('BlankDialogComponent', () => {
   let component: BlankDialogComponent;

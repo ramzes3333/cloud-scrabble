@@ -13,7 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.IOException;
 
 import static com.aryzko.scrabble.scrabbleboardmanager.common.JsonUtils.loadObjectFromJson;
-import static java.lang.String.format;
 
 @ExtendWith(MockitoExtension.class)
 class BoardResolverTest {

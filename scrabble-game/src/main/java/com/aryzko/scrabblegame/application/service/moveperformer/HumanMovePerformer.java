@@ -1,12 +1,12 @@
 package com.aryzko.scrabblegame.application.service.moveperformer;
 
+import com.aryzko.scrabblegame.application.model.BoardTile;
+import com.aryzko.scrabblegame.application.model.MoveResult;
 import com.aryzko.scrabblegame.application.model.RackTile;
+import com.aryzko.scrabblegame.application.model.board.Board;
 import com.aryzko.scrabblegame.application.model.board.BoardValidationResultResponse;
 import com.aryzko.scrabblegame.application.model.board.Field;
 import com.aryzko.scrabblegame.application.model.board.Letter;
-import com.aryzko.scrabblegame.application.model.board.Board;
-import com.aryzko.scrabblegame.application.model.MoveResult;
-import com.aryzko.scrabblegame.application.model.BoardTile;
 import com.aryzko.scrabblegame.application.model.board.Rack;
 import com.aryzko.scrabblegame.application.provider.BoardProvider;
 import com.aryzko.scrabblegame.application.provider.TileProvider;

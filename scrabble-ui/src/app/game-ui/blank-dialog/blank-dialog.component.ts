@@ -1,7 +1,6 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {Component, OnInit} from '@angular/core';
 import {select, Store} from "@ngrx/store";
-import {selectBoardId, selectCharset} from "../../state/game-state/game-state.selectors";
+import {selectCharset} from "../../state/game-state/game-state.selectors";
 import {Subscription} from "rxjs";
 import {GameState} from "../../state/game-state/game-state";
 import {GameService} from "../../services/game.service";

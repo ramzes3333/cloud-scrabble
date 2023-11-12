@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { GameManagerService } from './game-manager.service';
+import {GameManagerService} from './game-manager.service';
 
 describe('GameService', () => {
   let service: GameManagerService;

@@ -1,7 +1,7 @@
 package com.aryzko.scrabble.scrabbleboardmanager.interfaces.web.mapper;
 
-import com.aryzko.scrabble.scrabbleboardmanager.interfaces.web.response.BoardValidationResultResponse;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.validator.BoardValidationResult;
+import com.aryzko.scrabble.scrabbleboardmanager.interfaces.web.response.BoardValidationResultResponse;
 import org.mapstruct.Mapper;
 
 import java.util.Optional;

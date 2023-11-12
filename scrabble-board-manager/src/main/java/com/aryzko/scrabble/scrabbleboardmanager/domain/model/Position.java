@@ -3,7 +3,6 @@ package com.aryzko.scrabble.scrabbleboardmanager.domain.model;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import lombok.Value;
 import lombok.experimental.SuperBuilder;
 
 @Getter

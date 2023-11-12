@@ -7,8 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static java.util.Collections.emptyList;
-
 @Service
 @RequiredArgsConstructor
 public class GameProvider {

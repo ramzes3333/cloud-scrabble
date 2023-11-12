@@ -1,7 +1,7 @@
 package com.aryzko.scrabble.scrabbledictionary.adapters.api.web;
 
-import com.aryzko.scrabble.scrabbledictionary.domain.service.DictionaryService;
 import com.aryzko.scrabble.scrabbledictionary.domain.aspect.PerformanceLog;
+import com.aryzko.scrabble.scrabbledictionary.domain.service.DictionaryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

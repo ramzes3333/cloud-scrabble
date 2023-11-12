@@ -1,7 +1,5 @@
 package com.aryzko.scrabble.scrabbleboardmanager.interfaces.external;
 
-import com.aryzko.scrabble.scrabbleboardmanager.domain.model.PreparedLine;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.DictionaryProvider;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Value;

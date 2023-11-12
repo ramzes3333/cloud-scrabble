@@ -3,7 +3,6 @@ package com.aryzko.scrabblegame.interfaces.external;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.Value;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @FeignClient("board-manager-service")
 public interface BoardClient {

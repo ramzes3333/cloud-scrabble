@@ -1,5 +1,8 @@
 package com.aryzko.scrabble.scrabbleboardmanager.interfaces.web;
 
+import com.aryzko.scrabble.scrabbleboardmanager.domain.command.CreateBoardCommand;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.service.BoardResolver;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.service.BoardService;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.validator.BoardValidationResult;
 import com.aryzko.scrabble.scrabbleboardmanager.interfaces.web.common.Bonus;
 import com.aryzko.scrabble.scrabbleboardmanager.interfaces.web.mapper.BoardMapper;
@@ -9,13 +12,9 @@ import com.aryzko.scrabble.scrabbleboardmanager.interfaces.web.request.BoardRequ
 import com.aryzko.scrabble.scrabbleboardmanager.interfaces.web.response.BoardResponse;
 import com.aryzko.scrabble.scrabbleboardmanager.interfaces.web.response.BoardValidationResultResponse;
 import com.aryzko.scrabble.scrabbleboardmanager.interfaces.web.response.Solution;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.command.CreateBoardCommand;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.service.BoardResolver;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.service.BoardService;
 import jakarta.validation.Valid;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

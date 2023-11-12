@@ -1,12 +1,9 @@
-import {EventEmitter, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {TileManagerService} from "../clients/tile-manager/tile-manager.service";
-import {Element as GuiElement} from "../game-ui/model/element";
-import {Word as GuiWord} from "../game-ui/model/word";
 import {Observable} from "rxjs";
 import {GameManagerService} from "../clients/game-manager/game-manager.service";
 import {Game} from "../clients/game-manager/model/game";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {HttpErrorResponse} from "@angular/common/http";
 
 @Injectable({
   providedIn: 'root'

@@ -1,9 +1,9 @@
 package com.aryzko.scrabble.scrabbleboardmanager.domain.service;
 
+import com.aryzko.scrabble.scrabbleboardmanager.domain.command.CreateBoardCommand;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Board;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Letter;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Rack;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.command.CreateBoardCommand;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.preview.BoardPreview;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.TileManagerProvider;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.model.Tile;
@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;

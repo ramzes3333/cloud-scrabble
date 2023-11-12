@@ -1,8 +1,8 @@
 package com.aryzko.scrabble.scrabbleboardmanager.interfaces.external;
 
+import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.TileManagerProvider;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.model.Tile;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.model.TileConfiguration;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.TileManagerProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { GameManagerComponent } from './game-manager.component';
+import {GameManagerComponent} from './game-manager.component';
 
 describe('BoardManagerComponent', () => {
   let component: GameManagerComponent;

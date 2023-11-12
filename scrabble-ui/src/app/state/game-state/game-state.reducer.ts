@@ -1,21 +1,23 @@
-import { createReducer, on } from '@ngrx/store';
+import {createReducer, on} from '@ngrx/store';
 import {GameState} from "./game-state";
 import {
-  createSuccess, init,
-  initSuccess, makeMoveSuccess,
+  clearSuggestedWord,
+  createSuccess,
+  init,
+  initSuccess,
+  makeMoveSuccess,
   move,
-  previewSuccess, refreshBoard,
-  resolveSuccess, setCharset,
-  start, updateBlankLetter,
-  moveValidateError, showSuggestedWord, clearSuggestedWord, putSuggestedWord
+  moveValidateError,
+  previewSuccess,
+  putSuggestedWord,
+  refreshBoard,
+  resolveSuccess,
+  setCharset,
+  showSuggestedWord,
+  start,
+  updateBlankLetter
 } from "./game-state.actions";
-import {
-  Field,
-  fieldsFromBoard,
-  fieldsFromBoardPreview,
-  Rack,
-  racksFromBoard
-} from "../../model/board";
+import {Field, fieldsFromBoard, fieldsFromBoardPreview, Rack, racksFromBoard} from "../../model/board";
 import {Move} from "../../game-ui/model/move";
 import {Element} from "../../game-ui/model/element";
 

@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { RackComponent } from './rack.component';
+import {RackComponent} from './rack.component';
 
 describe('RackComponent', () => {
   let component: RackComponent;

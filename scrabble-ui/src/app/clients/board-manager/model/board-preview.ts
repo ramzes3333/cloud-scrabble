@@ -1,5 +1,3 @@
-import {Board} from "./board";
-
 export interface BoardPreview {
   fields: EmptyField[];
   boardParameters: BoardParameters;

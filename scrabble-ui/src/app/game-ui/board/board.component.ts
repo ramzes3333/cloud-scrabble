@@ -1,5 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 import {Store} from "@ngrx/store";
 import {GameState} from "../../state/game-state/game-state";
 import {init, preview} from "../../state/game-state/game-state.actions";

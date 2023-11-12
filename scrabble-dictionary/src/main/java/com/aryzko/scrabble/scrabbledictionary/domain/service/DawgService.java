@@ -1,16 +1,12 @@
 package com.aryzko.scrabble.scrabbledictionary.domain.service;
 
-import com.aryzko.scrabble.scrabbledictionary.adapters.db.model.DictionaryEntryDb;
 import com.aryzko.scrabble.scrabbledictionary.domain.aspect.PerformanceLog;
 import com.aryzko.scrabble.scrabbledictionary.domain.exception.DawgIsNotReady;
-import com.aryzko.scrabble.scrabbledictionary.domain.model.DictionaryEntry;
 import com.aryzko.scrabble.scrabbledictionary.domain.model.dawg.DawgBuilder;
 import com.aryzko.scrabble.scrabbledictionary.domain.model.dawg.Node;
 import com.aryzko.scrabble.scrabbledictionary.domain.ports.DictionaryRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.ScrollableResults;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;

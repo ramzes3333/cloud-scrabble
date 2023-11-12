@@ -8,7 +8,8 @@ import java.io.IOException;
 import java.util.List;
 
 import static com.aryzko.scrabble.scrabbleboardmanager.common.JsonUtils.loadObjectFromJson;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class RelatedWordsFillServiceTest {
 

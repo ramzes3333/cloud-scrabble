@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Word} from "../../clients/board-manager/model/solution/word";
 import {Word as GuiWord} from "../model/word";
 import {Element} from "../../clients/board-manager/model/solution/element";
@@ -11,7 +11,8 @@ import {GameState} from "../../state/game-state/game-state";
 import {selectSolution, selectStartedFlag} from "../../state/game-state/game-state.selectors";
 import {
   clearSuggestedWord,
-  makeMove, putSuggestedWord,
+  makeMove,
+  putSuggestedWord,
   resolve,
   showSuggestedWord,
   start

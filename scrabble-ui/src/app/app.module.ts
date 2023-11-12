@@ -32,7 +32,7 @@ import {MatRadioModule} from "@angular/material/radio";
 import {MatSelectModule} from "@angular/material/select";
 import {MatCardModule} from "@angular/material/card";
 import {MatChipsModule} from "@angular/material/chips";
-import { StoreModule } from '@ngrx/store';
+import {StoreModule} from '@ngrx/store';
 import {gameStateReducer} from "./state/game-state/game-state.reducer";
 import {GameEffects} from "./state/game-state/game-state.effects";
 import {EffectsModule} from "@ngrx/effects";

@@ -2,7 +2,6 @@ package com.aryzko.scrabble.scrabbleboardmanager.interfaces.external;
 
 import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.DictionaryProvider;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 interface DictionaryMapper {

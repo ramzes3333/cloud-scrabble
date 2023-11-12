@@ -1,6 +1,5 @@
 import {Field} from "./field";
 import {Rack} from "./rack";
-import {BoardParameters} from "./board-parameters";
 
 export class BoardRequest {
   public id: string;

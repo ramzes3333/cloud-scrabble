@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Observable} from "rxjs";
 import {BoardManagerService} from "../clients/board-manager/board-manager.service";
 import {BoardValidationResult} from "../clients/board-manager/model/board-validation-result";

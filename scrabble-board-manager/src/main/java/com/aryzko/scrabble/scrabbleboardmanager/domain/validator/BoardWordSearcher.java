@@ -1,9 +1,9 @@
 package com.aryzko.scrabble.scrabbleboardmanager.domain.validator;
 
+import com.aryzko.scrabble.scrabbleboardmanager.domain.common.BoardInspector;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Board;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.CharacterSequence;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.CharacterWithPosition;
-import com.aryzko.scrabble.scrabbleboardmanager.domain.common.BoardInspector;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

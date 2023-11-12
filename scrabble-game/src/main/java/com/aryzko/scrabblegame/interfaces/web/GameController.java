@@ -7,7 +7,6 @@ import com.aryzko.scrabblegame.application.service.moveperformer.MovePerformer;
 import com.aryzko.scrabblegame.domain.model.BotPlayer;
 import com.aryzko.scrabblegame.domain.model.Game;
 import com.aryzko.scrabblegame.domain.model.HumanPlayer;
-import com.aryzko.scrabblegame.domain.model.Player;
 import com.aryzko.scrabblegame.domain.service.GameProvider;
 import com.aryzko.scrabblegame.interfaces.web.error.RestErrorResponse;
 import jakarta.validation.Valid;

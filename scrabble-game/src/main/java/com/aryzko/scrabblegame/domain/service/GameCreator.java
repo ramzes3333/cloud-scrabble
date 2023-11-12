@@ -3,7 +3,6 @@ package com.aryzko.scrabblegame.domain.service;
 import com.aryzko.scrabblegame.domain.model.BotPlayer;
 import com.aryzko.scrabblegame.domain.model.Game;
 import com.aryzko.scrabblegame.domain.model.HumanPlayer;
-import com.aryzko.scrabblegame.domain.model.Level;
 import com.aryzko.scrabblegame.domain.model.Player;
 import com.aryzko.scrabblegame.domain.model.State;
 import com.aryzko.scrabblegame.domain.repository.GameRepository;
@@ -17,10 +16,6 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import static java.lang.String.format;
 
 @Service
 @RequiredArgsConstructor
