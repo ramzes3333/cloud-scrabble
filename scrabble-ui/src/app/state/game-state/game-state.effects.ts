@@ -14,7 +14,7 @@ import {
   resolve,
   resolveSuccess, setCharset, moveValidateError, moveValidateSuccess
 } from './game-state.actions';
-import {catchError, from, mergeMap, of, switchMap, withLatestFrom} from "rxjs";
+import {catchError, from, mergeMap, of, switchMap, tap, withLatestFrom} from "rxjs";
 import {map} from "rxjs/operators";
 import {GameResolverService} from "../../services/game-resolver.service";
 import {selectActualPlayerId, selectBoard, selectBoardId, selectGameState} from "./game-state.selectors";
@@ -44,7 +44,7 @@ export class GameEffects {
       switchMap((request) =>
         from(this.gameCreatorService.createGame(request)).pipe(
           map((response) => createSuccess(response)),
-          catchError((error) => of(failure({error})))
+          catchError((error) => of(failure({error: prepareHttpErrorResponse(error)})))
         )
       )
     )
@@ -56,7 +56,7 @@ export class GameEffects {
       switchMap(() =>
         from(this.boardService.getBoardPreview()).pipe(
           map((response) => previewSuccess(response)),
-          catchError((error) => of(failure({error})))
+          catchError((error) => of(failure({error: prepareHttpErrorResponse(error)})))
         )
       )
     )
@@ -68,7 +68,7 @@ export class GameEffects {
       switchMap((request) =>
         from(this.gameService.getGame(request.gameId)).pipe(
           map((game) => initGameLoaded(game)),
-          catchError((error) => of(failure({error})))
+          catchError((error) => of(failure({error: prepareHttpErrorResponse(error)})))
         )
       )
     )
@@ -80,7 +80,7 @@ export class GameEffects {
       switchMap((game) =>
         from(this.gameService.getCharset(game.boardId)).pipe(
           map((charset) => setCharset({charset: charset})),
-          catchError((error) => of(failure({error})))
+          catchError((error) => of(failure({error: prepareHttpErrorResponse(error)})))
         )
       )
     )
@@ -92,7 +92,7 @@ export class GameEffects {
       switchMap((game) =>
         from(this.boardService.getBoard(game.boardId)).pipe(
           map((board) => initSuccess({game: game, board: board})),
-          catchError((error) => of(failure({error})))
+          catchError((error) => of(failure({error: prepareHttpErrorResponse(error)})))
         )
       )
     )
@@ -106,7 +106,7 @@ export class GameEffects {
         if (actualPlayerId && board) {
           return from(this.gameResolverService.resolve(actualPlayerId!, board)).pipe(
             map((solution) => resolveSuccess(solution)),
-            catchError((error) => of(failure({error})))
+            catchError((error) => of(failure({error: prepareHttpErrorResponse(error)})))
           )
         } else {
           return of(failure({error: 'Board or actual player is undefined'}));
@@ -128,7 +128,7 @@ export class GameEffects {
                 const validationResult: BoardValidationResult = error.error;
                 return of(moveValidateError(validationResult));
               }
-              return of(failure({error: error.message}));
+              return of(failure({error: prepareHttpErrorResponse(error)}));
             })
           )
         } else {
@@ -160,7 +160,7 @@ export class GameEffects {
 
         return this.gameService.makeMove(gameMoveRequest).pipe(
           map(moveResult => makeMoveSuccess(moveResult)),
-          catchError(error => of(failure({error})))
+          catchError(error => of(failure({error: prepareHttpErrorResponse(error)})))
         );
       })
     )
@@ -174,7 +174,7 @@ export class GameEffects {
         if (boardId) {
           return from(this.boardService.getBoard(boardId)).pipe(
             map((board) => refreshBoard(board)),
-            catchError((error) => of(failure({error})))
+            catchError((error) => of(failure({error: prepareHttpErrorResponse(error)})))
           );
         } else {
           return of(failure({error: 'Board ID is undefined'}));
@@ -182,4 +182,18 @@ export class GameEffects {
       })
     )
   );
+
+  failure$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(failure),
+        tap((data) => {
+          this.gameService.showError(data.error);
+        })
+      ),
+    { dispatch: false }
+  );
+}
+
+function prepareHttpErrorResponse(error: HttpErrorResponse) {
+  return `Błąd: ${error.status} ${error.statusText}, URL: ${error.url}`;
 }

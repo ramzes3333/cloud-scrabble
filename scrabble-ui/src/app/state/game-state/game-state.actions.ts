@@ -18,6 +18,7 @@ export const resolve = createAction('[Game State Component] Resolve board');
 export const resolveSuccess = createAction('[Game State Component] Resolve board success', props<Solution>());
 export const showSuggestedWord = createAction('[Game State Component] Show suggested word', props<{elements: Element[]}>());
 export const clearSuggestedWord = createAction('[Game State Component] Clear suggested word');
+export const putSuggestedWord = createAction('[Game State Component] Put suggested word', props<{elements: Element[]}>());
 
 /* INIT */
 export const init = createAction('[Game State Component] Init game', props<{ gameId: string }>());
@@ -29,17 +30,18 @@ export const initSuccess = createAction('[Game State Component] Init game succes
 export const preview = createAction('[Game State Component] Get board preview');
 export const previewSuccess = createAction('[Game State Component] Get board preview success', props<BoardPreview>());
 
+/* ACTIONS */
 export const start = createAction('[Game State Component] Start game');
-
 export const move = createAction('[Game State Component] Move', props<Move>());
-
 export const updateBlankLetter = createAction('[Game State Component] Update blank letter', props<{x: number, y: number, letter: string}>());
 
+/* MOVE */
 export const makeMove = createAction('[Game State Component] Confirm');
 export const moveValidateSuccess = createAction('[Game State Component] Confirm - board validation success');
 export const moveValidateError = createAction('[Game State Component] Confirm - board validation error', props<BoardValidationResult>());
 export const makeMoveSuccess = createAction('[Game State Component] Confirm - make move success', props<MoveResult>());
 
+/* OTHER */
 export const refreshBoard = createAction('[Game State Component] Refresh board', props<Board>());
 
 export const failure = createAction('[Game State Component] Common failure', props<{ error: string }>());

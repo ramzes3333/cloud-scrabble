@@ -11,7 +11,7 @@ import {GameState} from "../../state/game-state/game-state";
 import {selectSolution, selectStartedFlag} from "../../state/game-state/game-state.selectors";
 import {
   clearSuggestedWord,
-  makeMove,
+  makeMove, putSuggestedWord,
   resolve,
   showSuggestedWord,
   start
@@ -104,6 +104,10 @@ export class GamePanelComponent implements OnInit {
 
   clearPotentialWord() {
     this.store.dispatch(clearSuggestedWord());
+  }
+
+  putSuggestedWord(word: GuiWord) {
+    this.store.dispatch(putSuggestedWord(word));
   }
 
   relatedWordsTooltip(word: GuiWord): string {

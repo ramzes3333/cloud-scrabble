@@ -5,7 +5,7 @@ import {GameState} from "../../state/game-state/game-state";
 import {init, preview} from "../../state/game-state/game-state.actions";
 import {Subscription} from "rxjs";
 import {BoardElement} from "../model/board-element";
-import {selectBoard, selectBoardParameters} from "../../state/game-state/game-state.selectors";
+import {selectBoardParameters} from "../../state/game-state/game-state.selectors";
 
 @Component({
   selector: 'app-board',

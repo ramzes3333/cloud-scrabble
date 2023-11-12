@@ -7,7 +7,11 @@ import {Move} from "../model/move";
 import {select, Store} from "@ngrx/store";
 import {GameState} from "../../state/game-state/game-state";
 import {combineLatest, Subscription} from "rxjs";
-import {selectActualPlayerId, selectBoard, selectStartedFlag} from "../../state/game-state/game-state.selectors";
+import {
+  selectActualPlayerId,
+  selectRacks,
+  selectStartedFlag
+} from "../../state/game-state/game-state.selectors";
 import {move} from "../../state/game-state/game-state.actions";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {map} from "rxjs/operators";
@@ -35,10 +39,10 @@ export class RackComponent implements OnInit {
 
   ngOnInit(): void {
     this.subscriptions.push(
-      this.store.pipe(select(selectBoard)).subscribe((board) => {
-        if (board && board.racks && board.racks.length >= this.rackNumber && board.racks[this.rackNumber].letters) {
-          this.movableFields = this.convertBoardLettersToMovableFields(0, board.racks[this.rackNumber].letters);
-          this.playerId = board.racks[this.rackNumber].playerId;
+      this.store.pipe(select(selectRacks)).subscribe((racks) => {
+        if (racks && racks.length >= this.rackNumber && racks[this.rackNumber].letters) {
+          this.movableFields = this.convertBoardLettersToMovableFields(0, racks[this.rackNumber].letters);
+          this.playerId = racks[this.rackNumber].playerId;
         } else {
           this.movableFields = [];
         }

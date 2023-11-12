@@ -5,13 +5,16 @@ import {Word as GuiWord} from "../game-ui/model/word";
 import {Observable} from "rxjs";
 import {GameManagerService} from "../clients/game-manager/game-manager.service";
 import {Game} from "../clients/game-manager/model/game";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Injectable({
   providedIn: 'root'
 })
 export class GameService {
 
-  constructor(private tileManager: TileManagerService, private gameManagerService: GameManagerService) {
+  constructor(private tileManager: TileManagerService, private gameManagerService: GameManagerService,
+              private snackBar: MatSnackBar) {
   }
 
   getGame(id: string): Observable<Game> {
@@ -24,6 +27,15 @@ export class GameService {
 
   getCharset(boardId: string): Observable<string[]> {
       return this.tileManager.getCharset(boardId);
+  }
+
+  showError(error: string) {
+    this.snackBar.open(`${error}`, 'Zamknij', {
+      duration: 5000,
+      panelClass: ['background-red'],
+      horizontalPosition: 'right',
+      verticalPosition: 'top'
+    });
   }
 }
 

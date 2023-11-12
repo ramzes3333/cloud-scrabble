@@ -60,6 +60,9 @@ export class FieldComponent implements OnInit {
           this.movable = field.letter.movable;
           this.suggested = field.letter.suggested;
           this.invalid = field.letter.invalid;
+          if(this.movable) {
+            this.addMovableField();
+          }
         } else {
           this.letter = undefined;
           this.blank = undefined;

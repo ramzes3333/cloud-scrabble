@@ -2,7 +2,7 @@ import {Field} from "./field";
 import {Rack} from "./rack";
 import {BoardParameters} from "./board-parameters";
 
-export class BoardReqest {
+export class BoardRequest {
   public id: string;
   public fields: Field[];
   public racks: Rack[];

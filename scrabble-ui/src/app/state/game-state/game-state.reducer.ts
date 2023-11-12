@@ -7,7 +7,7 @@ import {
   previewSuccess, refreshBoard,
   resolveSuccess, setCharset,
   start, updateBlankLetter,
-  moveValidateError, showSuggestedWord, clearSuggestedWord
+  moveValidateError, showSuggestedWord, clearSuggestedWord, putSuggestedWord
 } from "./game-state.actions";
 import {
   Field,
@@ -17,7 +17,6 @@ import {
   racksFromBoard
 } from "../../model/board";
 import {Move} from "../../game-ui/model/move";
-import {BoardElement} from "../../game-ui/model/board-element";
 import {Element} from "../../game-ui/model/element";
 
 export const initialState : GameState = {
@@ -66,16 +65,29 @@ export const gameStateReducer = createReducer(initialState,
       fields: removeSuggestedWord(state.fields)
     };
   }),
+  on(putSuggestedWord, (state, { elements }) => {
+    if (!state.started || !state.fields || !state.racks || !state.actualPlayerId) {
+      return state;
+    }
+
+    return {
+      ...state,
+      fields: putSuggestedWordIntoFields(state.fields, elements),
+      racks: removeLettersFromSuggestedWordFromRack(state.actualPlayerId, state.racks, elements),
+      solution: undefined
+    };
+  }),
   on(move, (state, move) => {
-    if (!state.started || !state.fields || !state.racks) {
+    if (!state.started || !state.fields || !state.racks || !state.actualPlayerId) {
       return state;
     }
 
     return {
       ...state,
       fields: updateFields(state.fields, move),
-      racks: updateRack(state.racks, move),
-      incorrectFields: []
+      racks: updateRack(state.actualPlayerId, state.racks, move),
+      incorrectFields: [],
+      solution: undefined
     };
   }),
   on(moveValidateError, (state, validationResult) => {
@@ -107,6 +119,59 @@ export const gameStateReducer = createReducer(initialState,
 );
 
 
+function determineRackNumberForActualPlayer(racks: Rack[], actualPlayerId: string): number | null {
+  const index = racks.findIndex(r => r.playerId === actualPlayerId);
+  return index !== -1 ? index : null;
+}
+
+function putSuggestedWordIntoFields(fields: Field[], elements: Element[]) {
+  return fields.map(field => {
+    const element = elements.find(e => e.x === field.x && e.y === field.y && !e.onBoard);
+    if (element) {
+      return {
+        ...field,
+        letter: {
+          letter: element.letter.toUpperCase(),
+          blank: element.blank,
+          points: element.points,
+          movable: true,
+          suggested: false,
+          invalid: false
+        }
+      };
+    }
+    return field;
+  });
+}
+
+function removeLettersFromSuggestedWordFromRack(actualPlayerId: string, racks: Rack[], elements: Element[]) {
+  const rackNumber = determineRackNumberForActualPlayer(racks, actualPlayerId);
+  if (racks.length === 0 || rackNumber === null) {
+    return racks;
+  }
+
+  let updatedLetters = [...racks[rackNumber].letters];
+  elements.forEach(element => {
+    if(element.onBoard) {
+      return
+    }
+    const index = updatedLetters.findIndex(letter =>
+      letter.blank === element.blank &&
+      (element.blank || letter.letter.toUpperCase() === element.letter.toUpperCase()));
+
+    if (index !== -1) {
+      updatedLetters.splice(index, 1);
+    }
+  });
+
+  const updatedRack = {
+    ...racks[rackNumber],
+    letters: updatedLetters
+  };
+
+  return racks.map((r, index) => index === rackNumber ? updatedRack : r);
+}
+
 function updateFields(fields: Field[], move: Move): Field[] {
   return fields.map(field => {
     let modifiedField = {...field};
@@ -130,17 +195,8 @@ function updateFields(fields: Field[], move: Move): Field[] {
   });
 }
 
-function determineRackNumber(move: Move): number | null {
-  if (move.from >= BoardElement.RACK0 && move.from <= BoardElement.RACK3) {
-    return move.from - BoardElement.RACK0;
-  } else if (move.to >= BoardElement.RACK0 && move.to <= BoardElement.RACK3){
-    return move.to - BoardElement.RACK0;
-  }
-  return null;
-}
-
-function updateRack(racks: Rack[], move: Move): Rack[] {
-  const rackNumber = determineRackNumber(move);
+function updateRack(actualPlayerId: string, racks: Rack[], move: Move): Rack[] {
+  const rackNumber = determineRackNumberForActualPlayer(racks, actualPlayerId);
   if (racks.length === 0 || rackNumber === null) {
     return racks;
   }

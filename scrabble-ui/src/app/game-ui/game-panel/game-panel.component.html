@@ -26,7 +26,7 @@
     <table mat-table [dataSource]="words" class="words-table mat-elevation-z1">
       <ng-container matColumnDef="words">
         <th mat-header-cell *matHeaderCellDef> Words </th>
-        <td mat-cell *matCellDef="let word" (mouseenter)="showPotentialWord(word)">
+        <td mat-cell *matCellDef="let word" (mouseenter)="showPotentialWord(word)" (click)="putSuggestedWord(word)">
           <div class="word-container">
             <ng-container *ngFor="let element of word.elements">
               <div class="letter points-{{element.points}}">
