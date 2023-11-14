@@ -2,6 +2,7 @@ package com.aryzko.scrabble.scrabbleboardmanager.domain.service;
 
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Board;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Solution;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Word;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -26,24 +27,24 @@ class RelatedWordsFillServiceTest {
 
         //then
         assertEquals(1, solution.getWords().size());
-        Solution.Word word = solution.getWords().get(0);
+        Word word = solution.getWords().get(0);
         assertEquals(3, word.getRelatedWords().size());
 
-        Solution.Word relatedWord1 = getWord(word, "on");
+        Word relatedWord1 = getWord(word, "on");
         assertNotNull(relatedWord1);
         assertEquals(0, relatedWord1.getElements().get(0).getX());
         assertEquals(0, relatedWord1.getElements().get(1).getX());
         assertEquals(1, relatedWord1.getElements().get(0).getY());
         assertEquals(2, relatedWord1.getElements().get(1).getY());
 
-        Solution.Word relatedWord2 = getWord(word, "no");
+        Word relatedWord2 = getWord(word, "no");
         assertNotNull(relatedWord2);
         assertEquals(1, relatedWord2.getElements().get(0).getX());
         assertEquals(1, relatedWord2.getElements().get(1).getX());
         assertEquals(1, relatedWord2.getElements().get(0).getY());
         assertEquals(2, relatedWord2.getElements().get(1).getY());
 
-        Solution.Word relatedWord3 = getWord(word, "as");
+        Word relatedWord3 = getWord(word, "as");
         assertNotNull(relatedWord2);
         assertEquals(2, relatedWord3.getElements().get(0).getX());
         assertEquals(2, relatedWord3.getElements().get(1).getX());
@@ -51,7 +52,7 @@ class RelatedWordsFillServiceTest {
         assertEquals(2, relatedWord3.getElements().get(1).getY());
     }
 
-    private static Solution.Word getWord(Solution.Word word, String value) {
+    private static Word getWord(Word word, String value) {
         return word.getRelatedWords().stream()
                 .filter(w -> w.getWordAsString().equals(value))
                 .findFirst().orElse(null);
@@ -68,14 +69,14 @@ class RelatedWordsFillServiceTest {
         return solutionBuilder.build();
     }
 
-    private static Solution.Word prepareWord(List<Solution.Word.Element> elements) {
-        return Solution.Word.builder()
+    private static Word prepareWord(List<Word.Element> elements) {
+        return Word.builder()
                 .elements(elements)
                 .build();
     }
 
-    private static Solution.Word.Element prepareElement(Integer x, Integer y, Character character, boolean onBoard) {
-        return Solution.Word.Element.builder()
+    private static Word.Element prepareElement(Integer x, Integer y, Character character, boolean onBoard) {
+        return Word.Element.builder()
                 .x(x)
                 .y(y)
                 .letter(character)

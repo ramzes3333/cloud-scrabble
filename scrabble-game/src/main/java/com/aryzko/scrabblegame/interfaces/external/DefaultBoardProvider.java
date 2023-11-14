@@ -33,4 +33,11 @@ public class DefaultBoardProvider implements BoardProvider {
     public Board update(Board board) {
         return boardMapper.toBoard(boardClient.updateBoard(boardMapper.toBoardRequest(board)));
     }
+
+    @Override
+    public Integer scoreWord(String boardId, Tiles tiles) {
+        return boardClient.scoreTiles(boardId, new BoardClient.Tiles(tiles.tiles().stream()
+                .map(t -> new BoardClient.Tile(t.x(), t.y(), t.letter(), t.blank()))
+                .toList()));
+    }
 }

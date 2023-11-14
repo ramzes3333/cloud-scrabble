@@ -4,6 +4,7 @@ import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Board;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Bonus;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Position;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Solution;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Word;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.TileManagerProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,15 @@ public class ScoringService {
 
     private final TileManagerProvider tileManagerProvider;
 
+    public Word score(final Board board, final Word word) {
+        final Map<Character, Integer> pointsMap = tileManagerProvider.getTileConfiguration(board.getId().toString()).getPointsMap();
+        final Map<Position, Bonus> bonusMap = board.getBonusMap();
+        final List<Position> positionsWithBlank = board.getPositionsWithBlank();
+
+        processWord(board, pointsMap, bonusMap, positionsWithBlank, word);
+        return word;
+    }
+
     public Solution score(final Board board, final Solution solution) {
         final Map<Character, Integer> pointsMap = tileManagerProvider.getTileConfiguration(board.getId().toString()).getPointsMap();
         final Map<Position, Bonus> bonusMap = board.getBonusMap();
@@ -37,57 +47,43 @@ public class ScoringService {
         return solution;
     }
 
-    private void processRelatedWords(Board board, Solution solution, Map<Character, Integer> pointsMap, Map<Position, Bonus> bonusMap, List<Position> positionsWithBlank) {
+    private void processWords(Board board, Solution solution, Map<Character, Integer> pointsMap, Map<Position, Bonus> bonusMap, List<Position> positionsWithBlank) {
         solution.getWords()
-                .forEach(word -> {
-                    word.setPoints(score(board.getBoardParameters().getRackSize(),
-                            pointsMap,
-                            bonusMap,
-                            positionsWithBlank,
-                            word));
-                    word.setBonuses(
-                            getBonuses(word, bonusMap)
-                    );
-                });
+                .forEach(word -> processWord(board, pointsMap, bonusMap, positionsWithBlank, word));
     }
 
-    private void processWords(Board board, Solution solution, Map<Character, Integer> pointsMap, Map<Position, Bonus> bonusMap, List<Position> positionsWithBlank) {
+    private void processWord(Board board, Map<Character, Integer> pointsMap, Map<Position, Bonus> bonusMap, List<Position> positionsWithBlank, Word word) {
+        word.setPoints(score(board.getBoardParameters().getRackSize(), pointsMap, bonusMap, positionsWithBlank, word));
+        word.setBonuses(getBonuses(word, bonusMap));
+    }
+
+    private void processRelatedWords(Board board, Solution solution, Map<Character, Integer> pointsMap, Map<Position, Bonus> bonusMap, List<Position> positionsWithBlank) {
         solution.getWords().stream()
-                .map(Solution.Word::getRelatedWords)
+                .map(Word::getRelatedWords)
                 .flatMap(Collection::stream)
-                .forEach(relatedWord -> {
-                            relatedWord.setPoints(
-                                    score(board.getBoardParameters().getRackSize(),
-                                            pointsMap,
-                                            bonusMap,
-                                            positionsWithBlank,
-                                            relatedWord));
-                            relatedWord.setBonuses(
-                                    getBonuses(relatedWord, bonusMap)
-                            );
-                        }
+                .forEach(relatedWord -> processWord(board, pointsMap, bonusMap, positionsWithBlank, relatedWord)
                 );
     }
 
     private static void processRelatedWordElements(Solution solution, Map<Character, Integer> pointsMap, List<Position> positionsWithBlank) {
         solution.getWords().stream()
-                .map(Solution.Word::getRelatedWords)
+                .map(Word::getRelatedWords)
                 .flatMap(Collection::stream)
-                .map(Solution.Word::getElements)
+                .map(Word::getElements)
                 .flatMap(Collection::stream)
                 .forEach(el -> el.setPoints(getLetterPoints(pointsMap, positionsWithBlank, el)));
     }
 
     private static void processWordElements(Solution solution, Map<Character, Integer> pointsMap, List<Position> positionsWithBlank) {
         solution.getWords().stream()
-                .map(Solution.Word::getElements)
+                .map(Word::getElements)
                 .flatMap(Collection::stream)
                 .forEach(el -> el.setPoints(getLetterPoints(pointsMap, positionsWithBlank, el)));
     }
 
-    private static List<Bonus> getBonuses(Solution.Word word, Map<Position, Bonus> bonusMap) {
+    private static List<Bonus> getBonuses(Word word, Map<Position, Bonus> bonusMap) {
         return word.getElements().stream()
-                .filter(not(Solution.Word.Element::isOnBoard))
+                .filter(not(Word.Element::isOnBoard))
                 .map(e -> getBonus(bonusMap, e))
                 .filter(b -> !b.equals(Bonus.None))
                 .collect(Collectors.toList());
@@ -97,7 +93,7 @@ public class ScoringService {
                       final Map<Character, Integer> pointsMap,
                       final Map<Position, Bonus> bonusMap,
                       final List<Position> positionsWithBlank,
-                      final Solution.Word word) {
+                      final Word word) {
 
         List<Bonus> wordBonus = word.getElements().stream()
                 .map(e -> getBonus(bonusMap, e))
@@ -109,7 +105,7 @@ public class ScoringService {
                 .sum();
 
         boolean bingoBonus = word.getElements().stream()
-                .filter(not(Solution.Word.Element::isOnBoard))
+                .filter(not(Word.Element::isOnBoard))
                 .count() == rackSize;
 
         int wordPoints = wordBonus.stream()
@@ -118,14 +114,14 @@ public class ScoringService {
                 .orElse(1) * lettersPoints + (bingoBonus ? BINGO_BONUS : 0);
 
         return wordPoints + word.getRelatedWords().stream()
-                .mapToInt(Solution.Word::getPoints)
+                .mapToInt(Word::getPoints)
                 .sum();
     }
 
     private static Integer getLetterPoints(
             final Map<Character, Integer> pointsMap,
             final List<Position> positionsWithBlank,
-            final Solution.Word.Element e) {
+            final Word.Element e) {
 
         if (e.isBlank() || positionsWithBlank.contains(Position.builder().x(e.getX()).y(e.getY()).build())) {
             return 0;
@@ -134,23 +130,23 @@ public class ScoringService {
                 .orElseThrow(() -> new IllegalStateException("No tile configuration for letter"));
     }
 
-    private static Bonus getBonus(Map<Position, Bonus> bonusMap, Solution.Word.Element e) {
+    private static Bonus getBonus(Map<Position, Bonus> bonusMap, Word.Element e) {
         return e.isOnBoard() ? Bonus.None : ofNullable(bonusMap.get(getPosition(e))).orElse(Bonus.None);
     }
 
-    private static Position getPosition(Solution.Word.Element e) {
+    private static Position getPosition(Word.Element e) {
         return Position.builder()
                 .x(e.getX())
                 .y(e.getY())
                 .build();
     }
 
-    private Bonus getLetterBonus(Map<Position, Bonus> bonusMap, Solution.Word.Element e) {
+    private Bonus getLetterBonus(Map<Position, Bonus> bonusMap, Word.Element e) {
         Bonus bonus = getBonus(bonusMap, e);
         return isLetterBonus(bonus) ? bonus : Bonus.None;
     }
 
-    private Bonus getWordBonus(Map<Position, Bonus> bonusMap, Solution.Word.Element e) {
+    private Bonus getWordBonus(Map<Position, Bonus> bonusMap, Word.Element e) {
         Bonus bonus = getBonus(bonusMap, e);
         return isWordBonus(bonus) ? bonus : Bonus.None;
     }

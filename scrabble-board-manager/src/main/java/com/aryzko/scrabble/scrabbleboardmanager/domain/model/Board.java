@@ -47,6 +47,17 @@ public class Board {
     }
 
     @JsonIgnore
+    public Map<Position, Field> geFieldMap() {
+        return fields.stream()
+                .collect(Collectors.toMap(
+                        field -> Position.builder()
+                                .x(field.getX())
+                                .y(field.getY())
+                                .build(),
+                        field -> field));
+    }
+
+    @JsonIgnore
     public Map<Position, Bonus> getBonusMap() {
         return fields.stream()
                 .collect(Collectors.toMap(
@@ -58,7 +69,7 @@ public class Board {
                                 orElse(Bonus.None)));
     }
 
-    public Map<Position, DirectionalField> buildFieldMap() {
+    public Map<Position, DirectionalField> buildDirectionalFieldMap() {
         Map<Position, Optional<Character>> characterMap = this.getCharacterMap();
 
         Map<Position, DirectionalField> fieldMap = characterMap.keySet().stream()
@@ -145,10 +156,5 @@ public class Board {
         public boolean isCharSet() {
             return field.getCharacter().isPresent();
         }
-    }
-
-    public enum TransposeType {
-        FLIP_HORIZONTALLY_AND_ROTATE_LEFT,
-        FLIP_HORIZONTALLY_AND_ROTATE_RIGHT
     }
 }

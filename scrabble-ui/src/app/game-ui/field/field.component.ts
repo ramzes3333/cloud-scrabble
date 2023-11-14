@@ -23,7 +23,7 @@ export class FieldComponent implements OnInit {
   @Input() x!: number;
   @Input() y!: number;
 
-  bonus!: string;
+  bonus?: string;
   letter?: string;
   blank?: boolean;
   points?: number;

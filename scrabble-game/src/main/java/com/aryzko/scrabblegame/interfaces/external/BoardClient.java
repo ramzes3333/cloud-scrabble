@@ -28,6 +28,12 @@ public interface BoardClient {
     @GetMapping("/api/boards/validate")
     BoardValidationResultResponse validateBoard(BoardRequest boardRequest);
 
+    @PostMapping("/api/boards/{uuid}/score-tiles")
+    Integer scoreTiles(@PathVariable("uuid") String id, Tiles tiles);
+
+    record Tiles (List<Tile> tiles) { }
+    record Tile (int x, int y, char letter, boolean blank) { }
+
     @Value
     class BoardValidationResultResponse {
 

@@ -27,7 +27,7 @@ public class LinePreparationService {
 
     protected PreparedLines prepareLines(final Board board) {
 
-        final Map<Position, Board.DirectionalField> fieldMap = board.buildFieldMap();
+        final Map<Position, Board.DirectionalField> fieldMap = board.buildDirectionalFieldMap();
 
         return PreparedLines.builder()
                 .lines(fieldMap.values().stream()

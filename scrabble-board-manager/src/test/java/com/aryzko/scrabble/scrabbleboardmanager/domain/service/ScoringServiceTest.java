@@ -2,6 +2,7 @@ package com.aryzko.scrabble.scrabbleboardmanager.domain.service;
 
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Board;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Solution;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Word;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.TileManagerProvider;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.model.TileConfiguration;
 import org.junit.jupiter.api.Test;
@@ -42,20 +43,20 @@ class ScoringServiceTest {
 
         //then
         assertEquals(solution.getWords().size(), result.getWords().size());
-        Solution.Word word1 = getWord(solution, "fok"); //(5+1+(2*2))*3 + 50 (bonus)
+        Word word1 = getWord(solution, "fok"); //(5+1+(2*2))*3 + 50 (bonus)
         assertNotNull(word1);
         assertEquals(80, word1.getPoints());
 
-        Solution.Word word2 = getWord(solution, "koc"); //(2+1+(2*3))*2 + 50 (bonus)
+        Word word2 = getWord(solution, "koc"); //(2+1+(2*3))*2 + 50 (bonus)
         assertNotNull(word2);
         assertEquals(68, word2.getPoints());
 
-        Solution.Word word3 = getWord(solution, "ok"); //1+2*2
+        Word word3 = getWord(solution, "ok"); //1+2*2
         assertNotNull(word3);
         assertEquals(5, word3.getPoints());
     }
 
-    private static Solution.Word getWord(Solution solution, String word) {
+    private static Word getWord(Solution solution, String word) {
         return solution.getWords().stream()
                 .filter(w -> w.getWordAsString().equals(word))
                 .findFirst().orElse(null);
@@ -81,14 +82,14 @@ class ScoringServiceTest {
         return solutionBuilder.build();
     }
 
-    private static Solution.Word prepareWord(List<Solution.Word.Element> elements) {
-        return Solution.Word.builder()
+    private static Word prepareWord(List<Word.Element> elements) {
+        return Word.builder()
                 .elements(elements)
                 .build();
     }
 
-    private static Solution.Word.Element prepareElement(Integer x, Integer y, Character character, boolean onBoard) {
-        return Solution.Word.Element.builder()
+    private static Word.Element prepareElement(Integer x, Integer y, Character character, boolean onBoard) {
+        return Word.Element.builder()
                 .x(x)
                 .y(y)
                 .letter(character)

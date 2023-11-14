@@ -4,6 +4,8 @@ import com.aryzko.scrabble.scrabbleboardmanager.domain.mapper.DictionaryProvider
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Board;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Letter;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Solution;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.TransposeType;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Word;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.DictionaryProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,11 +35,11 @@ public class BoardResolver {
         Board boardFromDb = boardService.getBoard(board.getId());
         board.setBoardParameters(boardFromDb.getBoardParameters());
 
-        List<Solution.Word> words = new ArrayList<>();
+        List<Word> words = new ArrayList<>();
         words.addAll(horizontalResolve(playerId, board).getWords());
         words.addAll(verticalResolve(playerId, board).getWords());
 
-        words.sort(Comparator.comparing(Solution.Word::getPoints).reversed());
+        words.sort(Comparator.comparing(Word::getPoints).reversed());
 
         return Solution.builder()
                 .words(words)
@@ -62,9 +64,9 @@ public class BoardResolver {
     }
 
     private Solution verticalResolve(final String playerId, final Board board) {
-        final Board transposedBoard = board.transpose(Board.TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_LEFT);
+        final Board transposedBoard = board.transpose(TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_LEFT);
         return horizontalResolve(playerId, transposedBoard)
-                .transpose(Solution.TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_RIGHT);
+                .transpose(TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_RIGHT);
     }
 
     private List<Character> prepareAvailableLetters(final String playerId, Board board) {

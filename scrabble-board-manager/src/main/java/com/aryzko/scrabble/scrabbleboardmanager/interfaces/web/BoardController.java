@@ -3,6 +3,7 @@ package com.aryzko.scrabble.scrabbleboardmanager.interfaces.web;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.command.CreateBoardCommand;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.service.BoardResolver;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.service.BoardService;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.service.TilesScoring;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.validator.BoardValidationResult;
 import com.aryzko.scrabble.scrabbleboardmanager.interfaces.web.common.Bonus;
 import com.aryzko.scrabble.scrabbleboardmanager.interfaces.web.mapper.BoardMapper;
@@ -39,6 +40,7 @@ public class BoardController {
     private final BoardMapper boardMapper;
     private final SolutionMapper solutionMapper;
     private final BoardValidationMapper boardValidationMapper;
+    private final TilesScoring tilesScoring;
 
     @GetMapping("preview")
     public BoardPreviewResponse preview() {
@@ -83,6 +85,11 @@ public class BoardController {
         return solutionMapper.convert(resolver.resolve(playerId, boardMapper.toBoard(board)));
     }
 
+    @PostMapping("{uuid}/score-tiles")
+    public Integer scoreWord(@PathVariable("uuid") String boardId, @RequestBody Tiles tiles) {
+        return tilesScoring.scoreTiles(boardId, tiles.toDomainTiles()).getPoints();
+    }
+
     @Data
     public static class CreateBoardRequest {
         List<String> playerIds;
@@ -110,4 +117,16 @@ public class BoardController {
             private Integer verticalSize;
         }
     }
+
+    public record Tiles(List<Tile> tiles) {
+        com.aryzko.scrabble.scrabbleboardmanager.domain.model.Tiles toDomainTiles() {
+            return new com.aryzko.scrabble.scrabbleboardmanager.domain.model.Tiles(
+                    tiles.stream()
+                            .map(e -> new com.aryzko.scrabble.scrabbleboardmanager.domain.model.Tile(
+                                    e.x(), e.y(), e.letter(), e.blank()))
+                            .toList());
+        }
+    }
+
+    public record Tile(int x, int y, char letter, boolean blank) { }
 }

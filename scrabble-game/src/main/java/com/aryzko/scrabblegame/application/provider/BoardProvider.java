@@ -10,4 +10,8 @@ public interface BoardProvider {
     Board getBoard(String id);
     BoardValidationResultResponse validateBoard(Board board);
     Board update(Board board);
+    Integer scoreWord(String boardId, Tiles tiles);
+
+    record Tiles (List<Tile> tiles) { }
+    record Tile (int x, int y, char letter, boolean blank) { }
 }

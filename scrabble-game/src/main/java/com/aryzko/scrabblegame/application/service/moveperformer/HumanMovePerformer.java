@@ -48,7 +48,14 @@ public class HumanMovePerformer {
         List<Tile> newTiles = tileProvider.getTiles(board.getId(), tiles.size());
         board.getRack(playerId).getLetters().addAll(convertTile(newTiles));
 
+        playerMoveBuilder.movePoints(boardProvider.scoreWord(board.getId(), prepareWord(tiles)));
         return Either.left(playerMoveBuilder.build());
+    }
+
+    private BoardProvider.Tiles prepareWord(List<BoardTile> tiles) {
+        return new BoardProvider.Tiles(tiles.stream()
+                .map(t -> new BoardProvider.Tile(t.getX(), t.getY(), t.getLetter(), t.isBlank()))
+                .toList());
     }
 
     public List<RackTile> convertBoardTile(List<BoardTile> tiles) {

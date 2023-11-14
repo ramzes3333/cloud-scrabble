@@ -1,6 +1,8 @@
 package com.aryzko.scrabble.scrabbleboardmanager.domain;
 
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Solution;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.TransposeType;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Word;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -16,11 +18,11 @@ class SolutionTest {
         Solution solution = prepareSolution();
 
         //when
-        Solution result = solution.transpose(Solution.TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_RIGHT);
+        Solution result = solution.transpose(TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_RIGHT);
 
         //then
         assertNotNull(result);
-        Solution.Word word1 = getWord(result, "oto");
+        Word word1 = getWord(result, "oto");
         assertNotNull(word1);
         assertEquals(3, word1.getElements().get(0).getX());
         assertEquals(3, word1.getElements().get(1).getX());
@@ -29,7 +31,7 @@ class SolutionTest {
         assertEquals(1, word1.getElements().get(1).getY());
         assertEquals(2, word1.getElements().get(2).getY());
 
-        Solution.Word word2 = getWord(result, "koc");
+        Word word2 = getWord(result, "koc");
         assertNotNull(word2);
         assertEquals(0, word2.getElements().get(0).getX());
         assertEquals(1, word2.getElements().get(1).getX());
@@ -39,7 +41,7 @@ class SolutionTest {
         assertEquals(3, word2.getElements().get(2).getY());
     }
 
-    private static Solution.Word getWord(Solution solution, String word) {
+    private static Word getWord(Solution solution, String word) {
         return solution.getWords().stream()
                 .filter(w -> w.getWordAsString().equals(word))
                 .findFirst().orElse(null);
@@ -60,14 +62,14 @@ class SolutionTest {
         return solutionBuilder.build();
     }
 
-    private static Solution.Word prepareWord(List<Solution.Word.Element> elements) {
-        return Solution.Word.builder()
+    private static Word prepareWord(List<Word.Element> elements) {
+        return Word.builder()
                 .elements(elements)
                 .build();
     }
 
-    private static Solution.Word.Element prepareElement(Integer x, Integer y, Character character, boolean onBoard) {
-        return Solution.Word.Element.builder()
+    private static Word.Element prepareElement(Integer x, Integer y, Character character, boolean onBoard) {
+        return Word.Element.builder()
                 .x(x)
                 .y(y)
                 .letter(character)

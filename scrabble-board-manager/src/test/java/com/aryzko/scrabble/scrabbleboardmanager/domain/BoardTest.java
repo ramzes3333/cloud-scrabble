@@ -3,6 +3,7 @@ package com.aryzko.scrabble.scrabbleboardmanager.domain;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Board;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Bonus;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Field;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.TransposeType;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -22,7 +23,7 @@ class BoardTest {
         Board board = loadObjectFromJson("/domain/board-to-rotate-5x5.json", Board.class);
 
         //when
-        Board result = board.transpose(Board.TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_LEFT);
+        Board result = board.transpose(TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_LEFT);
 
         //then
         assertNotNull(result);
