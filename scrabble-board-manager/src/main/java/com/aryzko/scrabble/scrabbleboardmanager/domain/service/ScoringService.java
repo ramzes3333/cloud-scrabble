@@ -39,10 +39,10 @@ public class ScoringService {
         final Map<Position, Bonus> bonusMap = board.getBonusMap();
         final List<Position> positionsWithBlank = board.getPositionsWithBlank();
 
-        processWords(board, solution, pointsMap, bonusMap, positionsWithBlank);
         processRelatedWords(board, solution, pointsMap, bonusMap, positionsWithBlank);
-        processWordElements(solution, pointsMap, positionsWithBlank);
+        processWords(board, solution, pointsMap, bonusMap, positionsWithBlank);
         processRelatedWordElements(solution, pointsMap, positionsWithBlank);
+        processWordElements(solution, pointsMap, positionsWithBlank);
 
         return solution;
     }

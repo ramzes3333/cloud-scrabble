@@ -12,9 +12,12 @@ import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -23,6 +26,12 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class WordFinder {
+
+    private final Collator collator;
+
+    public WordFinder() {
+        collator = Collator.getInstance(new Locale("pl", "PL"));
+    }
 
     public Word findWord(Board board, Tiles tiles) {
         Set<Word> foundWords = findWordHorizontally(board, tiles);
@@ -67,7 +76,9 @@ public class WordFinder {
 
     private Word chooseWord(Set<Word> foundWords) {
         log.info("Found words: " + foundWords.stream().map(Word::getWordAsString).collect(Collectors.joining(", ")));
-        return foundWords.stream().findFirst().orElseThrow(() -> new IllegalStateException("Word not found"));
+        return foundWords.stream()
+                .min(Comparator.comparing(Word::getWordAsString, collator))
+                .orElseThrow(() -> new IllegalStateException("Word not found"));
     }
 
     private void extendWord(Map<Position, Field> fieldMap, Tiles tiles, Position start, List<Word.Element> elements, int direction) {
