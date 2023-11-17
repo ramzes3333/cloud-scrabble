@@ -7,6 +7,7 @@ import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Solution;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Word;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,28 +15,33 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.function.Predicate.not;
 
+@Slf4j
 @Service
 public class RelatedWordsFillService {
     public void fill(final Board board, final Solution solution) {
         final Map<Position, Board.DirectionalField> fieldMap = board.buildDirectionalFieldMap();
 
         solution.getWords()
-                .forEach(w -> fill(fieldMap, w));
+                .forEach(w -> w.getRelatedWords().addAll(getRelatedWords(fieldMap, w)));
     }
 
-    public void fill(final Board board, final Word word) {
+    public List<Word> getRelatedWords(final Board board, final Word word) {
         final Map<Position, Board.DirectionalField> fieldMap = board.buildDirectionalFieldMap();
-
-        fill(fieldMap, word);
+        List<Word> relatedWords = getRelatedWords(fieldMap, word);
+        log.info("Found related words to %s: %s".formatted(word.getWordAsString(), relatedWords.stream()
+                .map(Word::getWordAsString)
+                .collect(Collectors.joining(", "))));
+        return relatedWords;
     }
 
-    private void fill(final Map<Position, Board.DirectionalField> fieldMap, Word word) {
-        List<Word> relatedWords = word.getElements().stream()
+    private List<Word> getRelatedWords(final Map<Position, Board.DirectionalField> fieldMap, Word word) {
+        return word.getElements().stream()
                 .filter(not(Word.Element::isOnBoard))
                 .map(e -> prepareTemporaryField(
                         fieldMap,
@@ -45,8 +51,6 @@ public class RelatedWordsFillService {
                 .filter(this::isAdjacentToUpOrDown)
                 .map(this::getWord)
                 .toList();
-
-        word.getRelatedWords().addAll(relatedWords);
     }
 
     private PotentialField prepareTemporaryField(final Map<Position, Board.DirectionalField> fieldMap,

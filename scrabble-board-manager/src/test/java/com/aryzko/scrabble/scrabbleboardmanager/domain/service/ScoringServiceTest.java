@@ -77,6 +77,24 @@ class ScoringServiceTest {
         assertEquals(20, word1.getPoints());
     }
 
+    @Test
+    void score_wordAdjacentToEndOfExistingWord() throws IOException {
+        //given
+        Board board = loadObjectFromJson("/domain/service/board-to-resolve-15x15-word-adjacent-to-end-of-existing-word.json", Board.class);
+        TileConfiguration tileConfiguration =
+                loadObjectFromJson("/domain/service/tile-configuration.json", TileConfiguration.class);
+        Word solution = prepareWord();
+
+        when(tileManagerProvider.getTileConfiguration(board.getId().toString())).thenReturn(tileConfiguration);
+
+        //when
+        Word result = scoringService.score(board, solution);
+
+        //then
+        assertNotNull(result);
+        assertEquals(35, result.getPoints()); //9*3+2+1 + 3+1+1
+    }
+
     private static Word getWord(Solution solution, String word) {
         return solution.getWords().stream()
                 .filter(w -> w.getWordAsString().equals(word))
@@ -115,6 +133,18 @@ class ScoringServiceTest {
                                         prepareElement(1, 1, 'm', false)), emptyList())))));
 
         return solutionBuilder.build();
+    }
+
+    private Word prepareWord() {
+        return prepareWord(List.of(
+                                prepareElement(9, 5, 'ź', false),
+                                prepareElement(9, 6, 'l', false),
+                                prepareElement(9, 7, 'i', false)),
+                        List.of(
+                                prepareWord(List.of(
+                                        prepareElement(7, 7, 'b', true),
+                                        prepareElement(8, 7, 'o', true),
+                                        prepareElement(9, 7, 'i', false)), emptyList())));
     }
 
     private static Word prepareWord(List<Word.Element> elements, List<Word> relatedWords) {

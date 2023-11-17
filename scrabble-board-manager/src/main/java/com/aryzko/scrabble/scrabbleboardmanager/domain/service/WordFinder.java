@@ -37,7 +37,7 @@ public class WordFinder {
         Set<Word> foundWords = findWordHorizontally(board, tiles);
         foundWords.addAll(findWordVertically(board, tiles));
 
-        return chooseWord(foundWords);
+        return chooseWord(foundWords, tiles);
     }
 
     private Set<Word> findWordVertically(Board board, Tiles tiles) {
@@ -74,11 +74,27 @@ public class WordFinder {
         return foundWords;
     }
 
-    private Word chooseWord(Set<Word> foundWords) {
+    private Word chooseWord(Set<Word> foundWords, Tiles tiles) {
         log.info("Found words: " + foundWords.stream().map(Word::getWordAsString).collect(Collectors.joining(", ")));
         return foundWords.stream()
+                .filter(word -> matchesAllTiles(word, tiles))
+                .peek(word -> log.info("Matched word: " + word.getWordAsString()))
                 .min(Comparator.comparing(Word::getWordAsString, collator))
-                .orElseThrow(() -> new IllegalStateException("Word not found"));
+                .orElseThrow(() -> new IllegalStateException("No matching word found"));
+    }
+
+    private boolean matchesAllTiles(Word word, Tiles tiles) {
+        List<Word.Element> elements = word.getElements();
+
+        return tiles.getTiles().stream()
+                .allMatch(tile -> elements.stream()
+                        .anyMatch(element -> isMatchingElement(element, tile)));
+    }
+
+    private boolean isMatchingElement(Word.Element element, Tile tile) {
+        return element.getX() == tile.getX() && element.getY() == tile.getY()
+                && Character.toLowerCase(element.getLetter()) == Character.toLowerCase(tile.getLetter())
+                && element.isBlank() == tile.isBlank();
     }
 
     private void extendWord(Map<Position, Field> fieldMap, Tiles tiles, Position start, List<Word.Element> elements, int direction) {

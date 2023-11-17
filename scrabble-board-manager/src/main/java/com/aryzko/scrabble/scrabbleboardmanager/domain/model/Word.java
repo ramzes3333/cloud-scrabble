@@ -37,10 +37,6 @@ public class Word {
     }
 
     public Word transpose(TransposeType transposeType) {
-        if(transposeType == TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_LEFT) {
-            throw new NotImplementedException();
-        }
-
         return Word.builder()
                 .points(this.getPoints())
                 .elements(this.getElements().stream()
@@ -66,18 +62,20 @@ public class Word {
         private boolean onBoard;
 
         public Word.Element transpose(TransposeType transposeType) {
-            if(transposeType == TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_LEFT) {
+            if(transposeType.equals(TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_LEFT) ||
+                transposeType.equals(TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_RIGHT)) {
+
+                return Word.Element.builder()
+                        .x(this.getY())
+                        .y(this.getX())
+                        .letter(this.getLetter())
+                        .points(this.getPoints())
+                        .blank(this.isBlank())
+                        .onBoard(this.isOnBoard())
+                        .build();
+            } else {
                 throw new NotImplementedException();
             }
-
-            return Word.Element.builder()
-                    .x(this.getY())
-                    .y(this.getX())
-                    .letter(this.getLetter())
-                    .points(this.getPoints())
-                    .blank(this.isBlank())
-                    .onBoard(this.isOnBoard())
-                    .build();
         }
     }
 }

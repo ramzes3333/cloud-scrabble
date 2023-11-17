@@ -17,7 +17,7 @@ class RelatedWordsFillServiceTest {
     private RelatedWordsFillService relatedWordsFillService = new RelatedWordsFillService();
 
     @Test
-    void fill() throws IOException {
+    void fill_solution() throws IOException {
         //given
         Board board = loadObjectFromJson("/domain/service/board-to-resolve-3x3.json", Board.class);
         Solution solution = prepareSolution();
@@ -30,21 +30,21 @@ class RelatedWordsFillServiceTest {
         Word word = solution.getWords().get(0);
         assertEquals(3, word.getRelatedWords().size());
 
-        Word relatedWord1 = getWord(word, "on");
+        Word relatedWord1 = getRelatedWord(word, "on");
         assertNotNull(relatedWord1);
         assertEquals(0, relatedWord1.getElements().get(0).getX());
         assertEquals(0, relatedWord1.getElements().get(1).getX());
         assertEquals(1, relatedWord1.getElements().get(0).getY());
         assertEquals(2, relatedWord1.getElements().get(1).getY());
 
-        Word relatedWord2 = getWord(word, "no");
+        Word relatedWord2 = getRelatedWord(word, "no");
         assertNotNull(relatedWord2);
         assertEquals(1, relatedWord2.getElements().get(0).getX());
         assertEquals(1, relatedWord2.getElements().get(1).getX());
         assertEquals(1, relatedWord2.getElements().get(0).getY());
         assertEquals(2, relatedWord2.getElements().get(1).getY());
 
-        Word relatedWord3 = getWord(word, "as");
+        Word relatedWord3 = getRelatedWord(word, "as");
         assertNotNull(relatedWord2);
         assertEquals(2, relatedWord3.getElements().get(0).getX());
         assertEquals(2, relatedWord3.getElements().get(1).getX());
@@ -52,7 +52,20 @@ class RelatedWordsFillServiceTest {
         assertEquals(2, relatedWord3.getElements().get(1).getY());
     }
 
-    private static Word getWord(Word word, String value) {
+    @Test
+    void fill_wordAdjacentToEndOfExistingHorizontalWord() throws IOException {
+        //given
+        Board board = loadObjectFromJson("/domain/service/board-to-resolve-15x15-word-adjacent-to-end-of-existing-word.json", Board.class);
+        Word word = prepareWord();
+
+        //when
+        List<Word> relatedWords = relatedWordsFillService.getRelatedWords(board, word);
+
+        //then
+        assertEquals(0, relatedWords.size());
+    }
+
+    private static Word getRelatedWord(Word word, String value) {
         return word.getRelatedWords().stream()
                 .filter(w -> w.getWordAsString().equals(value))
                 .findFirst().orElse(null);
@@ -67,6 +80,13 @@ class RelatedWordsFillServiceTest {
                         prepareElement(2, 2, 's', false)))));
 
         return solutionBuilder.build();
+    }
+
+    private Word prepareWord() {
+        return prepareWord(List.of(
+                        prepareElement(9, 5, 'ź', false),
+                        prepareElement(9, 6, 'l', false),
+                        prepareElement(9, 7, 'i', false)));
     }
 
     private static Word prepareWord(List<Word.Element> elements) {

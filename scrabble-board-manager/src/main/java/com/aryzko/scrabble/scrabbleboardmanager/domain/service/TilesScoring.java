@@ -2,6 +2,7 @@ package com.aryzko.scrabble.scrabbleboardmanager.domain.service;
 
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Board;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Tiles;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.TransposeType;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Word;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,9 +22,14 @@ public class TilesScoring {
         Board board = boardService.getBoard(UUID.fromString(boardId));
         Word word = wordFinder.findWord(board, tiles);
 
-        relatedWordsSearchService.fill(board, word);
-        scoringService.score(board, word);
+        word.getRelatedWords().addAll(relatedWordsSearchService.getRelatedWords(board, word));
+        word.getRelatedWords().addAll(relatedWordsSearchService.getRelatedWords(
+                board.transpose(TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_LEFT),
+                word.transpose(TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_LEFT)).stream()
+                .map(w -> w.transpose(TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_RIGHT))
+                .toList());
 
+        scoringService.score(board, word);
         return word;
     }
 }
