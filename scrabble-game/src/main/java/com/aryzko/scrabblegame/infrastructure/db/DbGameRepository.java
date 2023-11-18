@@ -4,6 +4,8 @@ import com.aryzko.scrabblegame.domain.model.Game;
 import com.aryzko.scrabblegame.domain.repository.GameRepository;
 import com.aryzko.scrabblegame.infrastructure.db.model.GameEntryDb;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -40,10 +42,9 @@ public class DbGameRepository implements GameRepository {
         }
     }
 
-    public List<Game> getAll() {
-        return gameRepository.findAll().stream()
-                .map(this::convert)
-                .toList();
+    public Page<Game> findAllGamesWithSorting(Pageable pageable) {
+        return gameRepository.findAllGamesWithSorting(pageable)
+                .map(this::convert);
     }
 
     private Optional<Game> convert(Optional<GameEntryDb> gameEntryDb) {

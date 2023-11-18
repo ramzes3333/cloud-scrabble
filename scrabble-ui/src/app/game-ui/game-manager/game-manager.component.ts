@@ -15,6 +15,8 @@ import {
 import {Game} from "../../clients/game-manager/model/game";
 import {GameManagerService} from "../../clients/game-manager/game-manager.service";
 import {Subscription} from "rxjs";
+import {PageableResponse} from "../../clients/game-manager/model/pageable-response";
+import {PageEvent} from "@angular/material/paginator";
 
 @Component({
   selector: 'app-game-manager',
@@ -27,9 +29,12 @@ export class GameManagerComponent implements OnInit {
 
   createDisabled: boolean = false;
 
+  currentPage: number = 0;
+  pageSize: number = 5;
+  totalGames: number = 0;
   displayedColumns: string[] = ['id'];
-  games: GameBoard[] = [];
 
+  games: GameBoard[] = [];
   private subscriptions: Subscription[] = [];
 
   constructor(private boardManager: BoardManagerService,
@@ -75,8 +80,9 @@ export class GameManagerComponent implements OnInit {
   }
 
   refreshBoardsTable() {
-    this.gameManager.getAllGames().subscribe((result: Game[]) => {
-      this.games = result.map(game => ({
+    this.gameManager.getAllGames(this.currentPage, this.pageSize).subscribe((result: PageableResponse<Game>) => {
+      this.totalGames = result.totalElements;
+      this.games = result.content.map(game => ({
         game: game,
         board: undefined
       }));
@@ -84,6 +90,12 @@ export class GameManagerComponent implements OnInit {
         this.loadBoardForGame(game);
       }
     });
+  }
+
+  onPageChange(event: PageEvent) {
+    this.currentPage = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.refreshBoardsTable();
   }
 
   private loadBoardForGame(game: GameBoard) {

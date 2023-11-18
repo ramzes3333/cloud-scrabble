@@ -7,7 +7,9 @@ import com.aryzko.scrabble.scrabbledictionary.domain.model.dawg.Node;
 import com.aryzko.scrabble.scrabbledictionary.domain.ports.DictionaryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.event.ApplicationPreparedEvent;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +26,7 @@ import static java.lang.String.format;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class DawgService implements ApplicationListener<ApplicationReadyEvent> {
+public class DawgService implements ApplicationListener<ApplicationStartedEvent> {
 
     private static final Character WILD_CARD = '*';
     private static final int MINIMUM_PATTERN_LENGTH = 2;
@@ -35,7 +37,8 @@ public class DawgService implements ApplicationListener<ApplicationReadyEvent> {
     @Transactional(readOnly = true)
     @PerformanceLog
     @Override
-    public void onApplicationEvent(ApplicationReadyEvent event) {
+    public void onApplicationEvent(ApplicationStartedEvent event) {
+        log.info("DAWG construction started");
         DawgBuilder builder = new DawgBuilder();
 
         try(Stream<String> dictionaryEntryStream = dictionaryRepository.findAllInDefaultDictionary()) {
@@ -43,6 +46,7 @@ public class DawgService implements ApplicationListener<ApplicationReadyEvent> {
         }
 
         root.set(builder.build());
+        log.info("DAWG construction completed");
     }
 
     public Node getDawg() throws DawgIsNotReady {

@@ -2,10 +2,11 @@ import {Injectable} from '@angular/core';
 import {Observable} from "rxjs";
 import {map} from "rxjs/operators";
 import {CreateGameRequest} from "./model/create-game-request";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {Game} from "./model/game";
 import {GameMoveRequest} from "./model/move-request";
 import {MoveResult} from "./model/move-result";
+import {PageableResponse} from "./model/pageable-response";
 
 @Injectable({
   providedIn: 'root'
@@ -35,13 +36,22 @@ export class GameManagerService {
     );
   }
 
-  getAllGames(): Observable<Game[]> {
-    return this.http.get<Game[]>(`game-service/api/games`,
+  getAllGames(page: number, size: number): Observable<PageableResponse<Game>> {
+    return this.http.get<PageableResponse<Game>>(`game-service/api/games`,
       {
+        params: new HttpParams()
+          .set('page', page.toString())
+          .set('size', size.toString()),
         observe: 'response'
       }
     ).pipe(
-      map(response => response.body ?? [])
+      map(response => response.body ?? {
+        content: [],
+        totalElements: 0,
+        totalPages: 0,
+        size: 0,
+        number: 0
+      })
     );
   }
 
