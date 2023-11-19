@@ -13,6 +13,7 @@ import com.aryzko.scrabblegame.application.provider.TileProvider;
 import com.aryzko.scrabblegame.application.provider.model.Tile;
 import com.aryzko.scrabblegame.application.response.GameFailure;
 import com.aryzko.scrabblegame.domain.model.Game;
+import com.aryzko.scrabblegame.domain.model.Player;
 import io.vavr.control.Either;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -48,8 +49,21 @@ public class HumanMovePerformer {
         List<Tile> newTiles = tileProvider.getTiles(board.getId(), tiles.size());
         board.getRack(playerId).getLetters().addAll(convertTile(newTiles));
 
-        playerMoveBuilder.movePoints(boardProvider.scoreWord(board.getId(), prepareWord(tiles)));
+        Integer movePoints = boardProvider.scoreWord(board.getId(), prepareWord(tiles));
+        Player player = getPlayer(game, playerId);
+        player.setPoints(player.getPoints() + movePoints);
+
+        playerMoveBuilder.movePoints(movePoints);
+        playerMoveBuilder.allPoints(player.getPoints());
+
         return Either.left(playerMoveBuilder.build());
+    }
+
+    private static Player getPlayer(Game game, String playerId) {
+        return game.getPlayers().stream()
+                .filter(p -> p.getId().equals(playerId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("No player with id: %s".formatted(playerId)));
     }
 
     private BoardProvider.Tiles prepareWord(List<BoardTile> tiles) {

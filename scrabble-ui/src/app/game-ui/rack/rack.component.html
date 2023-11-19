@@ -1,15 +1,25 @@
-<div class="rack-container mat-elevation-z1" cdkDropList
-     cdkDropListOrientation="horizontal"
-     [cdkDropListData]="movableFields"
-     [cdkDropListDisabled]="isRackDisabled"
-     [cdkDropListEnterPredicate]="canDrop"
-     [ngClass]="{'rack-active': !isRackDisabled, 'rack-disabled': isRackDisabled}"
-     (cdkDropListDropped)="dropped($event)">
-  <ng-container *ngFor="let movableField of movableFields; let i = index" >
-    <div class="letter cdk-drag" cdkDrag
-         [ngClass]="{'letter-active': !isRackDisabled, 'letter-disabled': isRackDisabled}">
-      {{movableField.letter.letter}}
-      <div class="points">{{movableField.letter.points}}</div>
+<div class="extended-rack-container mat-elevation-z1" [ngClass]="{'rack-active': !isRackDisabled, 'rack-disabled': isRackDisabled}">
+  <div class="rack-container" cdkDropList
+       cdkDropListOrientation="horizontal"
+       [cdkDropListData]="movableFields"
+       [cdkDropListDisabled]="isRackDisabled"
+       [cdkDropListEnterPredicate]="canDrop"
+       (cdkDropListDropped)="dropped($event)">
+    <ng-container *ngFor="let movableField of movableFields; let i = index" >
+      <div class="letter cdk-drag" cdkDrag
+           [ngClass]="{'letter-active': !isRackDisabled, 'letter-disabled': isRackDisabled}">
+        {{movableField.letter.letter}}
+        <div class="points">{{movableField.letter.points}}</div>
+      </div>
+    </ng-container>
+  </div>
+
+  <div class="rack-separator"></div>
+
+  <div class="player-info-section">
+    <div class="player-info-container">
+      <div class="player-login"> {{playerName}} </div>
+      <div class="player-score"> {{points}} </div>
     </div>
-  </ng-container>
+  </div>
 </div>

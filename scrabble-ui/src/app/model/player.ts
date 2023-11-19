@@ -6,6 +6,6 @@ export interface Player {
 }
 
 export enum Type {
-    HUMAN,
-    BOT,
+  HUMAN = "HUMAN",
+  BOT = "BOT",
 }

@@ -32,7 +32,15 @@ export class GameManagerService {
         observe: 'response'
       }
     ).pipe(
-      map(response => response.body!)
+      map(response => {
+        const game: Game = response.body!;
+        game.players.forEach(player => {
+          if (player.parameters) {
+            player.parameters = new Map(Object.entries(player.parameters));
+          }
+        });
+        return game;
+      })
     );
   }
 

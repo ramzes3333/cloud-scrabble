@@ -138,6 +138,7 @@ public class GameController {
                                     .id(p.getId())
                                     .order(p.getOrder())
                                     .type(Type.valueOf(p.getType().toString()))
+                                    .points(p.getPoints())
                                     .parameters(getParameters(p))
                                     .build())
                             .toList())
@@ -162,8 +163,9 @@ public class GameController {
         @Builder
         static class Player {
             String id;
-            Type type;
             Integer order;
+            Type type;
+            Integer points;
             Map<String, String> parameters;
         }
 

@@ -39,12 +39,13 @@ export const gameStateReducer = createReducer(initialState,
   })),
   on(initSuccess, (state, data) => ({
     ...state,
+    gameId: data.game.id,
+    players: data.game.players,
+    actualPlayerId: data.game.actualPlayerId,
+    boardId: data.board.id,
     fields: fieldsFromBoard(data.board),
     racks: racksFromBoard(data.board),
     boardParameters: data.board.boardParameters,
-    boardId: data.board.id,
-    gameId: data.game.id,
-    actualPlayerId: data.game.actualPlayerId
   })),
   on(start, (state, action) => ({...state, started: true})),
   on(showSuggestedWord, (state, data) => {
@@ -101,7 +102,24 @@ export const gameStateReducer = createReducer(initialState,
       incorrectFields: combinedCharacters
     };
   }),
-  on(makeMoveSuccess, (state, moveResult) => ({...state, actualPlayerId: moveResult.actualPlayerId})),
+  on(makeMoveSuccess, (state, moveResult) => {
+    const updatedPlayers = state.players?.map(player => {
+      const playerMove = moveResult.playerMoves.find(pm => pm.playerId === player.id);
+
+      if (playerMove) {
+        return {
+          ...player,
+          points: playerMove.allPoints
+        };
+      }
+      return player;
+    });
+    return {
+      ...state,
+      players: updatedPlayers,
+      actualPlayerId: moveResult.actualPlayerId
+    };
+  }),
   on(refreshBoard, (state, board) => ({
     ...state,
     fields: fieldsFromBoard(board),

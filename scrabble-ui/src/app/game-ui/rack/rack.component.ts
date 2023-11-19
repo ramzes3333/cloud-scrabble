@@ -7,7 +7,11 @@ import {Move} from "../model/move";
 import {select, Store} from "@ngrx/store";
 import {GameState} from "../../state/game-state/game-state";
 import {combineLatest, Subscription} from "rxjs";
-import {selectActualPlayerId, selectRacks, selectStartedFlag} from "../../state/game-state/game-state.selectors";
+import {
+  selectActualPlayerId,
+  selectRacks,
+  selectStartedFlag
+} from "../../state/game-state/game-state.selectors";
 import {move} from "../../state/game-state/game-state.actions";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {map} from "rxjs/operators";
@@ -28,6 +32,8 @@ export class RackComponent implements OnInit {
 
   isRackDisabled: boolean = true;
   playerId?: string;
+  playerName?: string;
+  points?: number;
   movableFields: MovableField[] = [];
   private subscriptions: Subscription[] = [];
 
@@ -39,6 +45,8 @@ export class RackComponent implements OnInit {
         if (racks && racks.length >= this.rackNumber && racks[this.rackNumber].letters) {
           this.movableFields = this.convertBoardLettersToMovableFields(0, racks[this.rackNumber].letters);
           this.playerId = racks[this.rackNumber].playerId;
+          this.playerName = racks[this.rackNumber].playerName;
+          this.points = racks[this.rackNumber].points;
         } else {
           this.movableFields = [];
         }

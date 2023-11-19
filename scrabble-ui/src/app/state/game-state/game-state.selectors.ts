@@ -2,6 +2,7 @@ import {AppState} from "../app.state";
 import {createSelector} from "@ngrx/store";
 import {GameState} from "./game-state";
 import {CharacterWithPosition} from "../../clients/board-manager/model/board-validation-result";
+import {Type} from "../../model/player";
 
 export const selectGameState = (state: AppState) => state.gameState;
 
@@ -12,7 +13,32 @@ export const selectFields = createSelector(
   selectGameState, (state: GameState) => state.fields);
 
 export const selectRacks = createSelector(
-  selectGameState, (state: GameState) => state.racks);
+  selectGameState, (state: GameState) => {
+    return state.racks?.map(rack => {
+      const player = state.players?.find(p => p.id === rack.playerId);
+
+      let playerName: string | undefined;
+      if (player) {
+        switch (player.type) {
+          case Type.HUMAN:
+            playerName = player.parameters.get('login');
+            break;
+          case Type.BOT:
+            playerName = player.parameters.get('level');
+            break;
+          default:
+            playerName = undefined;
+        }
+      }
+
+      return {
+        ...rack,
+        playerName: playerName,
+        points: player?.points ?? 0
+      }
+    })
+  }
+);
 
 export const selectBoardParameters = createSelector(
   selectGameState, (state: GameState) => state.boardParameters);

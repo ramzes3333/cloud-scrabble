@@ -18,7 +18,11 @@ public class TilesScoring {
     private final ScoringService scoringService;
     private final RelatedWordsFillService relatedWordsSearchService;
 
-    public Word scoreTiles(final String boardId, final Tiles tiles) {
+    public Integer scoreTiles(final String boardId, final Tiles tiles) {
+        if(tiles.getTiles().isEmpty()) {
+            return 0;
+        }
+
         Board board = boardService.getBoard(UUID.fromString(boardId));
         Word word = wordFinder.findWord(board, tiles);
 
@@ -30,6 +34,6 @@ public class TilesScoring {
                 .toList());
 
         scoringService.score(board, word);
-        return word;
+        return word.getPoints();
     }
 }

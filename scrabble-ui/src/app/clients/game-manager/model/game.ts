@@ -10,10 +10,11 @@ export interface Player {
   id: string;
   type: Type;
   order: number;
+  points: number;
   parameters: Map<string, string>;
 }
 
 export enum Type {
-  HUMAN,
-  BOT,
+  HUMAN = "HUMAN",
+  BOT = "BOT",
 }

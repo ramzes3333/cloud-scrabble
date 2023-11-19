@@ -87,7 +87,7 @@ public class BoardController {
 
     @PostMapping("{uuid}/score-tiles")
     public Integer scoreWord(@PathVariable("uuid") String boardId, @RequestBody Tiles tiles) {
-        return tilesScoring.scoreTiles(boardId, tiles.toDomainTiles()).getPoints();
+        return tilesScoring.scoreTiles(boardId, tiles.toDomainTiles());
     }
 
     @Data

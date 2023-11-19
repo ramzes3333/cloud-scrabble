@@ -17,6 +17,8 @@ export interface Field {
 
 export interface Rack {
   playerId: string;
+  playerName?: string;
+  points?: number;
   letters: Letter[];
 }
 
@@ -72,6 +74,8 @@ export function fieldsFromBoard(board: ClientBoard): Field[] {
 export function racksFromBoard(board: ClientBoard): Rack[] {
   return board.racks.map(rack => ({
     playerId: rack.playerId,
+    playerName: undefined,
+    points: undefined,
     letters: rack.letters.map(letter => ({
       letter: letter.letter,
       blank: letter.blank,
