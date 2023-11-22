@@ -1,5 +1,8 @@
 package com.aryzko.scrabblegame.domain.model;
 
+import lombok.Getter;
+
+@Getter
 public enum Level {
     NEWBIE(1),
     BEGINNER(2),

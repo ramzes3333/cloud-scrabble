@@ -33,6 +33,7 @@ public class GameConverter {
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         objectMapper.setDateFormat(new StdDateFormat().withColonInTimeZone(true));
         objectMapper.activateDefaultTyping(
+                // TODO to remove
                 BasicPolymorphicTypeValidator.builder()
                         .allowIfSubType("com.aryzko.scrabblegame.domain.model.")
                         .allowIfSubType("java.util.ArrayList")

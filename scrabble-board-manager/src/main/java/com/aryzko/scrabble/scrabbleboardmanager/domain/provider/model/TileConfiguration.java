@@ -22,8 +22,8 @@ public class TileConfiguration {
 
     public Map<Character, Integer> getPointsMap() {
         return tiles.stream().collect(Collectors.toMap(
-                tile -> Character.toLowerCase(tile.letter()),
-                tile -> tile.points()
+                Tile::letter,
+                Tile::points
         ));
     }
 }

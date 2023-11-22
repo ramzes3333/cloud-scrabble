@@ -191,7 +191,6 @@ public class LineResolver {
                                                 final Line.LineField field) {
         return getBase(letters, transitions)
                 .filter(character -> field.isAnyLetter() || field.getAvailableLetters().contains(character))
-                .map(Character::toLowerCase)
                 .distinct()
                 .collect(Collectors.toList());
     }
@@ -216,7 +215,7 @@ public class LineResolver {
 
         public static DynamicAvailableLetters of(AvailableLetters availableLetters) {
             List<CharacterWithAvailability> letters = availableLetters.getCharacters().stream()
-                    .map(l -> new CharacterWithAvailability(Character.toLowerCase(l), l.equals(' '), true))
+                    .map(l -> new CharacterWithAvailability(l, l.equals(' '), true))
                     .collect(Collectors.toList());
 
             return new DynamicAvailableLetters(letters);

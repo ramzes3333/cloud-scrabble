@@ -63,7 +63,7 @@ public class LinePreparationService {
 
     private void handleFieldWithChar(CharacterWithPosition character, PreparedLine.LineField.LineFieldBuilder fieldBuilder) {
         if (character.isCharSet()) {
-            fieldBuilder.letter(Character.toLowerCase(character.getCharacter().get()));
+            fieldBuilder.letter(character.getCharacter().get());
         }
     }
 
@@ -90,7 +90,7 @@ public class LinePreparationService {
         StringBuilder verticalPattern = prepareVerticalPattern(directionalField);
         List<Character> verticalCharacters = new ArrayList<>();
         if (verticalPattern.length() > 1) {
-            verticalCharacters.addAll(dictionaryProvider.fillGap(verticalPattern.toString().toLowerCase()));
+            verticalCharacters.addAll(dictionaryProvider.fillGap(verticalPattern.toString()));
         }
         return verticalCharacters;
     }

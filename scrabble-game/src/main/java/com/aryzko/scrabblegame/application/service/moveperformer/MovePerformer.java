@@ -6,6 +6,7 @@ import com.aryzko.scrabblegame.application.provider.BoardProvider;
 import com.aryzko.scrabblegame.application.request.GameMoveRequest;
 import com.aryzko.scrabblegame.application.response.GameFailure;
 import com.aryzko.scrabblegame.application.validator.MoveValidator;
+import com.aryzko.scrabblegame.domain.model.BotPlayer;
 import com.aryzko.scrabblegame.domain.model.Game;
 import com.aryzko.scrabblegame.domain.model.Player;
 import com.aryzko.scrabblegame.domain.model.State;
@@ -59,7 +60,7 @@ public class MovePerformer {
         }
 
         while ((actualPlayer = getNextPlayerAndUpdateGameActualPlayerId(game)).getType().equals(Type.BOT)) {
-            botMovePerformer.perform(game, board, actualPlayer.getId()).fold(
+            botMovePerformer.perform(game, board, (BotPlayer)actualPlayer).fold(
                     success -> resultBuilder.playerMove(success),
                     failure -> errors.addAll(failure.getErrors())
             );

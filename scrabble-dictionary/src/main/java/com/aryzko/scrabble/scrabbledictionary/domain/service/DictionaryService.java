@@ -42,7 +42,7 @@ public class DictionaryService {
         return entries.stream()
                 .collect(Collectors.toMap(
                         Function.identity(),
-                        s -> entriesInDictionary.contains(s.toLowerCase()),
+                        s -> entriesInDictionary.contains(s.toUpperCase()),
                         (v1, v2) -> v1 || v2
                 ));
     }

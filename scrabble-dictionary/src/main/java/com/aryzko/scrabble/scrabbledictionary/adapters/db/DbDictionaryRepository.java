@@ -47,6 +47,7 @@ public class DbDictionaryRepository implements DictionaryRepository {
                                 .map(String::toLowerCase)
                                 .collect(Collectors.toList())).stream()
                 .map(DictionaryEntryDb::getEntry)
+                .map(String::toUpperCase)
                 .collect(Collectors.toList());
     }
 

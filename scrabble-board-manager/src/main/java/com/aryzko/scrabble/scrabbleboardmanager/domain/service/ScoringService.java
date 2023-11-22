@@ -125,7 +125,7 @@ public class ScoringService {
         if (e.isBlank() || positionsWithBlank.contains(Position.builder().x(e.getX()).y(e.getY()).build())) {
             return 0;
         }
-        return ofNullable(pointsMap.get(Character.toLowerCase(e.getLetter())))
+        return ofNullable(pointsMap.get(e.getLetter()))
                 .orElseThrow(() -> new IllegalStateException("No tile configuration for letter"));
     }
 

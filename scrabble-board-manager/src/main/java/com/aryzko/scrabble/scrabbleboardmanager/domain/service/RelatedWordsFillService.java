@@ -75,7 +75,7 @@ public class RelatedWordsFillService {
         wordBuilder.elements(upPart);
         wordBuilder.element(prepareElement(
                 field,
-                Character.toLowerCase(field.getField().getCharacter().get()),
+                field.getField().getCharacter().get(),
                 field.isBlank(),
                 false));
         wordBuilder.elements(traverse(field, Board.DirectionalField::getDown));
@@ -90,7 +90,7 @@ public class RelatedWordsFillService {
             directionalField = getNextField.apply(directionalField);
             elements.add(prepareElement(
                     directionalField,
-                    Character.toLowerCase(directionalField.getField().getCharacter().get()),
+                    directionalField.getField().getCharacter().get(),
                     false,
                     true));
         }

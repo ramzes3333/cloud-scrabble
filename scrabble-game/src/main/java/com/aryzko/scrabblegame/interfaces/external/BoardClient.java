@@ -1,5 +1,6 @@
 package com.aryzko.scrabblegame.interfaces.external;
 
+import com.aryzko.scrabblegame.application.provider.BoardProvider;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -28,11 +29,19 @@ public interface BoardClient {
     @GetMapping("/api/boards/validate")
     BoardValidationResultResponse validateBoard(BoardRequest boardRequest);
 
-    @PostMapping("/api/boards/{uuid}/score-tiles")
-    Integer scoreTiles(@PathVariable("uuid") String id, Tiles tiles);
+    @PostMapping("/api/boards/{uuid}/score")
+    ScoreResult score(@PathVariable("uuid") String id, Tiles tiles);
+
+    @PostMapping("/api/boards/score")
+    ScoreResult score(ScoreRequest scoreRequest);
+
+    @PostMapping("/api/boards/resolve/{playerId}")
+    Solution resolve(@PathVariable("playerId") String playerId, BoardRequest boardRequest);
 
     record Tiles (List<Tile> tiles) { }
     record Tile (int x, int y, char letter, boolean blank) { }
+
+    record ScoreResult (String word, String tiles, Integer points) { }
 
     @Value
     class BoardValidationResultResponse {
@@ -98,6 +107,10 @@ public interface BoardClient {
         private Integer rackSize;
     }
 
+    record Solution(List<Word> words) { }
+    record Word (int points, List<Element> elements, List<Word> relatedWords, List<Bonus> bonuses) { }
+    record Element (int x, int y, char letter, int points, boolean blank, boolean onBoard) { }
+
     enum Bonus {
         DoubleWordScore,
         TripleWordScore,
@@ -105,4 +118,6 @@ public interface BoardClient {
         TripleLetterScore,
         None,
     }
+
+    record ScoreRequest(BoardRequest board, Tiles tiles) { }
 }

@@ -5,6 +5,7 @@ import com.aryzko.scrabblegame.application.model.board.BoardValidationResultResp
 import com.aryzko.scrabblegame.application.model.board.Field;
 import com.aryzko.scrabblegame.application.model.board.Letter;
 import com.aryzko.scrabblegame.application.model.board.Rack;
+import com.aryzko.scrabblegame.application.provider.BoardProvider;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
@@ -20,4 +21,8 @@ public interface BoardMapper {
     BoardClient.Letter convert(Letter letter);
 
     BoardValidationResultResponse convert(BoardClient.BoardValidationResultResponse boardValidationResultResponse);
+
+    BoardProvider.Solution convert(BoardClient.Solution solution);
+    BoardProvider.Word convert(BoardClient.Word word);
+    BoardProvider.Element convert(BoardClient.Element element);
 }

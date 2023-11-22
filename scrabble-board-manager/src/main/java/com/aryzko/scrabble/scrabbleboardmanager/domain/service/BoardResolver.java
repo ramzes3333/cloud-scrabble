@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -31,7 +32,13 @@ public class BoardResolver {
     private final RelatedWordsFillService relatedWordsSearchService;
     private final DictionaryProviderMapper dictionaryMapper;
 
-    public Solution resolve(final String playerId, final Board board) {
+    public Solution resolve(final String boardId, final String playerId) {
+        return resolve(
+                boardService.getBoard(UUID.fromString(boardId)),
+                playerId);
+    }
+
+    public Solution resolve(final Board board, final String playerId) {
         Board boardFromDb = boardService.getBoard(board.getId());
         board.setBoardParameters(boardFromDb.getBoardParameters());
 

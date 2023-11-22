@@ -93,7 +93,7 @@ public class WordFinder {
 
     private boolean isMatchingElement(Word.Element element, Tile tile) {
         return element.getX() == tile.getX() && element.getY() == tile.getY()
-                && Character.toLowerCase(element.getLetter()) == Character.toLowerCase(tile.getLetter())
+                && element.getLetter() == tile.getLetter()
                 && element.isBlank() == tile.isBlank();
     }
 

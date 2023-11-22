@@ -43,6 +43,6 @@ public interface SpringDataDictionaryEntryRepository extends JpaRepository<Dicti
                     @QueryHint(name = HINT_CACHEABLE, value = "false"),
                     @QueryHint(name = HINT_READONLY, value = "true")
             })
-    @Query("SELECT d.entry FROM DictionaryEntryDb d WHERE d.dictionary.id = :dictionaryId ORDER BY d.id ASC")
+    @Query("SELECT upper(d.entry) FROM DictionaryEntryDb d WHERE d.dictionary.id = :dictionaryId ORDER BY d.id ASC")
     Stream<String> findAllByDictionaryIdOrderByIdAsc(@Param("dictionaryId") Integer dictionaryId);
 }

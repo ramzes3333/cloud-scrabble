@@ -35,9 +35,20 @@ public class DefaultBoardProvider implements BoardProvider {
     }
 
     @Override
-    public Integer scoreWord(String boardId, Tiles tiles) {
-        return boardClient.scoreTiles(boardId, new BoardClient.Tiles(tiles.tiles().stream()
-                .map(t -> new BoardClient.Tile(t.x(), t.y(), t.letter(), t.blank()))
-                .toList()));
+    public ScoreResult scoreWord(Board board, Tiles tiles) {
+        var result = boardClient.score(
+                new BoardClient.ScoreRequest(
+                        boardMapper.toBoardRequest(board),
+                        new BoardClient.Tiles(tiles.tiles().stream()
+                                .map(t -> new BoardClient.Tile(t.x(), t.y(), t.letter(), t.blank()))
+                                .toList())
+                )
+        );
+        return new ScoreResult(result.word(), result.tiles(), result.points());
+    }
+
+    @Override
+    public Solution resolve(Board board, String playerId) {
+        return boardMapper.convert(boardClient.resolve(playerId, boardMapper.toBoardRequest(board)));
     }
 }

@@ -1,6 +1,7 @@
 package com.aryzko.scrabble.scrabbleboardmanager.interfaces.web;
 
 import com.aryzko.scrabble.scrabbleboardmanager.domain.command.CreateBoardCommand;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Word;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.service.BoardResolver;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.service.BoardService;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.service.TilesScoring;
@@ -26,9 +27,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static java.util.Optional.ofNullable;
 
 @RestController
 @RequestMapping(value = "/api/boards")
@@ -80,14 +84,41 @@ public class BoardController {
         }
     }
 
-    @PostMapping(value = "resolve/{playerId}")
-    public Solution resolve(@PathVariable("playerId") String playerId, @RequestBody @Valid BoardRequest board) {
-        return solutionMapper.convert(resolver.resolve(playerId, boardMapper.toBoard(board)));
+    @GetMapping(value = "{uuid}/resolve/{playerId}")
+    public Solution resolve(@PathVariable("uuid") String uuid, @PathVariable("playerId") String playerId) {
+        return solutionMapper.convert(resolver.resolve(uuid, playerId));
     }
 
-    @PostMapping("{uuid}/score-tiles")
-    public Integer scoreWord(@PathVariable("uuid") String boardId, @RequestBody Tiles tiles) {
-        return tilesScoring.scoreTiles(boardId, tiles.toDomainTiles());
+    @PostMapping(value = "resolve/{playerId}")
+    public Solution resolve(@PathVariable("playerId") String playerId, @RequestBody @Valid BoardRequest board) {
+        return solutionMapper.convert(resolver.resolve(boardMapper.toBoard(board), playerId));
+    }
+
+    @PostMapping("{uuid}/score")
+    public ScoreResult scoreWord(@PathVariable("uuid") String boardId, @RequestBody Tiles tiles) {
+        return ScoreResult.of(tilesScoring.scoreTiles(boardId, tiles.toDomainTiles()), tiles);
+    }
+
+    @PostMapping("score")
+    public ScoreResult scoreWord(@RequestBody @Valid ScoreRequest scoreRequest) {
+        return ScoreResult.of(tilesScoring.scoreTiles(
+                boardMapper.toBoard(scoreRequest.board()),
+                scoreRequest.tiles().toDomainTiles()), scoreRequest.tiles());
+    }
+
+    @Data
+    public static class ScoreResult {
+        private String word;
+        private String tiles;
+        private Integer points;
+
+        public static ScoreResult of(Word word, Tiles tiles) {
+            ScoreResult result = new ScoreResult();
+            result.setWord(ofNullable(word).map(Word::getWordAsString).orElse(""));
+            result.setTiles(tiles.getTilesAsString());
+            result.setPoints(ofNullable(word).map(Word::getPoints).orElse(0));
+            return result;
+        }
     }
 
     @Data
@@ -126,7 +157,16 @@ public class BoardController {
                                     e.x(), e.y(), e.letter(), e.blank()))
                             .toList());
         }
+
+        public String getTilesAsString() {
+            return ofNullable(tiles).orElse(Collections.emptyList()).stream()
+                    .map(Tile::letter)
+                    .map(String::valueOf)
+                    .collect(Collectors.joining());
+        }
     }
 
     public record Tile(int x, int y, char letter, boolean blank) { }
+
+    public record ScoreRequest(BoardRequest board, Tiles tiles) { }
 }
