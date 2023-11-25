@@ -7,6 +7,7 @@ import lombok.Data;
 @Builder
 public class Move {
     private Integer order;
+    private Integer gameOrder;
     private String word;
     private String tiles;
     private Integer points;

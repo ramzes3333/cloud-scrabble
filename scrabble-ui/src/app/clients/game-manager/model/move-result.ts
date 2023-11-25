@@ -7,7 +7,8 @@ export interface MoveResult {
 
 export interface PlayerMove {
   playerId: string;
-  moveTiles: Tile[];
+  tiles: Tile[];
+  word: string;
   movePoints: number;
   allPoints: number;
 }

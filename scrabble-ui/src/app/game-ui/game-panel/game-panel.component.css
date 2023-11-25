@@ -4,25 +4,88 @@
   margin-left: 50px;
 }
 
-.confirm-button {
+
+button {
+  width: 200px;
+  border-radius: 4px;
+  padding: 15px 30px;
   margin-top: 20px;
-  width: 150px;
+  box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+  transition: background-color 0.3s ease, transform 0.15s ease-in-out;
 }
 
-.resolve-button {
+
+button.start-button {
+  background-color: #f28383;
+  color: white;
+}
+
+button.confirm-button {
+  background-color: #80ced7;
+  color: white;
+}
+
+button.resolve-button {
+  background-color: darksalmon;
+  color: white;
+}
+
+button:hover {
+  box-shadow: 3px 3px 15px rgba(0,0,0,0.3);
+  filter: brightness(110%);
+  transform: scale(1.05);
+}
+
+.resolve-container-header {
   margin-top: 20px;
-  width: 150px;
+  padding: 5px;
+  border: 1px solid #dddddd;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px 8px 0 0;
+  background-color: #f9e2d2;
+  color: #8a5042;
+  position: relative;
+  z-index: 2;
 }
 
 .resolve-container {
-  margin-top: 20px;
   position: relative;
-  height: 500px;
+  height: 450px;
   overflow: auto;
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: -5px;
+  background: white;
+  z-index: 1;
+}
+
+.history-container-header {
+  margin-top: 20px;
+  padding: 5px;
+  border: 1px solid #dddddd;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px 8px 0 0;
+  background-color: #f9e2d2;
+  color: #8a5042;
+  position: relative;
+  z-index: 2;
+}
+
+.history-container {
+  position: relative;
+  height: 250px;
+  overflow: auto;
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: -5px;
+  background: white;
+  z-index: 1;
 }
 
 .virtual-scroll-wrapper {
-  height: 500px;
+  height: 450px;
   width: 465px;
 }
 
@@ -38,6 +101,29 @@
 }
 
 .word-container {
+  padding: 2px;
+  text-align: left;
+  height: 30px;
+}
+
+.moves-table {
+  width: 450px;
+}
+
+.moves-table .mat-mdc-row {
+  cursor: pointer;
+}
+.moves-table .mat-mdc-row:hover {
+  background-color: #fcfcfc;
+}
+
+.player-name {
+  margin: 3px;
+  font-size: small;
+  color: #5e5e5e;
+}
+
+.moves-container {
   padding: 2px;
   text-align: left;
   height: 30px;

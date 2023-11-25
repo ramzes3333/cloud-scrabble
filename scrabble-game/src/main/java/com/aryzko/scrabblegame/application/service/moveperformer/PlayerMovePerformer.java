@@ -37,7 +37,8 @@ public abstract class PlayerMovePerformer {
         BoardProvider.ScoreResult result = boardProvider.scoreWord(board, prepareWord(tiles));
 
         performRackChanges(board, playerId, tiles);
-        playerMoveBuilder.moveTiles(convertBoardTile(performFieldChanges(board, tiles)));
+        playerMoveBuilder.tiles(convertBoardTile(performFieldChanges(board, tiles)));
+        playerMoveBuilder.word(result.word());
 
         BoardValidationResultResponse validationResponse = boardProvider.validateBoard(board);
         if(!validationResponse.getIncorrectWords().isEmpty() &&
@@ -63,6 +64,7 @@ public abstract class PlayerMovePerformer {
         player.setPoints(player.getPoints() + result.points());
         player.getMoveHistory().add(Move.builder()
                 .order(player.getMoveHistory().size()+1)
+                .gameOrder(game.getPlayers().stream().mapToInt(p -> p.getMoveHistory().size()).sum()+1)
                 .word(result.word())
                 .tiles(result.tiles())
                 .points(result.points())

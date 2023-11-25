@@ -20,9 +20,11 @@ import {
 import {Field, fieldsFromBoard, fieldsFromBoardPreview, Rack, racksFromBoard} from "../../model/board";
 import {Move} from "../../game-ui/model/move";
 import {Element} from "../../game-ui/model/element";
+import {Type} from "../../clients/game-manager/model/game";
 
 export const initialState : GameState = {
   started: false,
+  moveHistory: [],
   charset: [],
   incorrectFields: []
 };
@@ -37,16 +39,38 @@ export const gameStateReducer = createReducer(initialState,
     racks: [],
     boardParameters: boardPreview.boardParameters
   })),
-  on(initSuccess, (state, data) => ({
-    ...state,
-    gameId: data.game.id,
-    players: data.game.players,
-    actualPlayerId: data.game.actualPlayerId,
-    boardId: data.board.id,
-    fields: fieldsFromBoard(data.board),
-    racks: racksFromBoard(data.board),
-    boardParameters: data.board.boardParameters,
-  })),
+  on(initSuccess, (state, data) => {
+    const combinedMoveHistory = data.game.players
+      .flatMap(player =>
+        player.moveHistory.map(move => ({
+          ...move,
+          playerId: player.id
+        }))
+      )
+      .sort((a, b) => a.gameOrder - b.gameOrder)
+      .map(move => {
+        const player = data.game.players.find(player => player.id === move.playerId);
+        return {
+          playerName: player?.type === Type.HUMAN
+            ? `Player: ${player?.parameters.get('login') || 'Unknown'}`
+            : `Bot: ${player?.parameters.get('level') || 'Unknown'}`,
+          word: move.word,
+          points: move.points
+        };
+      });
+
+    return {
+      ...state,
+      gameId: data.game.id,
+      players: data.game.players,
+      moveHistory: combinedMoveHistory,
+      actualPlayerId: data.game.actualPlayerId,
+      boardId: data.board.id,
+      fields: fieldsFromBoard(data.board),
+      racks: racksFromBoard(data.board),
+      boardParameters: data.board.boardParameters,
+    };
+  }),
   on(start, (state, action) => ({...state, started: true})),
   on(showSuggestedWord, (state, data) => {
     if (!state.started || !state.fields) {
@@ -114,10 +138,30 @@ export const gameStateReducer = createReducer(initialState,
       }
       return player;
     });
+
+    let updatedMoveHistory = [
+      ...state.moveHistory,
+      ...moveResult.playerMoves.map(playerMove => {
+        const player = state.players?.find(p => p.id === playerMove.playerId);
+        const playerName = player
+          ? (player.type === Type.HUMAN
+            ? `Player: ${player?.parameters.get('login') || 'Unknown'}`
+            : `Bot: ${player?.parameters.get('level') || 'Unknown'}`)
+          : 'Unknown Player';
+
+        return {
+          playerName: playerName,
+          word: playerMove.word,
+          points: playerMove.movePoints
+        };
+      })
+    ];
+
     return {
       ...state,
       players: updatedPlayers,
-      actualPlayerId: moveResult.actualPlayerId
+      actualPlayerId: moveResult.actualPlayerId,
+      moveHistory: updatedMoveHistory
     };
   }),
   on(refreshBoard, (state, board) => ({

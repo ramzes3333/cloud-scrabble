@@ -1,3 +1,9 @@
+## Description
+
+Scrabble game implemented using a microservices architecture. Technology stack: Spring (backend), Angular (frontend).
+
+You can create a game with the computer or by yourself. The computer has five levels of difficulty. In the game, there is a functionality for suggesting words (currently unlimited suggesting in every round).
+
 ## Docker commands to execute before starting applications:
 
 ### [SECURITY] Run keycloak for all apps
@@ -36,6 +42,9 @@ docker run -d --network="host" --name mongo-express -e ME_CONFIG_MONGODB_SERVER=
 | game-service  | http://localhost:8087/swagger-ui/index.html |
 | mongo-express | http://localhost:8081                       |
 
-### Screen:
+### Game creator:
 
-![](cloud-scrabble-v7.png)
+![img.png](game-creator-v1.png)
+### Game:
+
+![](cloud-scrabble-v8.png)

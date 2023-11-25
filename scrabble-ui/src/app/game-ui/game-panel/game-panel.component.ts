@@ -7,8 +7,8 @@ import {Bonus} from "../../clients/board-manager/model/bonus";
 import {Bonus as GuiBonus} from "../model/bonus";
 import {TableVirtualScrollDataSource} from "ng-table-virtual-scroll";
 import {select, Store} from "@ngrx/store";
-import {GameState} from "../../state/game-state/game-state";
-import {selectSolution, selectStartedFlag} from "../../state/game-state/game-state.selectors";
+import {GameState, Move} from "../../state/game-state/game-state";
+import {selectMoveHistory, selectSolution, selectStartedFlag} from "../../state/game-state/game-state.selectors";
 import {
   clearSuggestedWord,
   makeMove,
@@ -17,6 +17,8 @@ import {
   showSuggestedWord,
   start
 } from "../../state/game-state/game-state.actions";
+import {PlayerMove} from "../../services/game.service";
+import {MatTableDataSource} from "@angular/material/table";
 
 @Component({
   selector: 'app-game-panel',
@@ -25,16 +27,23 @@ import {
 })
 export class GamePanelComponent implements OnInit {
 
-  displayedColumns: string[] = ['words', 'points'];
+  solutionColumns: string[] = ['words', 'points'];
+  moveHistoryColumns: string[] = ['moves', 'points'];
   words = new TableVirtualScrollDataSource<GuiWord>([]);
+  moveHistory = new MatTableDataSource<Move>();
   isLoading: boolean = false;
 
+  moveHistory$ = this.store.select(selectMoveHistory);
   solution$ = this.store.select(selectSolution);
   gameStarted$ = this.store.pipe(select(selectStartedFlag));
 
   constructor(private store: Store<{ gameState: GameState }>) { }
 
   ngOnInit(): void {
+    this.moveHistory$.subscribe(moveHistory => {
+      this.moveHistory.data = moveHistory.slice().reverse();
+    });
+
     this.solution$.subscribe(solution => {
       this.words = new TableVirtualScrollDataSource<GuiWord>([]);
       if(solution)
@@ -74,6 +83,10 @@ export class GamePanelComponent implements OnInit {
     this.words = new TableVirtualScrollDataSource<GuiWord>([]);
     this.isLoading = true;
     this.store.dispatch(resolve());
+  }
+
+  getCharacters(value: string): string[] {
+    return value.split('');
   }
 
   private convertElement(el: Element): GuiElement {

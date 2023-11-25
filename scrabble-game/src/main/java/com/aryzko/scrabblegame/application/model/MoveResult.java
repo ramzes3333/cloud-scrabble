@@ -18,7 +18,8 @@ public class MoveResult {
     public static class PlayerMove {
         private String playerId;
         @Singular
-        private List<RackTile> moveTiles;
+        private List<RackTile> tiles;
+        private String word;
         private Integer movePoints;
         private Integer allPoints;
     }

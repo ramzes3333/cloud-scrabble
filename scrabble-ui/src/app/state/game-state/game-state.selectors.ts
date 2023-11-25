@@ -90,3 +90,6 @@ export const selectValidationErrorsForCoordinates = (x: number, y: number) => {
       incorrectFields.filter(incorrectField => incorrectField.x === x && incorrectField.y === y)
   );
 };
+
+export const selectMoveHistory = createSelector(
+  selectGameState, (gameState: GameState) => gameState.moveHistory);

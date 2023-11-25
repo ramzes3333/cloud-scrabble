@@ -10,6 +10,7 @@ export interface GameState {
   boardId?: string;
 
   players?: Player[];
+  moveHistory: Move[];
   actualPlayerId?: string;
 
   fields?: Field[];
@@ -19,4 +20,10 @@ export interface GameState {
   charset?: string[];
   solution?: Solution;
   incorrectFields: CharacterWithPosition[];
+}
+
+export interface Move {
+  playerName: string;
+  word: string;
+  points: number;
 }

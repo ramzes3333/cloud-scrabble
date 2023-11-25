@@ -16,9 +16,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -139,6 +136,15 @@ public class GameController {
                                     .order(p.getOrder())
                                     .type(Type.valueOf(p.getType().toString()))
                                     .points(p.getPoints())
+                                    .moveHistory(p.getMoveHistory().stream()
+                                            .map(m -> Move.builder()
+                                                    .order(m.getOrder())
+                                                    .gameOrder(m.getGameOrder())
+                                                    .word(m.getWord())
+                                                    .tiles(m.getTiles())
+                                                    .points(m.getPoints())
+                                                    .build())
+                                            .toList())
                                     .parameters(getParameters(p))
                                     .build())
                             .toList())
@@ -166,7 +172,18 @@ public class GameController {
             Integer order;
             Type type;
             Integer points;
+            List<Move> moveHistory;
             Map<String, String> parameters;
+        }
+
+        @Value
+        @Builder
+        static class Move {
+            Integer order;
+            Integer gameOrder;
+            String word;
+            String tiles;
+            Integer points;
         }
 
         public enum Type {
