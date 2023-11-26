@@ -5,6 +5,18 @@
   margin-right: 50px;
 }
 
+.game-title {
+
+}
+
+.games-container {
+  background-color: white;
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 8px 0 8px 0;
+}
+
 .games-table {
   width: 100%;
 }
@@ -14,6 +26,10 @@
 }
 .games-table td:hover {
   background-color: #fcfcfc;
+}
+
+.games-table-toolbar {
+  background-color: white;
 }
 
 .game-parameters {

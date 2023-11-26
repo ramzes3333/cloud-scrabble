@@ -2,7 +2,7 @@ package com.aryzko.scrabblegame.application.service.moveperformer;
 
 import com.aryzko.scrabblegame.application.model.BoardTile;
 import com.aryzko.scrabblegame.application.model.MoveResult;
-import com.aryzko.scrabblegame.application.model.RackTile;
+import com.aryzko.scrabblegame.application.model.Tile;
 import com.aryzko.scrabblegame.application.model.board.Board;
 import com.aryzko.scrabblegame.application.model.board.BoardValidationResultResponse;
 import com.aryzko.scrabblegame.application.model.board.Field;
@@ -10,7 +10,6 @@ import com.aryzko.scrabblegame.application.model.board.Letter;
 import com.aryzko.scrabblegame.application.model.board.Rack;
 import com.aryzko.scrabblegame.application.provider.BoardProvider;
 import com.aryzko.scrabblegame.application.provider.TileProvider;
-import com.aryzko.scrabblegame.application.provider.model.Tile;
 import com.aryzko.scrabblegame.application.response.GameFailure;
 import com.aryzko.scrabblegame.domain.model.Game;
 import com.aryzko.scrabblegame.domain.model.Move;
@@ -48,7 +47,7 @@ public abstract class PlayerMovePerformer {
                     .build());
         }
 
-        List<Tile> newTiles = tileProvider.getTiles(board.getId(), tiles.size());
+        List<com.aryzko.scrabblegame.application.provider.model.Tile> newTiles = tileProvider.getTiles(board.getId(), tiles.size());
         board.getRack(playerId).getLetters().addAll(convertTile(newTiles));
 
         Player player = updatePlayerData(playerId, game, result);
@@ -85,9 +84,11 @@ public abstract class PlayerMovePerformer {
                 .toList());
     }
 
-    public List<RackTile> convertBoardTile(List<BoardTile> tiles) {
+    public List<Tile> convertBoardTile(List<BoardTile> tiles) {
         return tiles.stream()
-                .map(t -> RackTile.builder()
+                .map(t -> Tile.builder()
+                        .x(t.getX())
+                        .y(t.getY())
                         .letter(t.getLetter())
                         .blank(t.isBlank())
                         .points(t.getPoints())
@@ -95,7 +96,7 @@ public abstract class PlayerMovePerformer {
                 .toList();
     }
 
-    public List<Letter> convertTile(List<Tile> tiles) {
+    public List<Letter> convertTile(List<com.aryzko.scrabblegame.application.provider.model.Tile> tiles) {
         return tiles.stream()
                 .map(t -> new Letter(t.getLetter(), t.getPoints(), t.getLetter().equals(' ')))
                 .toList();

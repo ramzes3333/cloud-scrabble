@@ -28,7 +28,8 @@ import {selectActualPlayerId, selectBoard, selectBoardId, selectGameState} from 
 import {BoardService} from "../../services/board.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {BoardValidationResult} from "../../clients/board-manager/model/board-validation-result";
-import {GameMoveRequest, GameService} from "../../services/game.service";
+import {GameMoveRequest, GameService, PlayerMove} from "../../services/game.service";
+import {Animation, AnimationControlService, AnimationElement} from "../../services/animation-control.service";
 
 @Injectable()
 export class GameEffects {
@@ -39,7 +40,8 @@ export class GameEffects {
     private gameCreatorService: GameCreatorService,
     private gameResolverService: GameResolverService,
     private boardService: BoardService,
-    private gameService: GameService
+    private gameService: GameService,
+    private animationControlService: AnimationControlService
   ) {
   }
 
@@ -188,6 +190,19 @@ export class GameEffects {
     )
   );
 
+  makeMoveSuccessAnimation$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(makeMoveSuccess),
+        tap((data) => {
+          data.playerMoves.forEach(playerMove => {
+            const animation = convertPlayerMoveToAnimation(playerMove);
+            this.animationControlService.enqueueAnimation(animation);
+          });
+        })
+      ),
+    { dispatch: false }
+  );
+
   failure$ = createEffect(() =>
       this.actions$.pipe(
         ofType(failure),
@@ -197,6 +212,15 @@ export class GameEffects {
       ),
     { dispatch: false }
   );
+}
+
+function convertPlayerMoveToAnimation(playerMove: PlayerMove): Animation {
+  const animationElements: AnimationElement[] = playerMove.tiles.map(tile => ({
+    x: tile.x,
+    y: tile.y
+  }));
+
+  return { elements: animationElements };
 }
 
 function prepareHttpErrorResponse(error: HttpErrorResponse) {

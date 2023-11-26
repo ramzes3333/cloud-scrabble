@@ -47,4 +47,4 @@ docker run -d --network="host" --name mongo-express -e ME_CONFIG_MONGODB_SERVER=
 ![img.png](game-creator-v1.png)
 ### Game:
 
-![](cloud-scrabble-v8.png)
+![](cloud-scrabble-v9.png)

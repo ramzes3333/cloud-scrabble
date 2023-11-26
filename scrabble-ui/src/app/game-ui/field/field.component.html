@@ -3,7 +3,7 @@
      [cdkDropListEnterPredicate]="canDropLetter"
      [cdkDropListDisabled]="isDragDisabled()"
      (cdkDropListDropped)="dropped($event)">
-  <div *ngIf="isLetter()" class="board-field-letter {{getLetterColor()}}" cdkDrag>
+  <div *ngIf="isLetter()" class="board-field-letter {{getLetterColor()}}" cdkDrag [@confirmedMoveAnimation]="animationState">
     {{getLetter()}}
     <div class="board-field-points">{{getLetterPoints()}}</div>
   </div>

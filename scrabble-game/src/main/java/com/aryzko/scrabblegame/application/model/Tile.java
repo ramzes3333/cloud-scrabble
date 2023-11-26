@@ -5,7 +5,9 @@ import lombok.Value;
 
 @Value
 @Builder
-public class RackTile {
+public class Tile {
+    private Integer x;
+    private Integer y;
     private Character letter;
     private Integer points;
     private boolean blank;

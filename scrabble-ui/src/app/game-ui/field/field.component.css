@@ -65,6 +65,11 @@
   color: #5A8DA1;
 }
 
+.board-field-letter.new {
+  background-color: #fff5ea;
+  color: #5A8DA1;
+}
+
 .board-field-letter.invalid {
   background-color: #ff7575;
   color: #fff;

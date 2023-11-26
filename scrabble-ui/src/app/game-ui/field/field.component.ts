@@ -12,11 +12,22 @@ import {move, updateBlankLetter} from "../../state/game-state/game-state.actions
 import {selectField, selectValidationErrorsForCoordinates} from "../../state/game-state/game-state.selectors";
 import {Subscription} from "rxjs";
 import {BoardElement} from "../model/board-element";
+import {AnimationControlService, AnimationElement} from "../../services/animation-control.service";
+import {animate, keyframes, state, style, transition, trigger} from "@angular/animations";
 
 @Component({
   selector: 'app-field',
   templateUrl: './field.component.html',
-  styleUrls: ['./field.component.css']
+  styleUrls: ['./field.component.css'],
+  animations: [
+    trigger('confirmedMoveAnimation', [
+      transition('start <=> end', animate('1000ms', keyframes([
+        style({ transform: 'scale(1)', backgroundColor: '#fff', offset: 0 }),
+        style({ transform: 'scale(1.3)', backgroundColor: '#ff7575', offset: 0.5 }),
+        style({ transform: 'scale(1)', backgroundColor: '#fff', offset: 1 })
+      ]))),
+    ]),
+  ],
 })
 export class FieldComponent implements OnInit {
 
@@ -36,7 +47,10 @@ export class FieldComponent implements OnInit {
 
   private subscriptions: Subscription[] = [];
 
-  constructor(private store: Store<{ gameState: GameState }>, private dialog: MatDialog) { }
+  animationState: string = 'start';
+
+  constructor(private store: Store<{ gameState: GameState }>, private dialog: MatDialog,
+              private animationControl: AnimationControlService) { }
 
   ngOnInit(): void {
     this.movableFields = [];
@@ -62,6 +76,8 @@ export class FieldComponent implements OnInit {
           this.invalid = field.letter.invalid;
           if(this.movable) {
             this.addMovableField();
+          } else {
+            this.removeMovableField();
           }
         } else {
           this.letter = undefined;
@@ -73,6 +89,16 @@ export class FieldComponent implements OnInit {
         }
       }
     }));
+
+    this.animationControl.currentAnimation.subscribe(animation => {
+      if (animation && animation.x == this.x && animation.y == this.y) {
+        this.startAnimation();
+      }
+    });
+  }
+
+  startAnimation() {
+    this.animationState = 'end';
   }
 
   private addMovableField() {
@@ -86,6 +112,10 @@ export class FieldComponent implements OnInit {
       },
       source: this.movableFieldSource
     }
+  }
+
+  private removeMovableField() {
+    this.movableFields = [];
   }
 
   private setInvalidParam(value: boolean) {
@@ -164,7 +194,9 @@ export class FieldComponent implements OnInit {
   }
 
   getLetterColor(): string {
-    if (this.movableFields.length > 0 && this.invalid) {
+    if (this.movableFields.length > 0 && !this.invalid) {
+      return 'new';
+    } else if (this.movableFields.length > 0 && this.invalid) {
       return 'invalid';
     } else if (this.suggested) {
       return 'potential';

@@ -1,41 +1,43 @@
-<h2>{{title}}</h2>
-<table mat-table [dataSource]="games" class="games-table mat-elevation-z1">
-  <ng-container matColumnDef="id">
-    <th mat-header-cell *matHeaderCellDef> Games </th>
-    <td mat-cell *matCellDef="let element" (click)="getGame(element.game.id)">
-      <div class="game-parameters">
-        {{element.game.creationDate | date:'dd-MM-yyyy HH:mm:ss'}}<br>
-        <!--Rack: <br>
-        <ng-container *ngIf="element.racks.length > 0">
-          <ng-container *ngFor="let field of element.racks[0]!.letters">
-            <div class="letter points-{{field.points}}">
-              {{field.letter}}
-              <div class="points">{{field.points}}</div>
-            </div>
+<h2 class="game-title">{{title}}</h2>
+<div class="games-container">
+  <table mat-table [dataSource]="games" class="games-table">
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef> Games </th>
+      <td mat-cell *matCellDef="let element" (click)="getGame(element.game.id)">
+        <div class="game-parameters">
+          {{element.game.creationDate | date:'dd-MM-yyyy HH:mm:ss'}}<br>
+          <!--Rack: <br>
+          <ng-container *ngIf="element.racks.length > 0">
+            <ng-container *ngFor="let field of element.racks[0]!.letters">
+              <div class="letter points-{{field.points}}">
+                {{field.letter}}
+                <div class="points">{{field.points}}</div>
+              </div>
+            </ng-container>
+          </ng-container>-->
+        </div>
+        <div class="board-preview" *ngIf="element.board">
+          <ng-container *ngFor="let field of element.board?.fields; let i = index" >
+            <div class="field-preview {{field.letter != null ? 'used' : ''}}"></div>
+            <br *ngIf="((i+1)%element.board!.boardParameters!.horizontalSize == 0)"/>
           </ng-container>
-        </ng-container>-->
-      </div>
-      <div class="board-preview" *ngIf="element.board">
-        <ng-container *ngFor="let field of element.board?.fields; let i = index" >
-          <div class="field-preview {{field.letter != null ? 'used' : ''}}"></div>
-          <br *ngIf="((i+1)%element.board!.boardParameters!.horizontalSize == 0)"/>
-        </ng-container>
-      </div>
-    </td>
-  </ng-container>
+        </div>
+      </td>
+    </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
-<mat-paginator [length]="totalGames"
-               [pageSize]="pageSize"
-               [pageIndex]="currentPage"
-               [hidePageSize]="true"
-               (page)="onPageChange($event)" class="mat-elevation-z1">
-</mat-paginator>
-<mat-toolbar class="mat-elevation-z1">
-  <mat-toolbar-row>
-    <button mat-raised-button [disabled]="createDisabled" (click)="createGame()" [disabled]="false">Create game</button>
-    <span class="example-spacer"></span>
-  </mat-toolbar-row>
-</mat-toolbar>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  <mat-paginator [length]="totalGames"
+                 [pageSize]="pageSize"
+                 [pageIndex]="currentPage"
+                 [hidePageSize]="true"
+                 (page)="onPageChange($event)">
+  </mat-paginator>
+  <mat-toolbar class="games-table-toolbar">
+    <mat-toolbar-row>
+      <button mat-raised-button [disabled]="createDisabled" (click)="createGame()" [disabled]="false">Create game</button>
+      <span class="example-spacer"></span>
+    </mat-toolbar-row>
+  </mat-toolbar>
+</div>
