@@ -8,7 +8,7 @@ import {select, Store} from "@ngrx/store";
 import {GameState} from "../../state/game-state/game-state";
 import {combineLatest, Subscription} from "rxjs";
 import {
-  selectActualPlayerId,
+  selectActualPlayer,
   selectRacks,
   selectStartedFlag
 } from "../../state/game-state/game-state.selectors";
@@ -16,6 +16,7 @@ import {move} from "../../state/game-state/game-state.actions";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {map} from "rxjs/operators";
 import {BoardElement} from "../model/board-element";
+import {Type} from "../../clients/game-manager/model/game";
 
 @Component({
   selector: 'app-rack',
@@ -28,7 +29,7 @@ export class RackComponent implements OnInit {
   @Input() movableFieldSource!: BoardElement;
 
   gameStarted$ = this.store.pipe(select(selectStartedFlag));
-  actualPlayerId$ = this.store.pipe(select(selectActualPlayerId));
+  actualPlayer$ = this.store.pipe(select(selectActualPlayer));
 
   isRackDisabled: boolean = true;
   playerId?: string;
@@ -59,11 +60,11 @@ export class RackComponent implements OnInit {
     );
   }
 
-  isRackDisabled$ = combineLatest([this.gameStarted$, this.actualPlayerId$]).pipe(
-    map(([gameStarted, actualPlayerId]) => {
-      const isGameStarted = gameStarted !== null ? gameStarted : false;
-      const isActualPlayer = actualPlayerId !== null ? actualPlayerId === this.playerId : false;
-      return !isGameStarted || !isActualPlayer;
+  isRackDisabled$ = combineLatest([this.gameStarted$, this.actualPlayer$]).pipe(
+    map(([gameStarted, actualPlayer]) => {
+      const isGameStarted = gameStarted ? gameStarted : false;
+      const isActualPlayer = actualPlayer ? actualPlayer.id === this.playerId : false;
+      return actualPlayer?.type === Type.BOT || !isGameStarted || !isActualPlayer;
     })
   );
 

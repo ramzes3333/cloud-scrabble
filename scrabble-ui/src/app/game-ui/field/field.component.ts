@@ -14,6 +14,7 @@ import {Subscription} from "rxjs";
 import {BoardElement} from "../model/board-element";
 import {AnimationControlService, AnimationElement} from "../../services/animation-control.service";
 import {animate, keyframes, state, style, transition, trigger} from "@angular/animations";
+import {waitForCondition} from "../../utils/common-utils";
 
 @Component({
   selector: 'app-field',
@@ -98,7 +99,9 @@ export class FieldComponent implements OnInit {
   }
 
   startAnimation() {
-    this.animationState = 'end';
+    waitForCondition(() => !!this.letter, 2000, 100)
+      .then(() => this.animationState = 'end')
+      .catch(error => console.error("Interrupted animation due to timeout", error));
   }
 
   private addMovableField() {

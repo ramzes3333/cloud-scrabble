@@ -77,6 +77,9 @@ export const selectStartedFlag = createSelector(
 export const selectActualPlayerId = createSelector(
   selectGameState, (state: GameState) => state.actualPlayerId);
 
+export const selectActualPlayer = createSelector(
+  selectGameState, (state: GameState) => state.actualPlayer);
+
 export const selectSolution = createSelector(
   selectGameState, (state: GameState) => state.solution);
 

@@ -5,6 +5,7 @@ import com.aryzko.scrabble.scrabbleboardmanager.domain.model.CharacterWithPositi
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Position;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.PreparedLine;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.PreparedLines;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Word;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.DictionaryProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static java.util.Optional.ofNullable;
 
@@ -24,6 +27,27 @@ public class LinePreparationService {
     private static final int FIRST_COLUMN_X = 0;
 
     private final DictionaryProvider dictionaryProvider;
+
+    protected PreparedLine prepareStartingLine(Board board) {
+        PreparedLine.PreparedLineBuilder preparedLineBuilder = PreparedLine.builder();
+
+        final int middleX = board.getBoardParameters().getHorizontalSize()/2;
+        final int middleY = board.getBoardParameters().getVerticalSize()/2;
+
+        preparedLineBuilder.fields(IntStream.range(0, board.getBoardParameters().getHorizontalSize())
+                .mapToObj(i -> {
+                    PreparedLine.LineField.LineFieldBuilder lineFieldBuilder = PreparedLine.LineField.builder().x(i).y(middleY);
+                    lineFieldBuilder.anyLetter(true);
+                    if(i == middleX) {
+                        lineFieldBuilder.anchor(true);
+                        lineFieldBuilder.leftLimit(middleX);
+                    }
+                    return lineFieldBuilder.build();
+                })
+                .collect(Collectors.toList()));
+
+        return preparedLineBuilder.build();
+    }
 
     protected PreparedLines prepareLines(final Board board) {
 

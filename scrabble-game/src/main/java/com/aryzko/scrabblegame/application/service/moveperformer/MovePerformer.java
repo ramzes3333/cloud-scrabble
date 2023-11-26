@@ -47,24 +47,26 @@ public class MovePerformer {
         MoveResult.MoveResultBuilder resultBuilder = MoveResult.builder();
 
         Player actualPlayer = getActualPlayer(game);
+        String startPlayerId = actualPlayer.getId();
 
         if(actualPlayer.getType().equals(Type.HUMAN)) {
             humanMovePerformer.perform(game, board, moveReq.getPlayerId(), moveReq.getTiles()).fold(
                     success -> resultBuilder.playerMove(success),
                     failure -> errors.addAll(failure.getErrors())
             );
+            actualPlayer = getNextPlayerAndUpdateGameActualPlayerId(game);
         }
 
         if(!errors.isEmpty()) {
             return prepareGameFailure(errors);
         }
 
-        while ((actualPlayer = getNextPlayerAndUpdateGameActualPlayerId(game)).getType().equals(Type.BOT)) {
+        do {
             botMovePerformer.perform(game, board, (BotPlayer)actualPlayer).fold(
                     success -> resultBuilder.playerMove(success),
                     failure -> errors.addAll(failure.getErrors())
             );
-        }
+        } while ((actualPlayer = getNextPlayerAndUpdateGameActualPlayerId(game)).getType().equals(Type.BOT) && !startPlayerId.equals(actualPlayer.getId()));
 
         if(!errors.isEmpty()) {
             return prepareGameFailure(errors);

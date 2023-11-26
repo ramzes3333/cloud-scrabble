@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -43,14 +44,33 @@ public class BoardResolver {
         board.setBoardParameters(boardFromDb.getBoardParameters());
 
         List<Word> words = new ArrayList<>();
-        words.addAll(horizontalResolve(playerId, board).getWords());
-        words.addAll(verticalResolve(playerId, board).getWords());
 
+        if(board.isEmpty()) {
+            words.addAll(emptyBoardResolve(playerId, board).getWords());
+        } else {
+            words.addAll(horizontalResolve(playerId, board).getWords());
+            words.addAll(verticalResolve(playerId, board).getWords());
+        }
         words.sort(Comparator.comparing(Word::getPoints).reversed());
 
         return Solution.builder()
                 .words(words)
                 .build();
+    }
+
+    private Solution emptyBoardResolve(final String playerId, final Board board) {
+        Solution solution = Solution.builder().words(
+                        dictionaryProvider.resolve(
+                                dictionaryMapper.convert(
+                                        linePreparationService.prepareStartingLine(board)
+                                ), prepareAvailableLetters(playerId, board))
+                        .getWords().stream()
+                        .map(dictionaryMapper::convert)
+                        .collect(Collectors.toList()))
+                .build();
+
+        scoringService.score(board, solution);
+        return solution;
     }
 
     private Solution horizontalResolve(final String playerId, final Board board) {

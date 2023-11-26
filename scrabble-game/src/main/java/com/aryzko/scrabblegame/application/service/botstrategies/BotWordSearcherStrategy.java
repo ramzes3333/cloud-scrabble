@@ -33,13 +33,24 @@ public abstract class BotWordSearcherStrategy {
         Random random = new Random();
 
         BoardProvider.Solution solution = boardProvider.resolve(board, playerId);
-        List<BoardProvider.Word> bucket = distributeIntoBuckets(solution.words()).get(level().getLevel()-1);
+        List<BoardProvider.Word> bucket = getBucketWithFallback(solution.words(), level());
 
         if(bucket.isEmpty()) {
             return null;
         } else {
             return bucket.get(random.nextInt(bucket.size()));
         }
+    }
+
+    public static List<BoardProvider.Word> getBucketWithFallback(List<BoardProvider.Word> words, Level level) {
+        List<List<BoardProvider.Word>> buckets = distributeIntoBuckets(words);
+
+        for (int i = level.getLevel() - 1; i >= 0; i--) {
+            if (buckets.size() > i && !buckets.get(i).isEmpty()) {
+                return buckets.get(i);
+            }
+        }
+        return Collections.emptyList();
     }
 
     public static List<List<BoardProvider.Word>> distributeIntoBuckets(List<BoardProvider.Word> words) {

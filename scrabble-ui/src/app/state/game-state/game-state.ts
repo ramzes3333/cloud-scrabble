@@ -12,6 +12,7 @@ export interface GameState {
   players?: Player[];
   moveHistory: Move[];
   actualPlayerId?: string;
+  actualPlayer?: Player;
 
   fields?: Field[];
   racks?: Rack[];

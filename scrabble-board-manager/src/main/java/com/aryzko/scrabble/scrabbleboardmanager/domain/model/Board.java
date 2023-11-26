@@ -35,6 +35,11 @@ public class Board {
     private BoardParameters boardParameters;
 
     @JsonIgnore
+    public boolean isEmpty() {
+        return fields.stream().noneMatch(f -> f.getLetter() != null);
+    }
+
+    @JsonIgnore
     public Map<Position, Optional<Character>> getCharacterMap() {
         return fields.stream()
                 .collect(Collectors.toMap(
