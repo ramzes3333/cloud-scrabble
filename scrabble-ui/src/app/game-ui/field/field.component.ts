@@ -99,7 +99,7 @@ export class FieldComponent implements OnInit {
   }
 
   startAnimation() {
-    waitForCondition(() => !!this.letter, 2000, 100)
+    waitForCondition(() => !!this.letter, 2000, 300)
       .then(() => this.animationState = 'end')
       .catch(error => console.error("Interrupted animation due to timeout", error));
   }
