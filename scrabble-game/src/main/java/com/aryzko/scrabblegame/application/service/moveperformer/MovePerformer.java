@@ -8,6 +8,7 @@ import com.aryzko.scrabblegame.application.response.GameFailure;
 import com.aryzko.scrabblegame.application.validator.MoveValidator;
 import com.aryzko.scrabblegame.domain.model.BotPlayer;
 import com.aryzko.scrabblegame.domain.model.Game;
+import com.aryzko.scrabblegame.domain.model.Move;
 import com.aryzko.scrabblegame.domain.model.Player;
 import com.aryzko.scrabblegame.domain.model.State;
 import com.aryzko.scrabblegame.domain.model.Type;
@@ -46,7 +47,7 @@ public class MovePerformer {
 
         MoveResult.MoveResultBuilder resultBuilder = MoveResult.builder();
 
-        Player actualPlayer = getActualPlayer(game);
+        Player actualPlayer = game.getActualPlayer();
         String startPlayerId = actualPlayer.getId();
 
         if(actualPlayer.getType().equals(Type.HUMAN)) {
@@ -54,6 +55,7 @@ public class MovePerformer {
                     success -> resultBuilder.playerMove(success),
                     failure -> errors.addAll(failure.getErrors())
             );
+            checkEndGame(game, board);
             actualPlayer = getNextPlayerAndUpdateGameActualPlayerId(game);
         }
 
@@ -66,7 +68,10 @@ public class MovePerformer {
                     success -> resultBuilder.playerMove(success),
                     failure -> errors.addAll(failure.getErrors())
             );
-        } while ((actualPlayer = getNextPlayerAndUpdateGameActualPlayerId(game)).getType().equals(Type.BOT) && !startPlayerId.equals(actualPlayer.getId()));
+            if(checkEndGame(game, board)) {
+                break;
+            }
+        } while ((actualPlayer = getNextPlayerAndUpdateGameActualPlayerId(game)).getType().equals(Type.BOT) /*&& !startPlayerId.equals(actualPlayer.getId())*/);
 
         if(!errors.isEmpty()) {
             return prepareGameFailure(errors);
@@ -76,8 +81,41 @@ public class MovePerformer {
         gameUpdater.saveGame(game);
         boardProvider.update(board);
 
-        resultBuilder.actualPlayerId(getActualPlayer(game).getId());
+        resultBuilder.actualPlayerId(game.getActualPlayer().getId());
+        resultBuilder.gameState(
+                MoveResult.GameState.builder()
+                    .state(MoveResult.State.valueOf(game.getState().toString()))
+                    .winnerId(game.getWinnerId())
+                    .build());
+
         return Either.left(resultBuilder.build());
+    }
+
+    private boolean checkEndGame(Game game, Board board) {
+        boolean gameFinished = allPlayersMadeDoublePass(game, board) || atLeastOnePlayerUsedAllTiles(game, board);
+        if(gameFinished) {
+            game.setState(State.FINISHED);
+            game.setWinnerId(game.getPlayers().stream()
+                    .max(Comparator.comparing(Player::getPoints))
+                    .map(Player::getId)
+                    .orElse(null));
+        }
+        return gameFinished;
+    }
+
+    private boolean allPlayersMadeDoublePass(Game game, Board board) {
+        return game.getPlayers().stream()
+                .allMatch(player -> {
+                    List<Move> moveHistory = player.getMoveHistory();
+                    if (moveHistory.size() < 2) return false;
+                    return moveHistory.subList(moveHistory.size() - 2, moveHistory.size()).stream()
+                            .allMatch(move -> move.getTiles().isEmpty());
+                });
+    }
+
+    private boolean atLeastOnePlayerUsedAllTiles(Game game, Board board) {
+        return board.getRacks().stream()
+                .anyMatch(rack -> rack.getLetters().isEmpty());
     }
 
     private static Either<MoveResult, GameFailure> prepareGameFailure(List<GameFailure.Error> errors) {
@@ -93,7 +131,7 @@ public class MovePerformer {
     }
 
     private Player getNextPlayer(Game game) {
-        final Integer currentPlayerOrder = getActualPlayer(game).getOrder();
+        final Integer currentPlayerOrder = game.getActualPlayer().getOrder();
 
         return game.getPlayers().stream()
                 .sorted(Comparator.comparing(Player::getOrder))
@@ -104,12 +142,5 @@ public class MovePerformer {
                                 .min(Comparator.comparing(Player::getOrder))
                                 .orElseThrow(() -> new IllegalStateException("No players in game!"))
                 );
-    }
-
-    private Player getActualPlayer(final Game game) {
-        return game.getPlayers().stream()
-                .filter(p -> p.getId().equals(game.getActualPlayerId()))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Cannot find actual player!"));
     }
 }

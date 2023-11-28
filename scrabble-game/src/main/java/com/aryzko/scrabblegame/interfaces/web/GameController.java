@@ -61,10 +61,10 @@ public class GameController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Game>> getAll(
+    public ResponseEntity<Page<GameResponse>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
-        return ResponseEntity.ok(gameProvider.findAllGamesWithSorting(page, size));
+        return ResponseEntity.ok(gameProvider.findAllGamesWithSorting(page, size).map(GameResponse::of));
     }
 
     @PostMapping("move")
@@ -122,6 +122,7 @@ public class GameController {
         String boardId;
         OffsetDateTime creationDate;
         String actualPlayerId;
+        String winnerId;
         List<Player> players;
 
         public static GameResponse of(Game game) {
@@ -130,6 +131,7 @@ public class GameController {
                     .boardId(game.getBoardId().toString())
                     .creationDate(game.getCreationDate())
                     .actualPlayerId(game.getActualPlayerId())
+                    .winnerId(game.getWinnerId())
                     .players(game.getPlayers().stream()
                             .map(p -> Player.builder()
                                     .id(p.getId())

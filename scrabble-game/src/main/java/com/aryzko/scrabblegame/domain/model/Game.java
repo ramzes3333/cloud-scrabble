@@ -1,5 +1,6 @@
 package com.aryzko.scrabblegame.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.time.OffsetDateTime;
@@ -16,4 +17,12 @@ public class Game {
     private List<Player> players = new ArrayList<>();
     private String actualPlayerId;
     private String winnerId;
+
+    @JsonIgnore
+    public Player getActualPlayer() {
+        return this.getPlayers().stream()
+                .filter(p -> p.getId().equals(this.getActualPlayerId()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Cannot find actual player!"));
+    }
 }

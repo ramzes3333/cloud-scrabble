@@ -30,21 +30,21 @@ class RelatedWordsFillServiceTest {
         Word word = solution.getWords().get(0);
         assertEquals(3, word.getRelatedWords().size());
 
-        Word relatedWord1 = getRelatedWord(word, "on");
+        Word relatedWord1 = getRelatedWord(word, "ON");
         assertNotNull(relatedWord1);
         assertEquals(0, relatedWord1.getElements().get(0).getX());
         assertEquals(0, relatedWord1.getElements().get(1).getX());
         assertEquals(1, relatedWord1.getElements().get(0).getY());
         assertEquals(2, relatedWord1.getElements().get(1).getY());
 
-        Word relatedWord2 = getRelatedWord(word, "no");
+        Word relatedWord2 = getRelatedWord(word, "NO");
         assertNotNull(relatedWord2);
         assertEquals(1, relatedWord2.getElements().get(0).getX());
         assertEquals(1, relatedWord2.getElements().get(1).getX());
         assertEquals(1, relatedWord2.getElements().get(0).getY());
         assertEquals(2, relatedWord2.getElements().get(1).getY());
 
-        Word relatedWord3 = getRelatedWord(word, "as");
+        Word relatedWord3 = getRelatedWord(word, "AS");
         assertNotNull(relatedWord2);
         assertEquals(2, relatedWord3.getElements().get(0).getX());
         assertEquals(2, relatedWord3.getElements().get(1).getX());
@@ -75,18 +75,18 @@ class RelatedWordsFillServiceTest {
         Solution.SolutionBuilder solutionBuilder = Solution.builder();
         solutionBuilder.words(List.of(
                 prepareWord(List.of(
-                        prepareElement(0, 2, 'n', false),
-                        prepareElement(1, 2, 'o', false),
-                        prepareElement(2, 2, 's', false)))));
+                        prepareElement(0, 2, 'N', false),
+                        prepareElement(1, 2, 'O', false),
+                        prepareElement(2, 2, 'S', false)))));
 
         return solutionBuilder.build();
     }
 
     private Word prepareWord() {
         return prepareWord(List.of(
-                        prepareElement(9, 5, 'ź', false),
-                        prepareElement(9, 6, 'l', false),
-                        prepareElement(9, 7, 'i', false)));
+                        prepareElement(9, 5, 'Ź', false),
+                        prepareElement(9, 6, 'L', false),
+                        prepareElement(9, 7, 'I', false)));
     }
 
     private static Word prepareWord(List<Word.Element> elements) {

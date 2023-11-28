@@ -40,17 +40,17 @@ class LinePreparationServiceTest {
         //given
         Board board = loadObjectFromJson("/domain/service/board-to-resolve-5x5.json", Board.class);
 
-        when(dictionaryProvider.fillGap("*j")).thenReturn(List.of('a', 'e', 'o'));
-        when(dictionaryProvider.fillGap("*t")).thenReturn(List.of('a', 'e', 'o', 'u'));
-        when(dictionaryProvider.fillGap("*o")).thenReturn(List.of('b', 'c', 'd', 'e', 'g', 'h',
-                'k', 'n', 'o', 'p', 'r', 't', 'y'));
-        when(dictionaryProvider.fillGap("*k")).thenReturn(List.of('o'));
-        when(dictionaryProvider.fillGap("t*")).thenReturn(List.of('a', 'e', 'o', 's', 'u', 'y', 'ą', 'ę'));
-        when(dictionaryProvider.fillGap("o*")).thenReturn(List.of('d', 'h', 'j', 'k', 'm', 'n', 'o',
-                'p', 'r', 's', 't', 'z', 'ń', 'ś', 'ż'));
-        when(dictionaryProvider.fillGap("oto*")).thenReturn(List.of('k'));
-        when(dictionaryProvider.fillGap("j*")).thenReturn(List.of('a', 'e', 'ą'));
-        when(dictionaryProvider.fillGap("k*")).thenReturn(List.of('a', 'i', 'o', 'u'));
+        when(dictionaryProvider.fillGap("*J")).thenReturn(List.of('A', 'E', 'O'));
+        when(dictionaryProvider.fillGap("*T")).thenReturn(List.of('A', 'E', 'O', 'U'));
+        when(dictionaryProvider.fillGap("*O")).thenReturn(List.of('B', 'C', 'D', 'E', 'G', 'H',
+                'K', 'N', 'O', 'P', 'R', 'T', 'Y'));
+        when(dictionaryProvider.fillGap("*K")).thenReturn(List.of('O'));
+        when(dictionaryProvider.fillGap("T*")).thenReturn(List.of('A', 'E', 'O', 'S', 'U', 'Y', 'Ą', 'Ę'));
+        when(dictionaryProvider.fillGap("O*")).thenReturn(List.of('D', 'H', 'J', 'K', 'M', 'N', 'O',
+                'P', 'R', 'S', 'T', 'Z', 'Ń', 'Ś', 'Ż'));
+        when(dictionaryProvider.fillGap("OTO*")).thenReturn(List.of('K'));
+        when(dictionaryProvider.fillGap("J*")).thenReturn(List.of('A', 'E', 'Ą'));
+        when(dictionaryProvider.fillGap("K*")).thenReturn(List.of('A', 'I', 'O', 'U'));
 
 
         //when
@@ -63,24 +63,24 @@ class LinePreparationServiceTest {
 
         assertNotNull(lines);
 
-        assertEquals(List.of('o'),
+        assertEquals(List.of('O'),
                 getField(lines, 0, 1).getAvailableLetters());
-        assertEquals(List.of('b', 'c', 'd', 'e', 'g', 'h', 'k', 'n', 'o', 'p', 'r', 't', 'y'),
+        assertEquals(List.of('B', 'C', 'D', 'E', 'G', 'H', 'K', 'N', 'O', 'P', 'R', 'T', 'Y'),
                 getField(lines, 1, 1).getAvailableLetters());
-        assertEquals(List.of('a', 'e', 'o'),
+        assertEquals(List.of('A', 'E', 'O'),
                 getField(lines, 2, 1).getAvailableLetters());
-        assertEquals(List.of('a', 'e', 'o', 'u'),
+        assertEquals(List.of('A', 'E', 'O', 'U'),
                 getField(lines, 4, 1).getAvailableLetters());
 
-        assertEquals(List.of('a', 'i', 'o', 'u'),
+        assertEquals(List.of('A', 'I', 'O', 'U'),
                 getField(lines, 0, 3).getAvailableLetters());
-        assertEquals(List.of('d', 'h', 'j', 'k', 'm', 'n', 'o', 'p', 'r', 's', 't', 'z', 'ń', 'ś', 'ż'),
+        assertEquals(List.of('D', 'H', 'J', 'K', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'Z', 'Ń', 'Ś', 'Ż'),
                 getField(lines, 1, 3).getAvailableLetters());
-        assertEquals(List.of('a', 'e', 'ą'),
+        assertEquals(List.of('A', 'E', 'Ą'),
                 getField(lines, 2, 3).getAvailableLetters());
-        assertEquals(List.of('k'),
+        assertEquals(List.of('K'),
                 getField(lines, 3, 3).getAvailableLetters());
-        assertEquals(List.of('a', 'e', 'o', 's', 'u', 'y', 'ą', 'ę'),
+        assertEquals(List.of('A', 'E', 'O', 'S', 'U', 'Y', 'Ą', 'Ę'),
                 getField(lines, 4, 3).getAvailableLetters());
 
         assertTrue(getField(lines, 0, 0).isAnyLetter());
@@ -114,13 +114,13 @@ class LinePreparationServiceTest {
         assertNull(getField(lines, 3, 2).getAvailableLetters());
         assertNull(getField(lines, 4, 2).getAvailableLetters());
 
-        assertEquals('o', getField(lines, 3, 0).getLetter());
-        assertEquals('t', getField(lines, 3, 1).getLetter());
-        assertEquals('k', getField(lines, 0, 2).getLetter());
-        assertEquals('o', getField(lines, 1, 2).getLetter());
-        assertEquals('j', getField(lines, 2, 2).getLetter());
-        assertEquals('o', getField(lines, 3, 2).getLetter());
-        assertEquals('t', getField(lines, 4, 2).getLetter());
+        assertEquals('O', getField(lines, 3, 0).getLetter());
+        assertEquals('T', getField(lines, 3, 1).getLetter());
+        assertEquals('K', getField(lines, 0, 2).getLetter());
+        assertEquals('O', getField(lines, 1, 2).getLetter());
+        assertEquals('J', getField(lines, 2, 2).getLetter());
+        assertEquals('O', getField(lines, 3, 2).getLetter());
+        assertEquals('T', getField(lines, 4, 2).getLetter());
 
         assertEquals(2, getField(lines, 2, 0).getLeftLimit());
         assertEquals(0, getField(lines, 0, 1).getLeftLimit());

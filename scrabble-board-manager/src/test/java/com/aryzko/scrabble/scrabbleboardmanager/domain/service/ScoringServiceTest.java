@@ -44,15 +44,15 @@ class ScoringServiceTest {
 
         //then
         assertEquals(solution.getWords().size(), result.getWords().size());
-        Word word1 = getWord(solution, "fok"); //(5+1+(2*2))*3 + 50 (bonus)
+        Word word1 = getWord(solution, "FOK"); //(5+1+(2*2))*3 + 50 (bonus)
         assertNotNull(word1);
         assertEquals(80, word1.getPoints());
 
-        Word word2 = getWord(solution, "koc"); //(2+1+(2*3))*2 + 50 (bonus)
+        Word word2 = getWord(solution, "KOC"); //(2+1+(2*3))*2 + 50 (bonus)
         assertNotNull(word2);
         assertEquals(68, word2.getPoints());
 
-        Word word3 = getWord(solution, "ok"); //1+2*2
+        Word word3 = getWord(solution, "OK"); //1+2*2
         assertNotNull(word3);
         assertEquals(5, word3.getPoints());
     }
@@ -72,7 +72,7 @@ class ScoringServiceTest {
 
         //then
         assertEquals(solution.getWords().size(), result.getWords().size());
-        Word word1 = getWord(solution, "mą"); //MĄ (2+5)*2 + IM (1+2)*2
+        Word word1 = getWord(solution, "MĄ"); //MĄ (2+5)*2 + IM (1+2)*2
         assertNotNull(word1);
         assertEquals(20, word1.getPoints());
     }
@@ -105,18 +105,18 @@ class ScoringServiceTest {
         Solution.SolutionBuilder solutionBuilder = Solution.builder();
         solutionBuilder.words(List.of(
                 prepareWord(List.of(
-                        prepareElement(2, 0, 'f', false),
-                        prepareElement(3, 0, 'o', true),
-                        prepareElement(4, 0, 'k', false)), emptyList()),
+                        prepareElement(2, 0, 'F', false),
+                        prepareElement(3, 0, 'O', true),
+                        prepareElement(4, 0, 'K', false)), emptyList()),
 
                 prepareWord(List.of(
-                        prepareElement(1, 1, 'k', false),
-                        prepareElement(1, 2, 'o', true),
-                        prepareElement(1, 3, 'c', false)), emptyList()),
+                        prepareElement(1, 1, 'K', false),
+                        prepareElement(1, 2, 'O', true),
+                        prepareElement(1, 3, 'C', false)), emptyList()),
 
                 prepareWord(List.of(
-                        prepareElement(3, 0, 'o', true),
-                        prepareElement(4, 0, 'k', false)), emptyList())));
+                        prepareElement(3, 0, 'O', true),
+                        prepareElement(4, 0, 'K', false)), emptyList())));
 
         return solutionBuilder.build();
     }
@@ -125,26 +125,26 @@ class ScoringServiceTest {
         Solution.SolutionBuilder solutionBuilder = Solution.builder();
         solutionBuilder.words(List.of(
                 prepareWord(List.of(
-                        prepareElement(1, 1, 'm', false),
-                        prepareElement(2, 1, 'ą', true)),
+                        prepareElement(1, 1, 'M', false),
+                        prepareElement(2, 1, 'Ą', true)),
                         List.of(
                                 prepareWord(List.of(
-                                        prepareElement(1, 0, 'i', true),
-                                        prepareElement(1, 1, 'm', false)), emptyList())))));
+                                        prepareElement(1, 0, 'I', true),
+                                        prepareElement(1, 1, 'M', false)), emptyList())))));
 
         return solutionBuilder.build();
     }
 
     private Word prepareWord() {
         return prepareWord(List.of(
-                                prepareElement(9, 5, 'ź', false),
-                                prepareElement(9, 6, 'l', false),
-                                prepareElement(9, 7, 'i', false)),
+                                prepareElement(9, 5, 'Ź', false),
+                                prepareElement(9, 6, 'L', false),
+                                prepareElement(9, 7, 'I', false)),
                         List.of(
                                 prepareWord(List.of(
-                                        prepareElement(7, 7, 'b', true),
-                                        prepareElement(8, 7, 'o', true),
-                                        prepareElement(9, 7, 'i', false)), emptyList())));
+                                        prepareElement(7, 7, 'B', true),
+                                        prepareElement(8, 7, 'O', true),
+                                        prepareElement(9, 7, 'I', false)), emptyList())));
     }
 
     private static Word prepareWord(List<Word.Element> elements, List<Word> relatedWords) {

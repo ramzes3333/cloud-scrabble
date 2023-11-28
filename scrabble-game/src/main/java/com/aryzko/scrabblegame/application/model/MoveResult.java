@@ -9,18 +9,32 @@ import java.util.List;
 @Value
 @Builder
 public class MoveResult {
-    private String actualPlayerId;
+    String actualPlayerId;
     @Singular
-    private List<PlayerMove> playerMoves;
+    List<PlayerMove> playerMoves;
+    GameState gameState;
 
     @Value
     @Builder
     public static class PlayerMove {
-        private String playerId;
+        String playerId;
         @Singular
-        private List<Tile> tiles;
-        private String word;
-        private Integer movePoints;
-        private Integer allPoints;
+        List<Tile> tiles;
+        String word;
+        Integer movePoints;
+        Integer allPoints;
+    }
+
+    @Value
+    @Builder
+    public static class GameState {
+        State state;
+        String winnerId;
+    }
+
+    public enum State {
+        NOT_STARTED,
+        STARTED,
+        FINISHED
     }
 }

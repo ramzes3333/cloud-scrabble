@@ -80,6 +80,9 @@ export const selectActualPlayerId = createSelector(
 export const selectActualPlayer = createSelector(
   selectGameState, (state: GameState) => state.actualPlayer);
 
+export const selectWinner = createSelector(
+  selectGameState, (state: GameState) => state.winner);
+
 export const selectSolution = createSelector(
   selectGameState, (state: GameState) => state.solution);
 

@@ -113,7 +113,7 @@ public class ScoringService {
                 .mapToInt(Word::getPoints)
                 .sum();
 
-        log.info("Word (%s) score: %d".formatted(word.getWordAsString(), points));
+        log.debug("Word (%s) score: %d".formatted(word.getWordAsString(), points));
         return points;
     }
 

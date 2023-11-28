@@ -4,6 +4,7 @@ import com.aryzko.scrabblegame.application.model.board.Board;
 import com.aryzko.scrabblegame.application.provider.BoardProvider;
 import com.aryzko.scrabblegame.domain.model.Level;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public abstract class BotWordSearcherStrategy {
@@ -85,7 +87,7 @@ public abstract class BotWordSearcherStrategy {
 
     private static void printBuckets(List<List<BoardProvider.Word>> buckets) {
         for (int i = 0; i < buckets.size(); i++) {
-            System.out.println("Bucket " + (i + 1) + ": " + buckets.get(i).stream()
+            log.debug("Bucket " + (i + 1) + ": " + buckets.get(i).stream()
                     .map(BotWordSearcherStrategy::wordAsString)
                     .collect(Collectors.joining(", ")));
         }

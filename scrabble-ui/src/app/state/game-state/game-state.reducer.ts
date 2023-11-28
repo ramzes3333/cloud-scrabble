@@ -26,7 +26,8 @@ export const initialState : GameState = {
   started: false,
   moveHistory: [],
   charset: [],
-  incorrectFields: []
+  incorrectFields: [],
+  winner: undefined
 };
 
 export const gameStateReducer = createReducer(initialState,
@@ -66,6 +67,7 @@ export const gameStateReducer = createReducer(initialState,
       moveHistory: combinedMoveHistory,
       actualPlayerId: data.game.actualPlayerId,
       actualPlayer: data.game.players.find(p => p.id === data.game.actualPlayerId),
+      winner: data.game.players.find(p => p.id === data.game.winnerId),
       boardId: data.board.id,
       fields: fieldsFromBoard(data.board),
       racks: racksFromBoard(data.board),
@@ -129,7 +131,12 @@ export const gameStateReducer = createReducer(initialState,
   }),
   on(makeMoveSuccess, (state, moveResult) => {
     const updatedPlayers = state.players?.map(player => {
-      const playerMove = moveResult.playerMoves.find(pm => pm.playerId === player.id);
+      const playerMove = moveResult.playerMoves.reduce((max, pm) => {
+        if (pm.playerId === player.id) {
+          return max.allPoints > pm.allPoints ? max : pm;
+        }
+        return max;
+      }, { allPoints: -Infinity });
 
       if (playerMove) {
         return {
@@ -163,6 +170,7 @@ export const gameStateReducer = createReducer(initialState,
       players: updatedPlayers,
       actualPlayerId: moveResult.actualPlayerId,
       actualPlayer: updatedPlayers?.find(p => p.id === moveResult.actualPlayerId),
+      winner: updatedPlayers?.find(p => p.id === moveResult.gameState?.winnerId),
       moveHistory: updatedMoveHistory
     };
   }),

@@ -10,7 +10,7 @@ import {combineLatest, Subscription} from "rxjs";
 import {
   selectActualPlayer,
   selectRacks,
-  selectStartedFlag
+  selectStartedFlag, selectWinner
 } from "../../state/game-state/game-state.selectors";
 import {move} from "../../state/game-state/game-state.actions";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -58,6 +58,9 @@ export class RackComponent implements OnInit {
         this.isRackDisabled = value;
       })
     );
+    this.subscriptions.push(this.store.pipe(select(selectWinner)).subscribe(winner => {
+      this.isRackDisabled = !!winner;
+    }));
   }
 
   isRackDisabled$ = combineLatest([this.gameStarted$, this.actualPlayer$]).pipe(

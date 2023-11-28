@@ -41,6 +41,14 @@
   margin: 5px 5px 5px 5px;
 }
 
+.game-players {
+  margin: 10px 5px 5px 5px;
+}
+
+.game-player {
+
+}
+
 .board-preview {
   display: inline-block;
   vertical-align: top;

@@ -19,6 +19,7 @@ import {
 } from "../../state/game-state/game-state.actions";
 import {PlayerMove} from "../../services/game.service";
 import {MatTableDataSource} from "@angular/material/table";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-game-panel',
@@ -37,14 +38,16 @@ export class GamePanelComponent implements OnInit {
   solution$ = this.store.select(selectSolution);
   gameStarted$ = this.store.pipe(select(selectStartedFlag));
 
+  private subscriptions: Subscription[] = [];
+
   constructor(private store: Store<{ gameState: GameState }>) { }
 
   ngOnInit(): void {
-    this.moveHistory$.subscribe(moveHistory => {
+    this.subscriptions.push(this.moveHistory$.subscribe(moveHistory => {
       this.moveHistory.data = moveHistory.slice().reverse();
-    });
+    }));
 
-    this.solution$.subscribe(solution => {
+    this.subscriptions.push(this.solution$.subscribe(solution => {
       this.words = new TableVirtualScrollDataSource<GuiWord>([]);
       if(solution)
         for (const w of solution.words) {
@@ -66,7 +69,7 @@ export class GamePanelComponent implements OnInit {
           this.words.data.push(word);
         }
       this.isLoading = false;
-    });
+    }));
   }
 
   startGame() {
@@ -152,5 +155,9 @@ export class GamePanelComponent implements OnInit {
       bonuses += "\r\n";
     }
     return bonuses;
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }

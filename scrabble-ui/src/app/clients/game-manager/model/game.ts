@@ -5,6 +5,7 @@ export interface Game {
   creationDate: string;
   players: Player[];
   actualPlayerId: string;
+  winnerId: string;
 }
 
 export interface Player {

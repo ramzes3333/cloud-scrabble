@@ -11,6 +11,9 @@
       <br *ngIf="x === boardParameters.horizontalSize - 1"/>
     </ng-container>
   </ng-container>
+  <div class="winning-message" *ngIf="winner">
+    {{ winner }} has won!
+  </div>
 </div>
 <app-rack [rackNumber]=0
           [movableFieldSource]=MovableFieldSource.RACK0

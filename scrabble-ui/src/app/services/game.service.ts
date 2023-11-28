@@ -53,6 +53,7 @@ export interface Tile {
 export interface MoveResult {
   actualPlayerId: string;
   playerMoves: PlayerMove[];
+  gameState: GameState;
 }
 
 export interface PlayerMove {
@@ -61,4 +62,9 @@ export interface PlayerMove {
   word: string;
   movePoints: number;
   allPoints: number;
+}
+
+export interface GameState {
+  state: string;
+  winnerId: string;
 }

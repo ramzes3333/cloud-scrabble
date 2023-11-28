@@ -6,6 +6,13 @@
       <td mat-cell *matCellDef="let element" (click)="getGame(element.game.id)">
         <div class="game-parameters">
           {{element.game.creationDate | date:'dd-MM-yyyy HH:mm:ss'}}<br>
+          <div class="game-players">
+            <div *ngFor="let player of element.game.players; let i = index" class="game-player">
+              Player {{ i+1 }}:
+              <span *ngIf="player.type === 'HUMAN'">{{ player.parameters['login'] || 'Undefined' }}</span>
+              <span *ngIf="player.type === 'BOT'">Bot {{ player.parameters['level'] || 'Undefined' }}</span>
+            </div>
+          </div>
           <!--Rack: <br>
           <ng-container *ngIf="element.racks.length > 0">
             <ng-container *ngFor="let field of element.racks[0]!.letters">
