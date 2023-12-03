@@ -23,7 +23,7 @@
     "@angular/router": "^17.0.0",
     "@ngrx/effects": "^17.0.1",
     "@ngrx/store": "^17.0.1",
-    "keycloak-angular": "^14.1.0",
+    "keycloak-angular": "^15.0.0",
     "keycloak-js": "^22.0.5",
     "ng-table-virtual-scroll": "^1.4.1",
     "rxjs": "~7.5.0",
