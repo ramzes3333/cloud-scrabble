@@ -18,4 +18,10 @@ export class GameResolverService {
       return EMPTY;
     }
   }
+
+  asyncResolve(playerId: string, board: Board | null) {
+    if(board != null) {
+      this.boardManager.asyncResolve(playerId, board).subscribe();
+    }
+  }
 }

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from "rxjs";
+import {mapTo, Observable, tap} from "rxjs";
 import {Board} from "./model/board";
 import {map} from 'rxjs/operators';
 import {BoardValidationResult} from "./model/board-validation-result";
@@ -79,6 +79,22 @@ export class BoardManagerService {
       }
     ).pipe(
       map(response => response.body!)
+    );
+  }
+
+  asyncResolve(playerId: string, board: BoardRequest): Observable<void> {
+    return this.http.post<void>(`board-manager-service/api/boards/resolve-async/${playerId}`,
+      board,
+      {
+        observe: 'response'
+      }
+    ).pipe(
+      tap(response => {
+        if (response.status !== 200) {
+          throw new Error('Błąd serwera przy rozwiązywaniu tablicy');
+        }
+      }),
+      map(() => undefined)
     );
   }
 }

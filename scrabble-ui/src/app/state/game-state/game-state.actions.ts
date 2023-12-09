@@ -8,6 +8,7 @@ import {Move} from "../../game-ui/model/move";
 import {Game} from "../../clients/game-manager/model/game";
 import {MoveResult} from "../../clients/game-manager/model/move-result";
 import {Element} from "../../game-ui/model/element";
+import {Word} from "../../clients/board-manager/model/solution/word";
 
 /* CREATE GAME ACTIONS */
 export const create = createAction('[Game State Component] Create game', props<CreateGameRequest>());
@@ -16,6 +17,10 @@ export const createSuccess = createAction('[Game State Component] Create game su
 /* SOLUTIONS */
 export const resolve = createAction('[Game State Component] Resolve board');
 export const resolveSuccess = createAction('[Game State Component] Resolve board success', props<Solution>());
+
+export const asyncResolve = createAction('[Game State Component] Async resolve board');
+export const addSolutionWord = createAction('[Game State Component] Add solution word', props<Word>());
+
 export const showSuggestedWord = createAction('[Game State Component] Show suggested word', props<{elements: Element[]}>());
 export const clearSuggestedWord = createAction('[Game State Component] Clear suggested word');
 export const putSuggestedWord = createAction('[Game State Component] Put suggested word', props<{elements: Element[]}>());

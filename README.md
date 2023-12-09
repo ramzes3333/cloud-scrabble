@@ -2,9 +2,54 @@
 
 Scrabble game implemented using a microservices architecture. Technology stack: Spring (backend), Angular (frontend).
 
-You can create a game with the computer or by yourself. The computer has five levels of difficulty. In the game, there is a functionality for suggesting words (currently unlimited suggesting in every round).
+You can create a game with the computer or with yourself. The computer has five levels of difficulty. In the game, there is a functionality for suggesting words (currently unlimited suggesting in every round).
+
+## Used technologies/libraries:
+
+### Backend
+- Spring
+  - Spring Boot
+  - Spring Security
+  - Spring AMQP
+  - Spring Cloud
+    - Spring Cloud Contract
+    - Spring Cloud Gateway
+    - Spring Cloud OpenFeign
+- Eureka
+  - Eureka Server
+  - Eureka Client
+- Keycloak
+- Caffeine
+- RabbitMQ
+
+- Databases
+  - MongoDB
+    - Mongock
+  - PostgreSQL
+    - Liquibase
+  - H2 Database
+- MapStruct
+- Lombok
+- Springdoc-openapi
+- Logbook
+- Resilience4j
+- Vavr
+- Archunit
+- WebSockets
+- Reflections
+
+### Frontend
+- Angular
+  - Angular Material
+- NgRx
+- RxJS
 
 ## Docker commands to execute before starting applications:
+
+### [AMQP] Run rabbitmq for scrabble-board-manager, scrabble-dictionary
+```
+docker run -d --network="host" --name rabbitmq_3_12 -p 5672:5672 -p 15672:15672 rabbitmq:3.12-management
+```
 
 ### [SECURITY] Run keycloak for all apps
 ```

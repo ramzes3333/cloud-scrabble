@@ -46,6 +46,15 @@ button:hover {
   color: #8a5042;
   position: relative;
   z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.resolve-container-header mat-slide-toggle {
+  position: absolute;
+  right: 10px;
+  transform: scale(0.8);
 }
 
 .resolve-container {

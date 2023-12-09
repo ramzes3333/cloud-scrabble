@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import org.apache.commons.lang.NotImplementedException;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -115,7 +114,7 @@ public class Board {
                 .build();
     }
 
-    public Board transpose(TransposeType transposeType) {
+    public Board transpose() {
         Board transposed = new Board();
         transposed.setId(UUID.fromString(this.getId().toString()));
         transposed.setBoardParameters(BoardParameters.builder()
@@ -127,15 +126,12 @@ public class Board {
                 .map(Rack::clone)
                 .collect(Collectors.toList()));
         transposed.setFields(fields.stream()
-                .map(field -> transpose(field, transposeType))
+                .map(this::transpose)
                 .collect(Collectors.toList()));
         return transposed;
     }
 
-    private Field transpose(Field field, TransposeType transposeType) {
-        if(transposeType == TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_RIGHT) {
-            throw new NotImplementedException();
-        }
+    private Field transpose(Field field) {
         Field transposedField = new Field();
         transposedField.setX(field.getY());
         transposedField.setY(field.getX());

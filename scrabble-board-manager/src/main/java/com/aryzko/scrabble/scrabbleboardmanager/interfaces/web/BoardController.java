@@ -2,6 +2,7 @@ package com.aryzko.scrabble.scrabbleboardmanager.interfaces.web;
 
 import com.aryzko.scrabble.scrabbleboardmanager.domain.command.CreateBoardCommand;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.model.Word;
+import com.aryzko.scrabble.scrabbleboardmanager.domain.service.AsyncBoardResolver;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.service.BoardResolver;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.service.BoardService;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.service.TilesScoring;
@@ -41,6 +42,7 @@ public class BoardController {
 
     private final BoardService boardService;
     private final BoardResolver resolver;
+    private final AsyncBoardResolver asyncResolver;
     private final BoardMapper boardMapper;
     private final SolutionMapper solutionMapper;
     private final BoardValidationMapper boardValidationMapper;
@@ -92,6 +94,12 @@ public class BoardController {
     @PostMapping(value = "resolve/{playerId}")
     public Solution resolve(@PathVariable("playerId") String playerId, @RequestBody @Valid BoardRequest board) {
         return solutionMapper.convert(resolver.resolve(boardMapper.toBoard(board), playerId));
+    }
+
+    @PostMapping(value = "resolve-async/{playerId}")
+    public ResponseEntity<Void> asyncResolve(@PathVariable("playerId") String playerId, @RequestBody @Valid BoardRequest board) {
+        asyncResolver.asyncResolve(boardMapper.toBoard(board), playerId);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("{uuid}/score")

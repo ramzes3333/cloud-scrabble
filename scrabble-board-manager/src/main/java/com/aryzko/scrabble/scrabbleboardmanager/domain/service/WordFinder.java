@@ -41,9 +41,9 @@ public class WordFinder {
     }
 
     private Set<Word> findWordVertically(Board board, Tiles tiles) {
-        return findWordHorizontally(board.transpose(TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_LEFT),
-                tiles.transpose(TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_LEFT)).stream()
-                .map(w -> w.transpose(TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_RIGHT))
+        return findWordHorizontally(board.transpose(),
+                tiles.transpose()).stream()
+                .map(Word::transpose)
                 .collect(Collectors.toSet());
     }
 

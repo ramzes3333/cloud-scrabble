@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -91,9 +90,9 @@ public class BoardResolver {
     }
 
     private Solution verticalResolve(final String playerId, final Board board) {
-        final Board transposedBoard = board.transpose(TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_LEFT);
+        final Board transposedBoard = board.transpose();
         return horizontalResolve(playerId, transposedBoard)
-                .transpose(TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_RIGHT);
+                .transpose();
     }
 
     private List<Character> prepareAvailableLetters(final String playerId, Board board) {

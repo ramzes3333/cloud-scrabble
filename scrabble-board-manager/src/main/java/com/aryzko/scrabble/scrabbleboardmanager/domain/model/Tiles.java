@@ -18,11 +18,7 @@ public class Tiles {
                 .findAny().orElse(null);
     }
 
-    public Tiles transpose(TransposeType transposeType) {
-        if(transposeType == TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_RIGHT) {
-            throw new NotImplementedException();
-        }
-
+    public Tiles transpose() {
         return new Tiles(tiles.stream()
                 .map(t -> new Tile(t.getY(), t.getX(), t.getLetter(), t.isBlank()))
                 .toList());

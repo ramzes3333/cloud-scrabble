@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -61,12 +62,12 @@ public class ScoringService {
     }
 
     private void processRelatedWords(Word word, Board board, Map<Character, Integer> pointsMap, Map<Position, Bonus> bonusMap, List<Position> positionsWithBlank) {
-        word.getRelatedWords()
+        ofNullable(word.getRelatedWords()).orElse(Collections.emptyList())
                 .forEach(relatedWord -> processWord(relatedWord, board, pointsMap, bonusMap, positionsWithBlank));
     }
 
     private static void processRelatedWordElements(Word word, Map<Character, Integer> pointsMap, List<Position> positionsWithBlank) {
-        word.getRelatedWords().stream()
+        ofNullable(word.getRelatedWords()).orElse(Collections.emptyList()).stream()
                 .map(Word::getElements)
                 .flatMap(Collection::stream)
                 .forEach(el -> el.setPoints(getLetterPoints(pointsMap, positionsWithBlank, el)));
@@ -109,7 +110,7 @@ public class ScoringService {
                 .reduce((bonus, bonus2) -> bonus * bonus2)
                 .orElse(1) * lettersPoints + (bingoBonus ? BINGO_BONUS : 0);
 
-        int points = wordPoints + word.getRelatedWords().stream()
+        int points = wordPoints + ofNullable(word.getRelatedWords()).orElse(Collections.emptyList()).stream()
                 .mapToInt(Word::getPoints)
                 .sum();
 

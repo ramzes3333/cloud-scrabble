@@ -18,7 +18,7 @@ class SolutionTest {
         Solution solution = prepareSolution();
 
         //when
-        Solution result = solution.transpose(TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_RIGHT);
+        Solution result = solution.transpose();
 
         //then
         assertNotNull(result);

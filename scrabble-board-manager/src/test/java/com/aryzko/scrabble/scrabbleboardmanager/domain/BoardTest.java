@@ -23,7 +23,7 @@ class BoardTest {
         Board board = loadObjectFromJson("/domain/board-to-rotate-5x5.json", Board.class);
 
         //when
-        Board result = board.transpose(TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_LEFT);
+        Board result = board.transpose();
 
         //then
         assertNotNull(result);

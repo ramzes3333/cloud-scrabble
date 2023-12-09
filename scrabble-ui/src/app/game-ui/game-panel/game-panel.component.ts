@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {Word} from "../../clients/board-manager/model/solution/word";
 import {Word as GuiWord} from "../model/word";
 import {Element} from "../../clients/board-manager/model/solution/element";
@@ -10,6 +10,7 @@ import {select, Store} from "@ngrx/store";
 import {GameState, Move} from "../../state/game-state/game-state";
 import {selectMoveHistory, selectSolution, selectStartedFlag} from "../../state/game-state/game-state.selectors";
 import {
+  asyncResolve,
   clearSuggestedWord,
   makeMove,
   putSuggestedWord,
@@ -17,9 +18,9 @@ import {
   showSuggestedWord,
   start
 } from "../../state/game-state/game-state.actions";
-import {PlayerMove} from "../../services/game.service";
 import {MatTableDataSource} from "@angular/material/table";
-import {Subscription} from "rxjs";
+import {bufferTime, debounceTime, fromEvent, Observable, scan, Subscription} from "rxjs";
+import {WebSocketService} from "../../services/web-socket.service";
 
 @Component({
   selector: 'app-game-panel',
@@ -33,6 +34,7 @@ export class GamePanelComponent implements OnInit {
   words = new TableVirtualScrollDataSource<GuiWord>([]);
   moveHistory = new MatTableDataSource<Move>();
   isLoading: boolean = false;
+  async: boolean = false;
 
   moveHistory$ = this.store.select(selectMoveHistory);
   solution$ = this.store.select(selectSolution);
@@ -40,16 +42,19 @@ export class GamePanelComponent implements OnInit {
 
   private subscriptions: Subscription[] = [];
 
-  constructor(private store: Store<{ gameState: GameState }>) { }
+  constructor(private store: Store<{ gameState: GameState }>,
+              private webSocketService: WebSocketService,
+              private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
+    this.webSocketService.initializeWebSocketConnection();
+
     this.subscriptions.push(this.moveHistory$.subscribe(moveHistory => {
       this.moveHistory.data = moveHistory.slice().reverse();
     }));
 
     this.subscriptions.push(this.solution$.subscribe(solution => {
-      this.words = new TableVirtualScrollDataSource<GuiWord>([]);
-      if(solution)
+      if(solution && !this.async) {
         for (const w of solution.words) {
           let elements: Element[] = [];
           let relatedWords: GuiWord[] = [];
@@ -59,17 +64,47 @@ export class GamePanelComponent implements OnInit {
           for (const el of w.elements) {
             elements.push(this.convertElement(el));
           }
-          for (const rw of w.relatedWords) {
+          for (const rw of w.relatedWords || []) {
             relatedWords.push(this.convertRelatedWord(rw));
           }
-          for (const b of w.bonuses) {
+          for (const b of w.bonuses || []) {
             bonuses.push(this.convertBonus(b));
           }
-          //this.words.push(word);
-          this.words.data.push(word);
+          this.words.data = [...this.words.data, word];
         }
-      this.isLoading = false;
+        this.isLoading = false;
+      }
     }));
+
+    this.subscriptions.push(new Observable<Word>(subscriber => {
+        this.webSocketService.solutionWordEvent.subscribe(event => {
+          subscriber.next(event);
+        });
+      })
+      .pipe(bufferTime(300))
+      .subscribe((words: Word[]) => {
+        if (words && words.length > 0 && this.async) {
+          for (const w of words) {
+            let elements: Element[] = [];
+            let relatedWords: GuiWord[] = [];
+            let bonuses: GuiBonus[] = [];
+            let word: GuiWord = new GuiWord(w.points, elements, relatedWords, bonuses);
+
+            for (const el of w.elements) {
+              elements.push(this.convertElement(el));
+            }
+            for (const rw of w.relatedWords || []) {
+              relatedWords.push(this.convertRelatedWord(rw));
+            }
+            for (const b of w.bonuses || []) {
+              bonuses.push(this.convertBonus(b));
+            }
+            this.words.data = [...this.words.data, word].sort((a, b) => b.points - a.points);
+          }
+          this.isLoading = false;
+        }
+      })
+    );
   }
 
   startGame() {
@@ -85,7 +120,11 @@ export class GamePanelComponent implements OnInit {
   resolve() {
     this.words = new TableVirtualScrollDataSource<GuiWord>([]);
     this.isLoading = true;
-    this.store.dispatch(resolve());
+    if(this.async) {
+      this.store.dispatch(asyncResolve());
+    } else {
+      this.store.dispatch(resolve());
+    }
   }
 
   getCharacters(value: string): string[] {

@@ -1,6 +1,7 @@
 import {createReducer, on} from '@ngrx/store';
 import {GameState} from "./game-state";
 import {
+  addSolutionWord,
   clearSuggestedWord,
   createSuccess,
   init,
@@ -34,6 +35,18 @@ export const gameStateReducer = createReducer(initialState,
   on(init, (state, response) => (initialState)),
   on(createSuccess, (state, response) => ({...state, boardId: response.boardId})),
   on(resolveSuccess, (state, solution) => ({...state, solution: solution})),
+  on(addSolutionWord, (state, word) => {
+    const updatedWords = [...state.solution?.words || [], word];
+    updatedWords.sort((a, b) => b.points - a.points);
+
+    return {
+      ...state,
+      solution: {
+        ...state.solution,
+        words: updatedWords
+      }
+    };
+  }),
   on(previewSuccess, (state, boardPreview) => ({
     ...state,
     fields: fieldsFromBoardPreview(boardPreview),

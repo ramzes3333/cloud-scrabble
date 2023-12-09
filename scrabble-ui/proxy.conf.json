@@ -7,6 +7,15 @@
       "^/board-manager-service": "/board-manager-service"
     }
   },
+  "/board-manager-websocket/*": {
+    "target": "http://localhost:8085",
+    "secure": false,
+    "changeOrigin": true,
+    "ws": true,
+    "pathRewrite": {
+      "^/board-manager-websocket": "/board-manager-websocket"
+    }
+  },
   "/game-service/*": {
     "target": "http://localhost:8085",
     "secure": false,

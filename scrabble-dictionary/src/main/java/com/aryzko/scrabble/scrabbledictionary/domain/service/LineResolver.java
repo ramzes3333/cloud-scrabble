@@ -5,6 +5,7 @@ import com.aryzko.scrabble.scrabbledictionary.domain.model.dawg.Node;
 import com.aryzko.scrabble.scrabbledictionary.domain.model.resolver.AvailableLetters;
 import com.aryzko.scrabble.scrabbledictionary.domain.model.resolver.Line;
 import com.aryzko.scrabble.scrabbledictionary.domain.model.resolver.Solution;
+import com.aryzko.scrabble.scrabbledictionary.domain.ports.ResolveResultSender;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,6 +32,16 @@ import static java.util.Optional.ofNullable;
 public class LineResolver {
 
     private final DawgService dawgService;
+    private final ResolveResultSender solutionSender;
+
+    public void asyncResolve(final Line line, final AvailableLetters availableLetters) throws DawgIsNotReady {
+        Node root = dawgService.getDawg();
+
+        line.getFields().stream()
+            .filter(Line.LineField::isAnchor)
+            .mapMulti(resolve(root, DynamicAvailableLetters.of(availableLetters)))
+            .forEach(solutionSender::sendResolvedWord);
+    }
 
     public Solution resolve(final Line line, final AvailableLetters availableLetters) throws DawgIsNotReady {
         Solution.SolutionBuilder solutionBuilder = Solution.builder();

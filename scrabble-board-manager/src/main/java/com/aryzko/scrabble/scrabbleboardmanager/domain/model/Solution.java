@@ -12,10 +12,10 @@ import java.util.stream.Collectors;
 public class Solution {
     private List<Word> words;
 
-    public Solution transpose(TransposeType transposeType) {
+    public Solution transpose() {
         return Solution.builder()
                 .words(words.stream()
-                        .map(word -> word.transpose(transposeType))
+                        .map(Word::transpose)
                         .collect(Collectors.toList()))
                 .build();
     }

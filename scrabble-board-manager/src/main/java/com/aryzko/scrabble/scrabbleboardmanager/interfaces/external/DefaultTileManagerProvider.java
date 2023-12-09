@@ -4,6 +4,7 @@ import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.TileManagerProvi
 import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.model.Tile;
 import com.aryzko.scrabble.scrabbleboardmanager.domain.provider.model.TileConfiguration;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class DefaultTileManagerProvider implements TileManagerProvider {
     }
 
     @Override
+    @Cacheable(value = "tileConfiguration", key = "#uuid", unless = "#result == null", cacheManager = "caffeineCacheManager")
     public TileConfiguration getTileConfiguration(String uuid) {
         return tileMapper.convert(tileManagerClient.getTileConfiguration(uuid));
     }

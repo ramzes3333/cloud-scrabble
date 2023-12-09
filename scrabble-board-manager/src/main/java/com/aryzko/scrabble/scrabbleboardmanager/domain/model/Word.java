@@ -36,14 +36,14 @@ public class Word {
                 .collect(Collectors.joining());
     }
 
-    public Word transpose(TransposeType transposeType) {
+    public Word transpose() {
         return Word.builder()
                 .points(this.getPoints())
                 .elements(this.getElements().stream()
-                        .map(e -> e.transpose(transposeType))
+                        .map(Element::transpose)
                         .collect(Collectors.toList()))
                 .relatedWords(this.getRelatedWords().stream()
-                        .map(w -> w.transpose(transposeType))
+                        .map(Word::transpose)
                         .collect(Collectors.toList()))
                 .bonuses(this.getBonuses())
                 .build();
@@ -61,21 +61,15 @@ public class Word {
         private boolean blank;
         private boolean onBoard;
 
-        public Word.Element transpose(TransposeType transposeType) {
-            if(transposeType.equals(TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_LEFT) ||
-                transposeType.equals(TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_RIGHT)) {
-
-                return Word.Element.builder()
-                        .x(this.getY())
-                        .y(this.getX())
-                        .letter(this.getLetter())
-                        .points(this.getPoints())
-                        .blank(this.isBlank())
-                        .onBoard(this.isOnBoard())
-                        .build();
-            } else {
-                throw new NotImplementedException();
-            }
+        public Word.Element transpose() {
+            return Word.Element.builder()
+                    .x(this.getY())
+                    .y(this.getX())
+                    .letter(this.getLetter())
+                    .points(this.getPoints())
+                    .blank(this.isBlank())
+                    .onBoard(this.isOnBoard())
+                    .build();
         }
     }
 }

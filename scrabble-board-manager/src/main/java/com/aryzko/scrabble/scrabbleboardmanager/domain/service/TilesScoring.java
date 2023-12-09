@@ -51,9 +51,9 @@ public class TilesScoring {
 
     private void findRelatedWordsAfterTranspose(Board board, Word word) {
         word.getRelatedWords().addAll(relatedWordsSearchService.getRelatedWords(
-                        board.transpose(TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_LEFT),
-                        word.transpose(TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_LEFT)).stream()
-                .map(w -> w.transpose(TransposeType.FLIP_HORIZONTALLY_AND_ROTATE_RIGHT))
+                        board.transpose(),
+                        word.transpose()).stream()
+                .map(Word::transpose)
                 .toList());
     }
 

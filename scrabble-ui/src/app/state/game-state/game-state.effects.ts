@@ -4,6 +4,7 @@ import {Store} from "@ngrx/store";
 import {AppState} from "../app.state";
 import {GameCreatorService} from "../../services/game-creator.service";
 import {
+  asyncResolve,
   create,
   createSuccess,
   failure,
@@ -120,6 +121,19 @@ export class GameEffects {
         }
       })
     )
+  );
+
+  asyncResolve$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(asyncResolve),
+        withLatestFrom(this.store.select(selectActualPlayerId), this.store.select(selectBoard)),
+        tap(([data, actualPlayerId, board]) => {
+          if (actualPlayerId && board) {
+            this.gameResolverService.asyncResolve(actualPlayerId, board);
+          }
+        })
+      ),
+    { dispatch: false }
   );
 
   confirm$ = createEffect(() =>

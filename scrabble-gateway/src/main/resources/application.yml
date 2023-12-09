@@ -10,18 +10,36 @@ spring:
             - Path=/board-manager-service/api/**
           filters:
             - RewritePath=/board-manager-service/api/(?<segment>.*),/api/$\{segment}
+            - name: RequestLogger
+              args:
+                format: "Request: {} {}"
+        - id: board-manager-websocket
+          uri: http://localhost:8080/
+          predicates:
+            - Path=/board-manager-websocket/**
+          filters:
+            - RewritePath=/board-manager-websocket/(?<segment>.*),/$\{segment}
+            - name: RequestLogger
+              args:
+                format: "Request: {} {}"
         - id: tile-manager-service
           uri: http://localhost:8082/api/
           predicates:
             - Path=/tile-manager-service/api/**
           filters:
             - RewritePath=/tile-manager-service/api/(?<segment>.*),/api/$\{segment}
+            - name: RequestLogger
+              args:
+                format: "Request: {} {}"
         - id: game-service
           uri: http://localhost:8087/api/
           predicates:
             - Path=/game-service/api/**
           filters:
             - RewritePath=/game-service/api/(?<segment>.*),/api/$\{segment}
+            - name: RequestLogger
+              args:
+                format: "Request: {} {}"
   security:
     oauth2:
       resourceserver:

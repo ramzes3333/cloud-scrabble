@@ -9,7 +9,7 @@
     <button *ngIf="(gameStarted$ | async)" mat-raised-button (click)="resolve()" class="resolve-button">Resolve!</button>
   </div>
 </div>
-<div class="resolve-container-header">Solution</div>
+<div class="resolve-container-header">Solution <mat-slide-toggle [hideIcon]="true" [(ngModel)]="async">async</mat-slide-toggle></div>
 <div class="resolve-container" (mouseleave)="clearPotentialWord()">
   <div style="display: flex;
         justify-content: center;
