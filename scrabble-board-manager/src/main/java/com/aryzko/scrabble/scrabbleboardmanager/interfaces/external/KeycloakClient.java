@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Map;
 
-@FeignClient(name = "keycloak", url = "http://localhost:8086")
+@FeignClient(name = "keycloak", url = "${KEYCLOAK_SERVER_URL}")
 public interface KeycloakClient {
 
     @PostMapping("/realms/scrabble/protocol/openid-connect/token")

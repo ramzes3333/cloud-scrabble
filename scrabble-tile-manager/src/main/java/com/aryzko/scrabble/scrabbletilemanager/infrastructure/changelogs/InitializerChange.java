@@ -3,14 +3,19 @@ package com.aryzko.scrabble.scrabbletilemanager.infrastructure.changelogs;
 import com.aryzko.scrabble.scrabbletilemanager.domain.Tile;
 import com.aryzko.scrabble.scrabbletilemanager.domain.TileConfiguration;
 import com.aryzko.scrabble.scrabbletilemanager.domain.TileSet;
+import io.mongock.api.annotations.BeforeExecution;
 import io.mongock.api.annotations.ChangeUnit;
 import io.mongock.api.annotations.Execution;
+import io.mongock.api.annotations.RollbackBeforeExecution;
 import io.mongock.api.annotations.RollbackExecution;
 import lombok.AllArgsConstructor;
+import org.bson.Document;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.aryzko.scrabble.scrabbletilemanager.domain.TileSet.TILE_SET_COLLECTION_NAME;
 
 @ChangeUnit(id="initializer", order = "1", author = "mongock")
 @AllArgsConstructor
@@ -18,8 +23,13 @@ public class InitializerChange {
 
     private final MongoTemplate mongoTemplate;
 
+    @BeforeExecution
+    public void beforeExecution(MongoTemplate mongoTemplate) {
+        mongoTemplate.createCollection(TILE_SET_COLLECTION_NAME);
+    }
+
     @Execution
-    public void changeSet() {
+    public void execution() {
         List<TileConfiguration> tileConfigurations = new ArrayList<>();
         tileConfigurations.add(TileConfiguration.builder().tile(Tile.builder().letter('A').points(1).build()).number(9).build());
         tileConfigurations.add(TileConfiguration.builder().tile(Tile.builder().letter('I').points(1).build()).number(8).build());
@@ -66,11 +76,16 @@ public class InitializerChange {
                 .version(1)
                 .build();
 
-        mongoTemplate.save(defaultTileSet);
+        mongoTemplate.insert(defaultTileSet);
     }
 
     @RollbackExecution
-    public void rollback() {
-        mongoTemplate.dropCollection(TileSet.class);
+    public void rollbackExecution() {
+        mongoTemplate.remove(new Document(), TILE_SET_COLLECTION_NAME);
+    }
+
+    @RollbackBeforeExecution
+    public void rollbackBeforeExecution() {
+        mongoTemplate.dropCollection(TILE_SET_COLLECTION_NAME);
     }
 }

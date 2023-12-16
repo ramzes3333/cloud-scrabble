@@ -1,0 +1,186 @@
+version: '3'
+services:
+  service-registry :
+    image: scrabble-service-registry:latest
+    build:
+      context: ./scrabble-service-registry
+      dockerfile: Dockerfile
+    ports:
+      - "8084:8084"
+    networks:
+      - backend
+
+  dictionary-service :
+    image: scrabble-dictionary:latest
+    build:
+      context: ./scrabble-dictionary
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    depends_on:
+      - postgres
+      - rabbitmq
+      - keycloak
+      - service-registry
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - KEYCLOAK_ISSUER_URI=http://keycloak:8086/realms/scrabble
+      - KEYCLOAK_SERVER_URL=http://keycloak:8086
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/dictionary
+      - EUREKA_SERVER_URL=http://service-registry:8084/eureka/
+      - SPRING_RABBITMQ_ADDRESSES=rabbitmq:5672
+    networks:
+      - backend
+
+  game-service:
+    image: scrabble-game:latest
+    build:
+      context: ./scrabble-game
+      dockerfile: Dockerfile
+    ports:
+      - "8087:8087"
+    depends_on:
+      - postgres
+      - keycloak
+      - service-registry
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - KEYCLOAK_ISSUER_URI=http://keycloak:8086/realms/scrabble
+      - KEYCLOAK_SERVER_URL=http://keycloak:8086
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/game
+      - EUREKA_SERVER_URL=http://service-registry:8084/eureka/
+    networks:
+      - backend
+
+  tile-manager-service:
+    image: scrabble-tile-manager:latest
+    build:
+      context: ./scrabble-tile-manager
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    depends_on:
+      - mongodb
+      - keycloak
+      - service-registry
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - KEYCLOAK_ISSUER_URI=http://keycloak:8086/realms/scrabble
+      - SPRING_DATA_MONGODB_HOST=mongodb
+      - EUREKA_SERVER_URL=http://service-registry:8084/eureka/
+    networks:
+      - backend
+
+  board-manager-service:
+    image: scrabble-board-manager:latest
+    build:
+      context: ./scrabble-board-manager
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+      - "5005:5005"
+    depends_on:
+      - mongodb
+      - keycloak
+      - service-registry
+    environment:
+      - JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,address=*:5005,server=y,suspend=n"
+      - SPRING_PROFILES_ACTIVE=docker
+      - KEYCLOAK_ISSUER_URI=http://keycloak:8086/realms/scrabble
+      - KEYCLOAK_SERVER_URL=http://keycloak:8086
+      - SPRING_DATA_MONGODB_HOST=mongodb
+      - EUREKA_SERVER_URL=http://service-registry:8084/eureka/
+      - SPRING_RABBITMQ_ADDRESSES=rabbitmq:5672
+    networks:
+      - backend
+
+  gateway:
+    image: scrabble-gateway:latest
+    build:
+      context: ./scrabble-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8085:8085"
+    depends_on:
+      - keycloak
+      - service-registry
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - KEYCLOAK_ISSUER_URI=http://keycloak:8086/realms/scrabble
+      - EUREKA_SERVER_URL=http://service-registry:8084/eureka/
+      - BOARD_MANAGER_SERVICE_URL=http://board-manager-service:8080/api/
+      - BOARD_MANAGER_WEBSOCKET_URL=http://board-manager-service:8080/
+      - TILE_MANAGER_SERVICE_URL=http://tile-manager-service:8082/api/
+      - GAME_SERVICE_URL=http://game-service:8087/api/
+    networks:
+      - backend
+
+  scrabble:
+    image: scrabble:latest
+    build:
+      context: ./scrabble-ui
+      dockerfile: Dockerfile
+      args:
+        KEYCLOAK_URL: http://keycloak:8086
+        GATEWAY_URL: http://gateway:8085
+    ports:
+      - "4200:80"
+    depends_on:
+      - keycloak
+    networks:
+      - backend
+
+  postgres:
+    image: postgres:latest
+    environment:
+      - POSTGRES_PASSWORD=mysecretpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./docker-compose-data/init-postgresql-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    networks:
+      - backend
+
+  mongodb:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    networks:
+      - backend
+
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    environment:
+      - POSTGRES_PASSWORD=mysecretpassword
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - backend
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0.1
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_HTTP_PORT=8086
+    command:
+      - start-dev
+    ports:
+      - "8086:8086"
+    networks:
+      - backend
+
+  mongo-express:
+    image: mongo-express
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongodb
+    networks:
+      - backend
+
+networks:
+  backend:

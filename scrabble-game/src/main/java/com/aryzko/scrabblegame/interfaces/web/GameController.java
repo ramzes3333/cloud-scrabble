@@ -14,6 +14,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -85,6 +86,8 @@ public class GameController {
     }
 
     @Value
+    @Builder
+    @Jacksonized
     public static class CreateGameRequest {
 
         @Valid List<BotPlayer> botPlayers;

@@ -1,0 +1,2 @@
+CREATE DATABASE dictionary;
+CREATE DATABASE game;

@@ -15,7 +15,7 @@ export function initializeKeycloak(
 
     return keycloak.init({
       config: {
-        url: 'http://localhost:8086',
+        url: process.env['KEYCLOAK_URL'] || 'http://localhost:8086',
         realm: 'scrabble',
         clientId: 'scrabble'
       },

@@ -5,6 +5,7 @@ import com.aryzko.scrabble.scrabbledictionary.adapters.amqp.common.EventMetadata
 import com.aryzko.scrabble.scrabbledictionary.adapters.common.MetadataHolder;
 import com.nimbusds.jose.shaded.gson.Gson;
 import org.reflections.Reflections;
+import org.reflections.util.ConfigurationBuilder;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.support.converter.AbstractMessageConverter;
@@ -23,7 +24,7 @@ public class EventMessageConverter extends AbstractMessageConverter {
     private static final String X_METADATA = "x-metadata-%s";
 
     private final Gson gson = new Gson();
-    private final Reflections reflections = new Reflections("com.aryzko.scrabble.scrabbledictionary");
+    private final Reflections reflections = new Reflections(new ConfigurationBuilder().forPackages("com.aryzko.scrabble.scrabbledictionary"));
 
     @Override
     protected Message createMessage(Object objectToConvert, MessageProperties messageProperties) {
@@ -40,7 +41,6 @@ public class EventMessageConverter extends AbstractMessageConverter {
     @Override
     public Object fromMessage(Message message) throws MessageConversionException {
         String eventType = message.getMessageProperties().getHeader("EventType");
-        String correlationId = message.getMessageProperties().getCorrelationId();
         Class<?> clazz = findClassForType(eventType);
         String json = new String(message.getBody());
         Object object = gson.fromJson(json, clazz);

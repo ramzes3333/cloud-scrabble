@@ -28,7 +28,7 @@ public class DictionaryController {
 
     @PerformanceLog
     @GetMapping("lookup/{entry}")
-    public Boolean lookupEntry(@PathVariable @NotBlank String entry) {
+    public Boolean lookupEntry(@PathVariable(name = "entry") @NotBlank String entry) {
         return dictionaryService.lookup(entry);
     }
 
