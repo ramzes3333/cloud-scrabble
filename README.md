@@ -126,7 +126,7 @@ After setting up the necessary Docker images, start each of the microservices in
 
 ### Game creator:
 
-![img.png](game-creator-v1.png)
+![img.png](screenshots/game-creator-v1.png)
 ### Game:
 
-![](cloud-scrabble-v9.png)
+![](screenshots/cloud-scrabble-v9.png)

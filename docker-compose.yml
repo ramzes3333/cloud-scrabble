@@ -52,6 +52,24 @@ services:
     networks:
       - backend
 
+  external-services:
+    image: scrabble-external-services:latest
+    build:
+      context: ./scrabble-external-services
+      dockerfile: Dockerfile
+    ports:
+      - "8088:8088"
+    depends_on:
+      - keycloak
+      - service-registry
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - KEYCLOAK_ISSUER_URI=http://keycloak:8086/realms/scrabble
+      - KEYCLOAK_SERVER_URL=http://keycloak:8086
+      - EUREKA_SERVER_URL=http://service-registry:8084/eureka/
+    networks:
+      - backend
+
   tile-manager-service:
     image: scrabble-tile-manager:latest
     build:
@@ -112,6 +130,7 @@ services:
       - BOARD_MANAGER_WEBSOCKET_URL=http://board-manager-service:8080/
       - TILE_MANAGER_SERVICE_URL=http://tile-manager-service:8082/api/
       - GAME_SERVICE_URL=http://game-service:8087/api/
+      - EXTERNAL_SERVICES_URL=http://external-services:8088/api/
     networks:
       - backend
 

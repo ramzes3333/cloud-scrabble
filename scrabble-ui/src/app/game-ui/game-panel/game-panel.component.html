@@ -27,7 +27,9 @@
     <table mat-table [dataSource]="words" class="words-table">
       <ng-container matColumnDef="words">
         <th mat-header-cell *matHeaderCellDef> Words </th>
-        <td mat-cell *matCellDef="let word" (mouseenter)="showPotentialWord(word)" (click)="putSuggestedWord(word)">
+        <td mat-cell *matCellDef="let word"
+            (mouseenter)="showPotentialWord(word)"
+            (click)="putSuggestedWord(word)">
           <div class="word-container">
             <ng-container *ngFor="let element of word.elements">
               <div class="letter points-{{element.points}}">
@@ -45,6 +47,11 @@
               matTooltipClass="multiline-tooltip"
               [matTooltip]="bonusesTooltip(word)"
               class="bonuses-{{word.bonuses.length > 0}}">Bonuses: {{word.bonuses.length}}</div>
+            <div
+              matTooltipClass="multiline-tooltip"
+              [matTooltip]="tooltipForWord(word.getWordAsString())"
+              (mouseenter)="getDefinition(word)"
+              class="definition">Word definition</div>
           </div>
         </td>
       </ng-container>

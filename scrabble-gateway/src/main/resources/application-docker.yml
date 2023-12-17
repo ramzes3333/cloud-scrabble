@@ -40,6 +40,15 @@ spring:
             - name: RequestLogger
               args:
                 format: "Request: {} {}"
+        - id: external-services
+          uri: ${EXTERNAL_SERVICES_URL}
+          predicates:
+            - Path=/external-services/api/**
+          filters:
+            - RewritePath=/external-services/api/(?<segment>.*),/api/$\{segment}
+            - name: RequestLogger
+              args:
+                format: "Request: {} {}"
   security:
     oauth2:
       resourceserver:

@@ -218,7 +218,7 @@ button:hover {
 .additional-data div {
   display: inline-block;
   border-radius: 5px;
-  margin-left: 20px;
+  margin-left: 15px;
   font-size: 9px;
   padding-left: 15px;
   padding-right: 15px;
@@ -252,3 +252,6 @@ button:hover {
   margin-bottom: 6px;
 }
 
+.definition {
+  background-color: #ffe8fe;
+}

@@ -19,8 +19,20 @@ import {
   start
 } from "../../state/game-state/game-state.actions";
 import {MatTableDataSource} from "@angular/material/table";
-import {bufferTime, debounceTime, fromEvent, Observable, scan, Subscription} from "rxjs";
+import {
+  BehaviorSubject,
+  bufferTime,
+  debounceTime,
+  fromEvent,
+  Observable, of,
+  scan,
+  startWith,
+  Subject,
+  Subscription
+} from "rxjs";
 import {WebSocketService} from "../../services/web-socket.service";
+import {ExternalServices} from "../../clients/external-services/external-services.service";
+import {map} from "rxjs/operators";
 
 @Component({
   selector: 'app-game-panel',
@@ -36,6 +48,9 @@ export class GamePanelComponent implements OnInit {
   isLoading: boolean = false;
   async: boolean = false;
 
+  definitions = new Map<string, string>();
+  loadingDefinitions = new Set<string>();
+
   moveHistory$ = this.store.select(selectMoveHistory);
   solution$ = this.store.select(selectSolution);
   gameStarted$ = this.store.pipe(select(selectStartedFlag));
@@ -44,7 +59,7 @@ export class GamePanelComponent implements OnInit {
 
   constructor(private store: Store<{ gameState: GameState }>,
               private webSocketService: WebSocketService,
-              private cdr: ChangeDetectorRef) { }
+              private externalServices: ExternalServices) { }
 
   ngOnInit(): void {
     this.webSocketService.initializeWebSocketConnection();
@@ -164,6 +179,32 @@ export class GamePanelComponent implements OnInit {
 
   putSuggestedWord(word: GuiWord) {
     this.store.dispatch(putSuggestedWord(word));
+  }
+
+  getDefinition(word: GuiWord) {
+    const wordString = word.getWordAsString();
+
+    if (!this.definitions.has(wordString) && !this.loadingDefinitions.has(wordString)) {
+      this.loadingDefinitions.add(wordString);
+
+      this.externalServices.getWordDefinition(wordString).subscribe(
+        (definition) => {
+          this.definitions.set(wordString, definition.definition);
+          this.loadingDefinitions.delete(wordString);
+        },
+        error => {
+          this.definitions.set(wordString, 'Definicja niedostępna');
+          this.loadingDefinitions.delete(wordString);
+        }
+      );
+    }
+  }
+
+  tooltipForWord(wordString: string): string {
+    if (this.loadingDefinitions.has(wordString)) {
+      return 'Ładowanie definicji...';
+    }
+    return this.definitions.get(wordString) || 'Definicja niedostępna';
   }
 
   relatedWordsTooltip(word: GuiWord): string {

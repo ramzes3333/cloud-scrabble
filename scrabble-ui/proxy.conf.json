@@ -31,5 +31,13 @@
     "pathRewrite": {
       "^/tile-manager-service": "/tile-manager-service"
     }
+  },
+  "/external-services/*": {
+    "target": "http://localhost:8085",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/external-services": "/external-services"
+    }
   }
 }
